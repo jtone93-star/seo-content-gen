@@ -1,0 +1,158 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum ContentType {
+  BLOG
+  LANDING_PAGE
+  PRODUCT_DESCRIPTION
+}
+
+enum RunMode {
+  STEP_BY_STEP
+  FULL_AUTO
+}
+
+enum PipelineStep {
+  BRIEF
+  RESEARCH
+  OUTLINE
+  DRAFT
+  EDIT
+  QA
+  SEO
+  TECHNICAL_SEO
+  FINAL
+}
+
+enum ProjectStatus {
+  DRAFT
+  QUEUED
+  RUNNING
+  PAUSED_FOR_REVIEW
+  COMPLETED
+  FAILED
+}
+
+enum PipelineJobType {
+  START
+  APPROVE
+  REGENERATE
+}
+
+enum PipelineJobStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum ArtifactStatus {
+  PENDING
+  RUNNING
+  AWAITING_REVIEW
+  APPROVED
+  REJECTED
+  SUPERSEDED
+}
+
+model ClientProfile {
+  id                   String           @id @default(cuid())
+  name                 String
+  industry             String?
+  audience             String?
+  tone                 String?
+  readingLevel         String?
+  pointOfView          String?
+  wordsToAvoid         String[]         @default([])
+  requiredDisclaimers  String?
+  seoNotes             String?
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+  projects             ContentProject[]
+}
+
+model ContentProject {
+  id              String         @id @default(cuid())
+  clientProfileId String
+  clientProfile   ClientProfile  @relation(fields: [clientProfileId], references: [id], onDelete: Cascade)
+  topic           String
+  targetKeyword   String?
+  sourceUrls      String[]       @default([])
+  pastedNotes     String?
+  targetLength    Int?
+  contentType     ContentType
+  runMode         RunMode
+  status          ProjectStatus  @default(DRAFT)
+  currentStep     PipelineStep?
+  errorMessage    String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  artifacts       StepArtifact[]
+  pipelineJobs    PipelineJob[]
+
+  @@index([clientProfileId])
+  @@index([status])
+}
+
+model PipelineJob {
+  id           String            @id @default(cuid())
+  projectId    String
+  project      ContentProject      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  type         PipelineJobType
+  step         PipelineStep?
+  feedback     String?
+  status       PipelineJobStatus @default(PENDING)
+  attempts     Int               @default(0)
+  maxAttempts  Int               @default(3)
+  errorMessage String?
+  createdAt    DateTime          @default(now())
+  startedAt    DateTime?
+  completedAt  DateTime?
+
+  @@index([status, createdAt])
+  @@index([projectId])
+}
+
+model StepArtifact {
+  id            String         @id @default(cuid())
+  projectId     String
+  project       ContentProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  step          PipelineStep
+  version       Int            @default(1)
+  status        ArtifactStatus @default(PENDING)
+  inputSnapshot Json?
+  output        Json?
+  userFeedback  String?
+  approvedAt    DateTime?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@unique([projectId, step, version])
+  @@index([projectId])
+}
+
+model ModelSlot {
+  step      PipelineStep @id
+  provider  String?
+  model     String?
+  enabled   Boolean      @default(false)
+  updatedAt DateTime     @updatedAt
+}
+
+/// Single-user MVP: one encrypted BYO provider API key for the whole app.
+model AppCredential {
+  id            String   @id @default("singleton")
+  provider      String   @default("anthropic")
+  keyCiphertext String
+  keyIv         String
+  keyTag        String
+  keyLast4      String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}

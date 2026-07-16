@@ -1,0 +1,4 @@
+-- Expand pipeline for SEO-grade workflow
+ALTER TYPE "PipelineStep" ADD VALUE IF NOT EXISTS 'BRIEF';
+ALTER TYPE "PipelineStep" ADD VALUE IF NOT EXISTS 'QA';
+ALTER TYPE "PipelineStep" ADD VALUE IF NOT EXISTS 'TECHNICAL_SEO';
