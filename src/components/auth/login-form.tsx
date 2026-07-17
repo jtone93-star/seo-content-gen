@@ -1,13 +1,12 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export function LoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -18,21 +17,27 @@ export function LoginForm() {
     setBusy(true);
     setError(null);
 
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password }),
-    });
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
+        body: JSON.stringify({ password }),
+      });
 
-    setBusy(false);
+      if (res.ok) {
+        const from = searchParams.get("from") || "/";
+        // Full navigation so the session cookie is definitely sent on the next request.
+        window.location.assign(from.startsWith("/") ? from : "/");
+        return;
+      }
 
-    if (res.ok) {
-      const from = searchParams.get("from") || "/";
-      router.push(from);
-      router.refresh();
-    } else {
       const data = await res.json().catch(() => ({}));
       setError(data.error ?? "Login failed.");
+      setBusy(false);
+    } catch {
+      setError("Could not reach the server. Try again.");
+      setBusy(false);
     }
   }
 
