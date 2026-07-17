@@ -1,8 +1,9 @@
 # Smoke tests
 
-Manual checks before calling a milestone done. Run locally first; after hosting, run the **Hosted** section.
+Manual checks before calling a milestone done. Run locally first; after hosting, run the **Hosted** and **Login gate** sections.
 
 **Prereqs (local):** Postgres up (`npm run db:start` if needed), `npm run db:setup` once, `npm run dev`, `.env` has `DATABASE_URL` and `APP_ENCRYPTION_KEY`.  
+Leave `APP_PASSWORD` empty locally unless testing the login gate.  
 No separate worker required for normal Start / Approve / Regenerate.
 
 ---
@@ -48,23 +49,34 @@ No separate worker required for normal Start / Approve / Regenerate.
 | D6 | Disable the slot → Save → regenerate | Mock output again |
 | D7 | Disconnect key | Connected badge clears; enabled steps fail clearly if run without a key |
 
-## E. Docs / orphan page
+## E. Documentation in the app
 
 | # | Steps | Pass if |
 |---|--------|---------|
-| E1 | Open `/stories` | User stories render (not in main nav) |
-| E2 | Skim Epic 6 & 11 | Match inline jobs + Vercel-only hosting |
+| E1 | Footer **Documentation** link | Opens `/documentation` with how-to guide |
+| E2 | From Documentation, open User stories | `/stories` renders acceptance criteria |
+| E3 | Skim how-to vs Epic 1–7 / 8 login | Matches current product behavior |
 
-## F. Hosted (when deploy is done)
+## F. Hosted (Vercel + Supabase)
 
 | # | Steps | Pass if |
 |---|--------|---------|
-| F1 | Hit Vercel URL | Blocked by **Deployment Protection** until authorized |
-| F2 | After unlock, open `/` | App loads against Supabase |
-| F3 | Start a step-by-step project (mock) | Completes **without** any Railway/worker service |
-| F4 | Save Anthropic key; enable one step; regenerate | Claude step works on Vercel alone |
-| F5 | Confirm only Vercel has `DATABASE_URL` + `APP_ENCRYPTION_KEY` | No second host required |
+| F1 | Open production URL (after login if gated) | App loads against Supabase |
+| F2 | Start a step-by-step project (mock) | Completes **without** any Railway/worker service |
+| F3 | Save Anthropic key; enable one step; regenerate | Claude step works on Vercel alone |
+| F4 | Confirm Vercel has `DATABASE_URL`, `DIRECT_URL`, `APP_ENCRYPTION_KEY` | App + encrypted keys work |
+
+## G. Login gate (`APP_PASSWORD`)
+
+| # | Steps | Pass if |
+|---|--------|---------|
+| G1 | Local with `APP_PASSWORD` unset | No login; full app open |
+| G2 | Hosted with `APP_PASSWORD` set; open site in **incognito** | Redirected to `/login` |
+| G3 | Wrong password | Error message; still gated |
+| G4 | Correct password | Lands on dashboard (or `from` path); nav shows Log out |
+| G5 | Call an API without cookie (e.g. curl) | `401 Unauthorized` |
+| G6 | Log out | Cookie cleared; redirected to login |
 
 ---
 
-*Keep this list in sync when behavior changes. Last updated for Vercel-only inline execution.*
+*Keep this list in sync when behavior changes. Last updated: login gate, in-app Documentation, Vercel-only inline jobs.*

@@ -381,14 +381,28 @@ Product: **Content Generator Tool** — SEO-grade content pipeline with client p
 ### US-8.1 Use the app without auth locally ✅
 
 **As a** solo operator  
-**I want** no login for local MVP  
+**I want** no login for local MVP when `APP_PASSWORD` is unset  
 **So that** I can iterate quickly.
 
 **Acceptance criteria**
 
-- No authentication gates on pages or API locally.
-- 📋 App-level auth / multi-tenant is future work.
-- 📋 Hosted access uses Vercel Deployment Protection until then (Epic 11).
+- With `APP_PASSWORD` empty/unset, pages and APIs are open.
+- Multi-tenant / per-user accounts remain future work.
+
+---
+
+### US-8.2 Protect the hosted app with a shared password ✅
+
+**As a** solo operator  
+**I want** a simple app password gate on Vercel (Hobby-friendly)  
+**So that** strangers cannot use my APIs or saved Anthropic key.
+
+**Acceptance criteria**
+
+- Setting `APP_PASSWORD` enables the gate via Next.js `proxy.ts`.
+- Unauthenticated users are redirected to `/login` (APIs return 401).
+- Correct password sets an HTTP-only session cookie; Log out clears it.
+- Session is invalidated when `APP_PASSWORD` changes (HMAC includes the password).
 
 ---
 
@@ -402,8 +416,9 @@ Product: **Content Generator Tool** — SEO-grade content pipeline with client p
 
 **Acceptance criteria**
 
-- Page available at `/stories` (not linked from main navigation).
-- Renders this document from `docs/USER_STORIES.md`.
+- Page available at `/stories` (not in main nav).
+- Renders `docs/USER_STORIES.md`.
+- Linked from Documentation.
 
 ---
 
@@ -411,12 +426,12 @@ Product: **Content Generator Tool** — SEO-grade content pipeline with client p
 
 **As a** developer  
 **I want** up-to-date setup and architecture docs  
-**So that** I can run Postgres, migrations, dev server, and worker reliably.
+**So that** I can run Postgres, migrations, and the app reliably.
 
 **Acceptance criteria**
 
-- README covers install, two-terminal dev flow, pipeline table, BYO Claude, and job queue.
-- `docs/` includes architecture, user stories, deploy plan, and smoke tests.
+- README covers install, local dev, pipeline, BYO Claude, and hosting.
+- `docs/` includes architecture, user stories, how-to, deploy, and smoke tests.
 
 ---
 
@@ -424,11 +439,25 @@ Product: **Content Generator Tool** — SEO-grade content pipeline with client p
 
 **As a** developer / operator  
 **I want** a written smoke-test checklist  
-**So that** I can verify local and hosted behavior quickly when we pick work back up.
+**So that** I can verify local and hosted behavior quickly.
 
 **Acceptance criteria**
 
-- `docs/SMOKE_TESTS.md` covers core app, queue/worker, pipeline UX, BYO Claude, and hosted checks.
+- `docs/SMOKE_TESTS.md` covers core app, inline jobs, pipeline UX, BYO Claude, documentation, login gate, and hosted checks.
+
+---
+
+### US-9.4 Read how-to documentation in the app ✅
+
+**As a** content operator  
+**I want** an in-app Documentation section based on how the product is meant to be used  
+**So that** I can operate the pipeline without reading the repo.
+
+**Acceptance criteria**
+
+- Footer link **Documentation** opens `/documentation`.
+- Page renders `docs/HOW_TO_USE.md` (quick start, clients, projects, stages, Claude, login).
+- Links to user stories for full acceptance criteria.
 
 ---
 
@@ -468,21 +497,21 @@ Product: **Content Generator Tool** — SEO-grade content pipeline with client p
 
 ## Epic 11: Hosting (Vercel-only)
 
-### US-11.1 Deploy web app to Vercel with Deployment Protection 📋
+### US-11.1 Deploy web app to Vercel ✅
 
 **As a** solo operator  
-**I want** the Next.js app on Vercel behind Deployment Protection  
-**So that** the internet cannot freely hit my unauthenticated APIs or use my saved API key.
+**I want** the Next.js app on Vercel with Supabase  
+**So that** I can use the tool without running it only on my laptop.
 
 **Acceptance criteria**
 
-- App deploys to Vercel with `DATABASE_URL` and `APP_ENCRYPTION_KEY`.
-- Deployment Protection (password/SSO) gates access until app auth exists.
+- App deploys with `DATABASE_URL`, `DIRECT_URL`, and `APP_ENCRYPTION_KEY`.
 - Start / Approve / Regenerate work **without** a separate worker service.
+- Production access is gated by `APP_PASSWORD` (US-8.2), not paid Vercel Password Protection.
 
 ---
 
-### US-11.2 Use Supabase Postgres in production 📋
+### US-11.2 Use Supabase Postgres in production ✅
 
 **As a** developer  
 **I want** cloud Postgres for the Vercel app  
@@ -491,7 +520,8 @@ Product: **Content Generator Tool** — SEO-grade content pipeline with client p
 **Acceptance criteria**
 
 - Migrations applied with `prisma migrate deploy`.
-- Vercel uses that `DATABASE_URL`.
+- Seed applied for model slots / demo client.
+- Vercel uses pooled `DATABASE_URL` (+ `DIRECT_URL` for migrate tooling).
 
 ---
 
@@ -511,17 +541,16 @@ Product: **Content Generator Tool** — SEO-grade content pipeline with client p
 ## Story map (implementation overview)
 
 ```text
-Clients ──► New project ──► [Queue] ──► Worker ──► Brief ──► Research ──► Outline
+Login (if APP_PASSWORD) ──► Clients ──► New project ──► Start/Approve (inline)
                                                               │
-                    ◄── Approve (step-by-step) ◄── Draft ◄── Edit ◄── QA
+                    ◄── Approve (step-by-step) ◄── Brief … Final
                                                               │
-                                         SEO copy ──► Technical SEO ──► Final
+BYO: Anthropic API key ──► Model slots ──► Claude or Mock
 
-BYO: Anthropic API key ──► Model slots (per step) ──► Claude or Mock executor
-
-Hosted: Vercel Protection + Supabase + inline jobs (no separate worker)
+Hosted: Vercel + Supabase + APP_PASSWORD + inline jobs
+Docs: /documentation (how-to) · /stories (acceptance criteria)
 ```
 
 ---
 
-*Last updated: Vercel-only inline job execution; BYO Claude; step descriptions; smoke tests.*
+*Last updated: APP_PASSWORD login gate; in-app Documentation; Vercel + Supabase handoff; how-to guide.*

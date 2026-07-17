@@ -2,16 +2,17 @@
 
 SEO-grade content production with a **9-step pipeline**, **client profiles**, **human review gates**, **BYO Claude** (your Anthropic API key), and **inline pipeline jobs** (Vercel-friendly — no separate worker host required).
 
-Built for local development first (Next.js + Prisma + PostgreSQL). Hosting plan: **Vercel** (app + Deployment Protection + inline jobs) + **Supabase** (DB).
+Built for local development first (Next.js + Prisma + PostgreSQL). Hosting: **Vercel** + **Supabase** + **`APP_PASSWORD`** login gate.
 
 ## Documentation
 
 | Doc | Location |
 |-----|----------|
 | Setup & operations | This file |
-| User stories | [docs/USER_STORIES.md](docs/USER_STORIES.md) · in-app: [/stories](http://localhost:3000/stories) (orphan page) |
+| How to use (operators) | [docs/HOW_TO_USE.md](docs/HOW_TO_USE.md) · in-app: [/documentation](http://localhost:3000/documentation) |
+| User stories | [docs/USER_STORIES.md](docs/USER_STORIES.md) · in-app: [/stories](http://localhost:3000/stories) |
 | Architecture | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
-| Deploy (planned) | [docs/DEPLOY.md](docs/DEPLOY.md) |
+| Deploy | [docs/DEPLOY.md](docs/DEPLOY.md) |
 | Smoke tests | [docs/SMOKE_TESTS.md](docs/SMOKE_TESTS.md) |
 | Doc index | [docs/README.md](docs/README.md) |
 
@@ -25,6 +26,8 @@ Built for local development first (Next.js + Prisma + PostgreSQL). Hosting plan:
 - **Engine badges** — per stage shows **Using: Claude** or **Using: Mock**
 - **Job execution** — Start / Approve / Regenerate run in the API request (works on Vercel without a worker)
 - **BYO Claude** — save an encrypted Anthropic API key; pick a model per step on `/settings/models`
+- **App password** — set `APP_PASSWORD` on Vercel to require `/login` (Hobby-friendly)
+- **In-app Documentation** — footer link to how-to guide
 
 ## Prerequisites
 
@@ -155,10 +158,11 @@ src/components/          # UI components
 ## Hosting
 
 1. Supabase transaction-pooler `DATABASE_URL` and migration `DIRECT_URL`.
-2. Set `DATABASE_URL`, `DIRECT_URL`, and `APP_ENCRYPTION_KEY` on Vercel.
+2. Set `DATABASE_URL`, `DIRECT_URL`, `APP_ENCRYPTION_KEY`, and **`APP_PASSWORD`** on Vercel.
 3. Run `npx prisma migrate deploy` and seed Supabase.
-4. Deploy Next.js to **Vercel** + enable **Deployment Protection**.
-5. No separate worker host — jobs run inline in Start / Approve / Regenerate.
+4. Deploy Next.js to **Vercel** (jobs run inline — no separate worker).
+5. Confirm incognito hits `/login` when `APP_PASSWORD` is set.
 
-Current deployment handoff and exact resume steps: [docs/DEPLOY.md](docs/DEPLOY.md).  
+Current deployment handoff: [docs/DEPLOY.md](docs/DEPLOY.md).  
+Operator guide: [docs/HOW_TO_USE.md](docs/HOW_TO_USE.md).  
 Verify: [docs/SMOKE_TESTS.md](docs/SMOKE_TESTS.md).

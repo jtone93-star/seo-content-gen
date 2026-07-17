@@ -94,6 +94,14 @@ Optional `npm run worker` still claims PENDING jobs (local leftover drain / futu
 | GET/POST/DELETE | `/api/settings/credentials` | Anthropic API key status / save / remove |
 | POST | `/api/settings/credentials/test` | Validate API key |
 | GET | `/api/settings/anthropic-models` | List models available to the connected key |
+| POST | `/api/auth/login` | App password login (sets session cookie) |
+| POST | `/api/auth/logout` | Clear session cookie |
+
+## Auth (MVP)
+
+- `APP_PASSWORD` unset → open app (local default).
+- `APP_PASSWORD` set → `src/proxy.ts` requires a valid `cg_session` cookie for all routes except `/login` and auth APIs.
+- Session token is an HMAC of the password (signed with `APP_ENCRYPTION_KEY`).
 
 ## UI routes
 
@@ -106,30 +114,34 @@ Optional `npm run worker` still claims PENDING jobs (local leftover drain / futu
 | `/projects/new` | Yes | New content |
 | `/projects/[id]` | No | Pipeline stepper + review (engine badge + step descriptions) |
 | `/settings/models` | Yes | BYO Anthropic key + per-step Claude models |
-| `/stories` | **No (orphan)** | User stories reader |
+| `/login` | No | App password sign-in |
+| `/documentation` | Footer | Operator how-to (`docs/HOW_TO_USE.md`) |
+| `/stories` | Via Documentation | User stories reader |
 
 ## Deployment path (Vercel-only)
 
 | Piece | Host | Notes |
 |-------|------|--------|
-| Web UI + API + job execution | **Vercel** | Inline `enqueueAndRun`; **Deployment Protection** for access |
+| Web UI + API + job execution | **Vercel** | Inline `enqueueAndRun`; gate with `APP_PASSWORD` |
 | Database | **Supabase** Postgres | Shared by the app |
 
 ```text
-You → Vercel Protection → Next.js (Vercel)
-                              │ enqueue + run (same request)
-                              ▼
-                         Supabase Postgres
-                              │
-                         Anthropic API (BYO key)
+You → /login (APP_PASSWORD) → Next.js (Vercel)
+                                    │ enqueue + run (same request)
+                                    ▼
+                               Supabase Postgres
+                                    │
+                               Anthropic API (BYO key)
 ```
 
 Required env on Vercel:
 
-- `DATABASE_URL`
-- `APP_ENCRYPTION_KEY` (32-byte base64; encrypts BYO API keys)
+- `DATABASE_URL` (pooler `6543` + `pgbouncer=true`)
+- `DIRECT_URL` (session `5432`, for migrate tooling)
+- `APP_ENCRYPTION_KEY` (32-byte base64)
+- `APP_PASSWORD` (shared login; required for production protection)
 
-See [DEPLOY.md](./DEPLOY.md) and [SMOKE_TESTS.md](./SMOKE_TESTS.md).
+See [DEPLOY.md](./DEPLOY.md), [HOW_TO_USE.md](./HOW_TO_USE.md), and [SMOKE_TESTS.md](./SMOKE_TESTS.md).
 
 **Note:** Full auto with many Claude-enabled steps may exceed Vercel time limits; prefer step-by-step for hosted Claude runs.
 
