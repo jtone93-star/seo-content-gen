@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Nav } from "@/components/layout/nav";
 import "./globals.css";
@@ -32,16 +31,6 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <Nav />
         <main className="flex-1 mx-auto w-full max-w-5xl px-4 py-8">{children}</main>
-        <footer className="border-t border-foreground/10">
-          <div className="mx-auto flex max-w-5xl items-center justify-end px-4 py-3">
-            <Link
-              href="/documentation"
-              className="text-xs text-foreground/45 hover:text-foreground/80 transition"
-            >
-              Documentation
-            </Link>
-          </div>
-        </footer>
       </body>
     </html>
   );

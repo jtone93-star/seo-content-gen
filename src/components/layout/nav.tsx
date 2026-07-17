@@ -27,6 +27,12 @@ export function Nav() {
               {l.label}
             </Link>
           ))}
+          <Link
+            href="/documentation"
+            className="text-foreground/70 hover:text-foreground transition"
+          >
+            Documentation
+          </Link>
           {authEnabled && (
             <form action="/api/auth/logout" method="post">
               <button
