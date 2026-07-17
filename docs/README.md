@@ -4,7 +4,7 @@
 |----------|-------------|
 | [USER_STORIES.md](./USER_STORIES.md) | User stories and acceptance criteria (also at `/stories` in the app) |
 | [ARCHITECTURE.md](./ARCHITECTURE.md) | System design, data model, BYO Claude, and pipeline flow |
-| [DEPLOY.md](./DEPLOY.md) | Planned hosting: Vercel + Supabase + always-on worker |
+| [DEPLOY.md](./DEPLOY.md) | Hosting handoff: Vercel + Supabase with inline jobs |
 | [SMOKE_TESTS.md](./SMOKE_TESTS.md) | Manual smoke-test checklist (local + hosted) |
 | [../README.md](../README.md) | Setup, local dev, and operations |
 

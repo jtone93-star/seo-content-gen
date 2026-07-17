@@ -171,7 +171,7 @@ export function createAnthropicExecutor(
         parsed.contentType = ctx.project.contentType;
       }
 
-      return parsed as StepOutput;
+      return parsed as unknown as StepOutput;
     },
   };
 }

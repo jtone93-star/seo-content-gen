@@ -154,11 +154,11 @@ src/components/          # UI components
 
 ## Hosting
 
-1. Supabase cloud Postgres + `DATABASE_URL` on Vercel.
-2. Same `APP_ENCRYPTION_KEY` on Vercel.
-3. `npx prisma migrate deploy` on production.
+1. Supabase transaction-pooler `DATABASE_URL` and migration `DIRECT_URL`.
+2. Set `DATABASE_URL`, `DIRECT_URL`, and `APP_ENCRYPTION_KEY` on Vercel.
+3. Run `npx prisma migrate deploy` and seed Supabase.
 4. Deploy Next.js to **Vercel** + enable **Deployment Protection**.
 5. No separate worker host — jobs run inline in Start / Approve / Regenerate.
 
-Details: [docs/DEPLOY.md](docs/DEPLOY.md).  
+Current deployment handoff and exact resume steps: [docs/DEPLOY.md](docs/DEPLOY.md).  
 Verify: [docs/SMOKE_TESTS.md](docs/SMOKE_TESTS.md).
