@@ -14,7 +14,7 @@ import type * as Prisma from "../internal/prismaNamespace"
 
 /**
  * Model AppCredential
- * Single-user MVP: one encrypted BYO provider API key for the whole app.
+ * One encrypted BYO API key per provider (`anthropic`, `gemini`).
  */
 export type AppCredentialModel = runtime.Types.Result.DefaultSelection<Prisma.$AppCredentialPayload>
 
@@ -262,8 +262,8 @@ export type AppCredentialScalarWhereWithAggregatesInput = {
 }
 
 export type AppCredentialCreateInput = {
-  id?: string
-  provider?: string
+  id: string
+  provider: string
   keyCiphertext: string
   keyIv: string
   keyTag: string
@@ -273,8 +273,8 @@ export type AppCredentialCreateInput = {
 }
 
 export type AppCredentialUncheckedCreateInput = {
-  id?: string
-  provider?: string
+  id: string
+  provider: string
   keyCiphertext: string
   keyIv: string
   keyTag: string
@@ -306,8 +306,8 @@ export type AppCredentialUncheckedUpdateInput = {
 }
 
 export type AppCredentialCreateManyInput = {
-  id?: string
-  provider?: string
+  id: string
+  provider: string
   keyCiphertext: string
   keyIv: string
   keyTag: string

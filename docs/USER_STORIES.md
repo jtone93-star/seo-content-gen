@@ -1,6 +1,6 @@
 # User stories
 
-Product: **Content Generator Tool** — SEO-grade content pipeline with client profiles, human review gates, BYO Claude (Anthropic API key), and inline pipeline jobs designed for **Vercel-only** hosting.
+Product: **SEO Turtle Tool** — AI strategy and SEO-grade content execution with client profiles, site audits, living strategy, human review gates, Claude-first BYO Anthropic keys, and inline jobs designed for **Vercel-only** hosting.
 
 **Status legend:** ✅ Implemented · 🚧 Partial · 📋 Planned
 
@@ -59,6 +59,7 @@ Product: **Content Generator Tool** — SEO-grade content pipeline with client p
 
 **Acceptance criteria**
 
+- I create projects from a client’s **Content** tab (or via strategy cycle Start on a content play).
 - I must select a client and enter a topic.
 - Optional: target keyword, source URLs (multi-line or comma-separated), pasted notes, target word count.
 - Content type: blog post, landing page, or product description.
@@ -76,24 +77,25 @@ Product: **Content Generator Tool** — SEO-grade content pipeline with client p
 **Acceptance criteria**
 
 - Shows topic, client name, content type, keyword, length, run mode, and URL count.
-- Link back to dashboard.
+- Link back to the client hub (Content tab).
 
 ---
 
-### US-2.3 See recent projects on dashboard ✅
+### US-2.3 See workspace status on the dashboard ✅
 
 **As a** content operator  
-**I want to** see my latest projects on the home page  
-**So that** I can resume work quickly.
+**I want** a home page that summarizes the workspace  
+**So that** I can see how many clients, audits, strategies, and projects are in play.
 
 **Acceptance criteria**
 
-- Lists up to 10 recent projects with topic, client, type, and status.
-- Clicking opens the project detail page.
+- Dashboard shows KPI tiles for Clients, Audits, Living strategies, and Content projects (with failed / in-review hints when relevant).
+- Tiles link into Clients; there is no recent-projects list or global “New content” entry on the dashboard.
+- Content is started from a client’s **Content** tab (or from a strategy cycle).
 
 ---
 
-## Epic 3: SEO pipeline (9 steps)
+## Epic 3: SEO pipeline (10 steps)
 
 ### US-3.1 Run content brief step ✅
 
@@ -145,7 +147,8 @@ Product: **Content Generator Tool** — SEO-grade content pipeline with client p
 
 - Draft: markdown body, word count, and structure notes (answer-first / GEO-friendly).
 - Edit: revised body and change summary aligned to client tone/POV.
-- QA: checklist, banned words scan, disclaimer check, claims to verify, pass/fail summary.
+- QA: readability, obvious factual misspeaks, checklist, banned words, disclaimers, claims to verify, pass/fail.
+- Failed QA auto-rewinds to RESEARCH / OUTLINE / DRAFT / EDIT (usually Edit) with fix instructions, up to 3 passes, then pauses for a human.
 
 ---
 
@@ -162,6 +165,20 @@ Product: **Content Generator Tool** — SEO-grade content pipeline with client p
 
 ---
 
+### US-3.5b Ship check before final ✅
+
+**As a** content operator  
+**I want** a publish-readiness check after technical SEO  
+**So that** unfinished pieces loop back to the stage that needs work instead of shipping.
+
+**Acceptance criteria**
+
+- Ship check runs after technical SEO and before final.
+- Failure names a rewind stage (outline, draft, edit, SEO, or technical SEO) and feedback.
+- Auto-rewinds up to 3 passes; then pauses for human approve-anyway or regenerate.
+
+---
+
 ### US-3.6 Receive final packaged output ✅
 
 **As a** content operator  
@@ -171,7 +188,8 @@ Product: **Content Generator Tool** — SEO-grade content pipeline with client p
 **Acceptance criteria**
 
 - Final includes meta, headers, slug, schema type, export markdown with frontmatter, agent summary, and answer blocks.
-- In step-by-step mode, final requires its own approval (not auto-approved when SEO is approved).
+- In step-by-step mode, final requires its own approval (not auto-approved when SEO or ship check is approved).
+- Ship check sits between technical SEO and Final.
 
 ---
 
@@ -183,7 +201,7 @@ Product: **Content Generator Tool** — SEO-grade content pipeline with client p
 
 **Acceptance criteria**
 
-- Full auto runs Brief through Final without approval gates between steps.
+- Full auto runs Brief through Final without approval gates between steps (QA and ship check may still auto-rewind; after 3 failed passes they pause for review).
 - I can still open any completed step in the stepper after the run finishes.
 
 ---
@@ -225,7 +243,7 @@ Product: **Content Generator Tool** — SEO-grade content pipeline with client p
 
 **Acceptance criteria**
 
-- Nine steps labeled clearly (Brief → … → Final).
+- Ten steps labeled clearly (Brief → … → Ship check → Final).
 - Steps without output are disabled (“Not started”).
 - Clicking a completed step shows that step’s artifact.
 - Sidebar shows whether each step is configured for Claude or Mock.
@@ -309,7 +327,7 @@ Product: **Content Generator Tool** — SEO-grade content pipeline with client p
 
 **As a** content operator  
 **I want** clear feedback that a step is running  
-**So that** I know Claude/mock work is in progress.
+**So that** I know Claude or mock work is in progress.
 
 **Acceptance criteria**
 
@@ -318,19 +336,19 @@ Product: **Content Generator Tool** — SEO-grade content pipeline with client p
 
 ---
 
-## Epic 7: BYO Claude (Anthropic API)
+## Epic 7: Claude-first AI defaults
 
-### US-7.1 See and configure model slots per pipeline step ✅
+### US-7.1 Apply one Claude model everywhere ✅
 
-**As a** platform owner  
-**I want** a settings page listing each step’s Claude model  
-**So that** I can choose the best model per job without using shared API credits.
+**As a** solo operator  
+**I want** one Claude model (or Mock) for strategy, audits, and content  
+**So that** I am not configuring every stage by hand.
 
 **Acceptance criteria**
 
-- All nine pipeline steps have a slot on `/settings/models`.
-- Disabled slots use mock executors.
-- Enabled slots with provider `anthropic` call Claude with my saved key.
+- `/settings/models` offers Mock vs Live Claude plus a model picker.
+- **Apply** writes the same anthropic provider/model/enabled across strategy, all audit slots, and all content slots (`PATCH /api/settings/ai-defaults`).
+- Gemini is not shown in the operator settings UI (legacy code paths may remain).
 
 ---
 
@@ -349,16 +367,16 @@ Product: **Content Generator Tool** — SEO-grade content pipeline with client p
 
 ---
 
-### US-7.3 Pick a preferred Claude model per stage ✅
+### US-7.3 Switch Claude tiers when needed ✅
 
 **As a** content operator  
-**I want to** choose which Claude model runs each stage  
-**So that** I can use cheaper models for lighter steps and stronger ones for draft/edit.
+**I want to** change the global Claude model (for example Sonnet → Opus)  
+**So that** harder jobs can use a higher tier without rewiring each stage.
 
 **Acceptance criteria**
 
-- After connecting a key, I can pick/type a model id per step and enable “Run this step on Claude”.
-- Model list can load from Anthropic when connected.
+- After connecting a key, the model list loads from Anthropic.
+- Saving a new model applies it everywhere via AI defaults.
 - Global defaults apply to all projects (single-user MVP).
 
 ---
@@ -372,7 +390,7 @@ Product: **Content Generator Tool** — SEO-grade content pipeline with client p
 **Acceptance criteria**
 
 - Active step shows an engine badge (Claude + model id, or Mock).
-- Sidebar lists Claude/Mock under each step name.
+- Sidebar lists the engine under each step name.
 
 ---
 
@@ -395,7 +413,7 @@ Product: **Content Generator Tool** — SEO-grade content pipeline with client p
 
 **As a** solo operator  
 **I want** a simple app password gate on Vercel (Hobby-friendly)  
-**So that** strangers cannot use my APIs or saved Anthropic key.
+**So that** strangers cannot use my APIs or saved Anthropic keys.
 
 **Acceptance criteria**
 
@@ -430,7 +448,7 @@ Product: **Content Generator Tool** — SEO-grade content pipeline with client p
 
 **Acceptance criteria**
 
-- README covers install, local dev, pipeline, BYO Claude, and hosting.
+- README covers install, local dev, pipeline, Claude-first AI, and hosting.
 - `docs/` includes architecture, user stories, how-to, deploy, and smoke tests.
 
 ---
@@ -443,7 +461,7 @@ Product: **Content Generator Tool** — SEO-grade content pipeline with client p
 
 **Acceptance criteria**
 
-- `docs/SMOKE_TESTS.md` covers core app, inline jobs, pipeline UX, BYO Claude, documentation, login gate, and hosted checks.
+- `docs/SMOKE_TESTS.md` covers core app, inline jobs, pipeline UX, Claude-first AI, documentation, login gate, and hosted checks.
 
 ---
 
@@ -538,14 +556,134 @@ Product: **Content Generator Tool** — SEO-grade content pipeline with client p
 
 ---
 
+## Epic 12: Site audits
+
+### US-12.1 Create a client site audit ✅
+
+**As a** SEO operator
+**I want to** start a multi-stage site audit under a client
+**So that** I can diagnose issues before planning strategy.
+
+**Acceptance criteria**
+
+- A client hub lists audits and content projects.
+- An audit can include an optional seed URL, scope notes, uploads, and Google data.
+- The audit pipeline runs step-by-step or full auto.
+
+### US-12.2 Review audit stages with a page shortlist gate ✅
+
+**As a** SEO operator
+**I want to** approve each diagnostic stage and choose pages to deep-dive
+**So that** site findings narrow into focused page inspections.
+
+**Acceptance criteria**
+
+- Stages cover crawl, indexation, visibility, linking, shortlist, page deep-dive, keyword relevance, AI crawlability, answer extractability, and findings roll-up.
+- PAGE_SHORTLIST requires approving selected page URLs before deep-dive stages.
+- Findings cite evidence; the roll-up is diagnostic, not a goal-based strategy plan.
+
+### US-12.3 Connect Google data for audits ✅
+
+**As a** SEO operator
+**I want to** connect GA4 and Search Console
+**So that** visibility and demand findings use first-party evidence.
+
+**Acceptance criteria**
+
+- Google OAuth tokens are encrypted at rest.
+- Sync stores compact GA4/GSC summaries on the audit.
+
+### US-12.4 Strategy consumes audit findings ✅
+
+**As a** strategist
+**I want** the living strategy to use audit findings packs plus GA4/GSC
+**So that** recommendations are evidence-backed.
+
+**Acceptance criteria**
+
+- Living strategy links to a source audit (or the latest completed audit).
+- Generate recommendations uses the findings roll-up and compact GA4/GSC summaries.
+- Audit remains diagnostic; strategy does prioritization against KPIs.
+
+---
+
+## Epic 13: Living strategy, backlog, and cycles
+
+### US-13.1 One living strategy per client ✅
+
+**As a** strategist
+**I want** a single current strategy with Past Strategies history
+**So that** I always know what is in force.
+
+**Acceptance criteria**
+
+- Creating a new living strategy archives the previous one automatically.
+- Past Strategies can be restored as living (current living becomes past).
+
+### US-13.2 Catalog KPIs and dashboard ✅
+
+**As a** strategist
+**I want** structured KPIs from a fixed catalog
+**So that** the client dashboard shows baseline → current → target.
+
+**Acceptance criteria**
+
+- Catalog includes organic sessions, conversions, GSC clicks/impressions, average position, indexed pages, content shipped, tech items closed.
+- Sync fills GA4/GSC/app-backed currents when data exists; current can also be entered manually.
+
+### US-13.3 Approve recommendations into a backlog ✅
+
+**As a** strategist
+**I want** to approve or reject AI plays
+**So that** only accepted work enters the backlog.
+
+**Acceptance criteria**
+
+- Approve all or selected proposed recommendations.
+- Approved items appear in Backlog until scheduled.
+
+### US-13.4 Manual monthly cycles from billing day ✅
+
+**As a** strategist
+**I want** to create monthly cycles anchored on the client billing day
+**So that** the roadmap matches invoicing.
+
+**Acceptance criteria**
+
+- Client has billing day 1–28.
+- Create one month or the next 6 unused billing periods.
+- Backlog items can be assigned and removed.
+
+### US-13.5 Start cycle work ✅
+
+**As a** operator
+**I want** Start all or Start selected on a cycle
+**So that** content and tech work actually begin.
+
+**Acceptance criteria**
+
+- Content items create and start a ContentProject.
+- Tech items are marked in progress; Excel work package includes how-to instructions for a human to execute.
+
+---
+
 ## Story map (implementation overview)
 
 ```text
-Login (if APP_PASSWORD) ──► Clients ──► New project ──► Start/Approve (inline)
+Login (if APP_PASSWORD) ──► Clients (Overview / Audits / Strategy / Content)
+                                           │
+                                Audit pipeline ──► findings pack
+                                           │
+                                Living strategy ──► KPIs / recs ──► Backlog ──► Cycles
+                                           │                              │
+                                           │                    Start content ──► Content project
+                                           │                    Start tech ──► Excel work package
+                                           ▼
+Clients ─────────────────────────────────────────────────────► Content tab / New project ──► Start/Approve (inline)
                                                               │
-                    ◄── Approve (step-by-step) ◄── Brief … Final
+                    ◄── Approve (step-by-step) ◄── Brief … Ship check → Final
                                                               │
-BYO: Anthropic API key ──► Model slots ──► Claude or Mock
+BYO: Anthropic API key ──► AI defaults (one Claude model) ──► Claude or Mock everywhere
 
 Hosted: Vercel + Supabase + APP_PASSWORD + inline jobs
 Docs: /documentation (how-to) · /stories (acceptance criteria)
@@ -553,4 +691,4 @@ Docs: /documentation (how-to) · /stories (acceptance criteria)
 
 ---
 
-*Last updated: APP_PASSWORD login gate; in-app Documentation; Vercel + Supabase handoff; how-to guide.*
+*Last updated: SEO Turtle Tool naming, dashboard KPI tiles, 10-step pipeline + QA/ship-check loops, Claude-first AI defaults, living strategy / backlog / cycles.*

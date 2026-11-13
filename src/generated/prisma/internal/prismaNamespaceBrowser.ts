@@ -56,7 +56,20 @@ export const ModelName = {
   PipelineJob: 'PipelineJob',
   StepArtifact: 'StepArtifact',
   ModelSlot: 'ModelSlot',
-  AppCredential: 'AppCredential'
+  AuditModelSlot: 'AuditModelSlot',
+  AppCredential: 'AppCredential',
+  Audit: 'Audit',
+  AuditJob: 'AuditJob',
+  AuditDataSource: 'AuditDataSource',
+  AuditArtifact: 'AuditArtifact',
+  StrategyModelSlot: 'StrategyModelSlot',
+  Strategy: 'Strategy',
+  StrategyKpi: 'StrategyKpi',
+  StrategyRecommendation: 'StrategyRecommendation',
+  Cycle: 'Cycle',
+  CycleItem: 'CycleItem',
+  StrategyJob: 'StrategyJob',
+  OAuthAccount: 'OAuthAccount'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -86,6 +99,12 @@ export const ClientProfileScalarFieldEnum = {
   wordsToAvoid: 'wordsToAvoid',
   requiredDisclaimers: 'requiredDisclaimers',
   seoNotes: 'seoNotes',
+  billingDay: 'billingDay',
+  contactName: 'contactName',
+  contactEmail: 'contactEmail',
+  contactPhone: 'contactPhone',
+  website: 'website',
+  crmNotes: 'crmNotes',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -159,6 +178,17 @@ export const ModelSlotScalarFieldEnum = {
 export type ModelSlotScalarFieldEnum = (typeof ModelSlotScalarFieldEnum)[keyof typeof ModelSlotScalarFieldEnum]
 
 
+export const AuditModelSlotScalarFieldEnum = {
+  step: 'step',
+  provider: 'provider',
+  model: 'model',
+  enabled: 'enabled',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AuditModelSlotScalarFieldEnum = (typeof AuditModelSlotScalarFieldEnum)[keyof typeof AuditModelSlotScalarFieldEnum]
+
+
 export const AppCredentialScalarFieldEnum = {
   id: 'id',
   provider: 'provider',
@@ -171,6 +201,203 @@ export const AppCredentialScalarFieldEnum = {
 } as const
 
 export type AppCredentialScalarFieldEnum = (typeof AppCredentialScalarFieldEnum)[keyof typeof AppCredentialScalarFieldEnum]
+
+
+export const AuditScalarFieldEnum = {
+  id: 'id',
+  clientProfileId: 'clientProfileId',
+  name: 'name',
+  seedUrl: 'seedUrl',
+  scopeNotes: 'scopeNotes',
+  runMode: 'runMode',
+  status: 'status',
+  currentStep: 'currentStep',
+  selectedPages: 'selectedPages',
+  errorMessage: 'errorMessage',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AuditScalarFieldEnum = (typeof AuditScalarFieldEnum)[keyof typeof AuditScalarFieldEnum]
+
+
+export const AuditJobScalarFieldEnum = {
+  id: 'id',
+  auditId: 'auditId',
+  type: 'type',
+  step: 'step',
+  feedback: 'feedback',
+  status: 'status',
+  attempts: 'attempts',
+  maxAttempts: 'maxAttempts',
+  errorMessage: 'errorMessage',
+  createdAt: 'createdAt',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt'
+} as const
+
+export type AuditJobScalarFieldEnum = (typeof AuditJobScalarFieldEnum)[keyof typeof AuditJobScalarFieldEnum]
+
+
+export const AuditDataSourceScalarFieldEnum = {
+  id: 'id',
+  auditId: 'auditId',
+  type: 'type',
+  label: 'label',
+  summary: 'summary',
+  meta: 'meta',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AuditDataSourceScalarFieldEnum = (typeof AuditDataSourceScalarFieldEnum)[keyof typeof AuditDataSourceScalarFieldEnum]
+
+
+export const AuditArtifactScalarFieldEnum = {
+  id: 'id',
+  auditId: 'auditId',
+  step: 'step',
+  version: 'version',
+  status: 'status',
+  inputSnapshot: 'inputSnapshot',
+  output: 'output',
+  userFeedback: 'userFeedback',
+  approvedAt: 'approvedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AuditArtifactScalarFieldEnum = (typeof AuditArtifactScalarFieldEnum)[keyof typeof AuditArtifactScalarFieldEnum]
+
+
+export const StrategyModelSlotScalarFieldEnum = {
+  id: 'id',
+  provider: 'provider',
+  model: 'model',
+  enabled: 'enabled',
+  updatedAt: 'updatedAt'
+} as const
+
+export type StrategyModelSlotScalarFieldEnum = (typeof StrategyModelSlotScalarFieldEnum)[keyof typeof StrategyModelSlotScalarFieldEnum]
+
+
+export const StrategyScalarFieldEnum = {
+  id: 'id',
+  clientProfileId: 'clientProfileId',
+  name: 'name',
+  lifecycle: 'lifecycle',
+  status: 'status',
+  sourceAuditId: 'sourceAuditId',
+  notes: 'notes',
+  synthesis: 'synthesis',
+  errorMessage: 'errorMessage',
+  archivedAt: 'archivedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type StrategyScalarFieldEnum = (typeof StrategyScalarFieldEnum)[keyof typeof StrategyScalarFieldEnum]
+
+
+export const StrategyKpiScalarFieldEnum = {
+  id: 'id',
+  strategyId: 'strategyId',
+  metricKey: 'metricKey',
+  baseline: 'baseline',
+  target: 'target',
+  currentValue: 'currentValue',
+  deadline: 'deadline',
+  lastSyncedAt: 'lastSyncedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type StrategyKpiScalarFieldEnum = (typeof StrategyKpiScalarFieldEnum)[keyof typeof StrategyKpiScalarFieldEnum]
+
+
+export const StrategyRecommendationScalarFieldEnum = {
+  id: 'id',
+  strategyId: 'strategyId',
+  category: 'category',
+  title: 'title',
+  rationale: 'rationale',
+  instructions: 'instructions',
+  evidence: 'evidence',
+  relatedUrls: 'relatedUrls',
+  targetKeyword: 'targetKeyword',
+  priority: 'priority',
+  effort: 'effort',
+  impact: 'impact',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type StrategyRecommendationScalarFieldEnum = (typeof StrategyRecommendationScalarFieldEnum)[keyof typeof StrategyRecommendationScalarFieldEnum]
+
+
+export const CycleScalarFieldEnum = {
+  id: 'id',
+  strategyId: 'strategyId',
+  year: 'year',
+  month: 'month',
+  label: 'label',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CycleScalarFieldEnum = (typeof CycleScalarFieldEnum)[keyof typeof CycleScalarFieldEnum]
+
+
+export const CycleItemScalarFieldEnum = {
+  id: 'id',
+  cycleId: 'cycleId',
+  recommendationId: 'recommendationId',
+  sortOrder: 'sortOrder',
+  workKind: 'workKind',
+  executionStatus: 'executionStatus',
+  contentProjectId: 'contentProjectId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CycleItemScalarFieldEnum = (typeof CycleItemScalarFieldEnum)[keyof typeof CycleItemScalarFieldEnum]
+
+
+export const StrategyJobScalarFieldEnum = {
+  id: 'id',
+  strategyId: 'strategyId',
+  status: 'status',
+  errorMessage: 'errorMessage',
+  createdAt: 'createdAt',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt'
+} as const
+
+export type StrategyJobScalarFieldEnum = (typeof StrategyJobScalarFieldEnum)[keyof typeof StrategyJobScalarFieldEnum]
+
+
+export const OAuthAccountScalarFieldEnum = {
+  id: 'id',
+  provider: 'provider',
+  accessTokenCiphertext: 'accessTokenCiphertext',
+  accessTokenIv: 'accessTokenIv',
+  accessTokenTag: 'accessTokenTag',
+  refreshTokenCiphertext: 'refreshTokenCiphertext',
+  refreshTokenIv: 'refreshTokenIv',
+  refreshTokenTag: 'refreshTokenTag',
+  scope: 'scope',
+  expiresAt: 'expiresAt',
+  analyticsPropertyId: 'analyticsPropertyId',
+  searchConsoleSiteUrl: 'searchConsoleSiteUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type OAuthAccountScalarFieldEnum = (typeof OAuthAccountScalarFieldEnum)[keyof typeof OAuthAccountScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -187,6 +414,13 @@ export const NullableJsonNullValueInput = {
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {

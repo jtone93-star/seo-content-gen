@@ -8,8 +8,10 @@ import type {
   QaOutput,
   ResearchOutput,
   SeoOutput,
+  ShipCheckOutput,
   TechnicalSeoOutput,
 } from "@/lib/pipeline/types";
+import { STEP_LABELS } from "@/lib/pipeline/types";
 import {
   normalizeBrief,
   normalizeFinal,
@@ -17,6 +19,7 @@ import {
   normalizeQa,
   normalizeResearch,
   normalizeSeo,
+  normalizeShipCheck,
   normalizeTechnicalSeo,
 } from "./normalize-legacy";
 
@@ -45,6 +48,8 @@ export function ArtifactViewer({
       return <SeoView output={normalizeSeo(output)} />;
     case "TECHNICAL_SEO":
       return <TechnicalSeoView output={normalizeTechnicalSeo(output)} />;
+    case "SHIP_CHECK":
+      return <ShipCheckView output={normalizeShipCheck(output)} />;
     case "FINAL":
       return <FinalView output={normalizeFinal(output)} />;
     default:
@@ -290,15 +295,39 @@ function BodyView({ output }: { output: DraftOutput | EditOutput }) {
 function QaView({ output }: { output: QaOutput }) {
   return (
     <div className="space-y-4 text-sm">
-      <p className={output.passed ? "text-green-700 dark:text-green-400" : "text-amber-700"}>
-        {output.passed ? "All checks passed" : "Some checks need attention"}
+      <p className={output.passed ? "text-teal" : "text-amber-400"}>
+        {output.passed ? "All checks passed" : "Some checks need attention — pipeline will rewind automatically (max 3 passes)"}
       </p>
       <KeyValue label="Readability" value={output.readabilityScore} />
+      {output.readabilityIssues.length > 0 && (
+        <section>
+          <h4 className="font-medium mb-1">How it reads</h4>
+          <ul className="list-disc pl-5 text-amber-400">
+            {output.readabilityIssues.map((issue, i) => (
+              <li key={i}>{issue}</li>
+            ))}
+          </ul>
+        </section>
+      )}
+      {output.factMisspeaks.length > 0 && (
+        <section>
+          <h4 className="font-medium mb-1">Factual misspeaks</h4>
+          <ul className="space-y-2">
+            {output.factMisspeaks.map((f, i) => (
+              <li key={i} className="rounded-lg border border-line p-3">
+                <p className="font-medium">{f.claim}</p>
+                <p className="text-foreground/70 mt-1">{f.issue}</p>
+                {f.suggestedFix && <p className="text-gold mt-1">Fix: {f.suggestedFix}</p>}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
       <section>
         <h4 className="font-medium mb-1">Checklist</h4>
         <ul className="space-y-1">
           {output.checklist.map((c, i) => (
-            <li key={i} className={c.passed ? "text-foreground/80" : "text-amber-700"}>
+            <li key={i} className={c.passed ? "text-foreground/80" : "text-amber-400"}>
               {c.passed ? "✓" : "○"} {c.item}
             </li>
           ))}
@@ -317,9 +346,40 @@ function QaView({ output }: { output: QaOutput }) {
         </section>
       )}
       {output.bannedWordsFound.length > 0 && (
-        <p className="text-red-600">Banned words found: {output.bannedWordsFound.join(", ")}</p>
+        <p className="text-red-400">Banned words found: {output.bannedWordsFound.join(", ")}</p>
       )}
       <KeyValue label="Notes" value={output.notes} />
+      {!output.passed && output.rewindTo && (
+        <KeyValue label="Rewind to" value={STEP_LABELS[output.rewindTo]} />
+      )}
+      {!output.passed && output.feedback && <KeyValue label="Fix instructions" value={output.feedback} />}
+    </div>
+  );
+}
+
+function ShipCheckView({ output }: { output: ShipCheckOutput }) {
+  return (
+    <div className="space-y-4 text-sm">
+      <p className={output.passed ? "text-teal" : "text-amber-400"}>
+        {output.passed
+          ? "Ready to ship — Final can package this piece"
+          : "Not ship-ready — pipeline will rewind automatically (max 3 passes)"}
+      </p>
+      <section>
+        <h4 className="font-medium mb-1">Publish checklist</h4>
+        <ul className="space-y-1">
+          {output.checklist.map((c, i) => (
+            <li key={i} className={c.passed ? "text-foreground/80" : "text-amber-400"}>
+              {c.passed ? "✓" : "○"} {c.item}
+            </li>
+          ))}
+        </ul>
+      </section>
+      <KeyValue label="Notes" value={output.notes} />
+      {!output.passed && output.rewindTo && (
+        <KeyValue label="Rewind to" value={STEP_LABELS[output.rewindTo]} />
+      )}
+      {!output.passed && output.feedback && <KeyValue label="Fix instructions" value={output.feedback} />}
     </div>
   );
 }

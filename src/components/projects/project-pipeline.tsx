@@ -15,6 +15,8 @@ import type {
   ClientProfile,
 } from "@/generated/prisma/client";
 import { PIPELINE_STEPS, STEP_DESCRIPTIONS, STEP_LABELS } from "@/lib/pipeline/types";
+import { liveEngineLabel } from "@/lib/ai-providers";
+import { isQualityGate, MAX_QUALITY_LOOPS } from "@/lib/pipeline/quality-loop";
 
 type ProjectWithRelations = ContentProject & {
   clientProfile: ClientProfile;
@@ -23,7 +25,7 @@ type ProjectWithRelations = ContentProject & {
 };
 
 type EngineInfo = {
-  engine: "claude" | "mock";
+  engine: "claude" | "gemini" | "mock";
   model?: string | null;
 };
 
@@ -36,34 +38,37 @@ function latestArtifact(artifacts: StepArtifact[], step: PipelineStep) {
 function statusColor(status: string) {
   switch (status) {
     case "APPROVED":
-      return "bg-green-500/15 text-green-700 dark:text-green-400";
+      return "bg-teal/15 text-teal";
     case "AWAITING_REVIEW":
-      return "bg-amber-500/15 text-amber-700 dark:text-amber-400";
+      return "bg-gold/15 text-gold";
     case "RUNNING":
-      return "bg-blue-500/15 text-blue-700 dark:text-blue-400";
+      return "bg-sky-500/15 text-sky-300";
     case "QUEUED":
-      return "bg-violet-500/15 text-violet-700 dark:text-violet-400";
+      return "bg-white/[0.06] text-muted";
     case "FAILED":
     case "REJECTED":
-      return "bg-red-500/15 text-red-700 dark:text-red-400";
+      return "bg-red-500/15 text-red-300";
     default:
-      return "bg-foreground/10";
+      return "bg-white/[0.06] text-muted";
   }
 }
 
 function engineForStep(slots: ModelSlot[], step: PipelineStep): EngineInfo {
   const slot = slots.find((s) => s.step === step);
-  if (slot?.enabled && slot.provider === "anthropic" && slot.model) {
+  if (slot?.enabled && slot.model && slot.provider === "gemini") {
+    return { engine: "gemini", model: slot.model };
+  }
+  if (slot?.enabled && slot.model && slot.provider === "anthropic") {
     return { engine: "claude", model: slot.model };
   }
   return { engine: "mock" };
 }
 
 function EngineBadge({ info }: { info: EngineInfo }) {
-  if (info.engine === "claude") {
+  if (info.engine !== "mock") {
     return (
-      <Badge className="bg-orange-500/15 text-orange-800 dark:text-orange-300">
-        Using: Claude{info.model ? ` · ${info.model}` : ""}
+      <Badge className="bg-gold/15 text-gold">
+        Using: {liveEngineLabel(info.engine === "gemini" ? "gemini" : "anthropic", info.model)}
       </Badge>
     );
   }
@@ -125,6 +130,11 @@ export function ProjectPipeline({
   const canApprove =
     currentArtifact?.status === "AWAITING_REVIEW" && !pipelineBusy;
   const canStart = project.status === "DRAFT" || project.status === "FAILED";
+  const gateOutput =
+    currentArtifact && isQualityGate(activeStep) && currentArtifact.output
+      ? (currentArtifact.output as { passed?: boolean })
+      : null;
+  const gateFailed = gateOutput?.passed === false;
 
   return (
     <div className="grid gap-8 lg:grid-cols-[260px_1fr]">
@@ -150,8 +160,9 @@ export function ProjectPipeline({
               >
                 <span className="block">{STEP_LABELS[step]}</span>
                 <span className="mt-0.5 block text-[11px] font-normal leading-snug text-foreground/50">
-                  {engine.engine === "claude" ? "Claude" : "Mock"}
-                  {engine.model ? ` · ${engine.model}` : ""}
+                  {engine.engine === "mock"
+                    ? "Mock"
+                    : liveEngineLabel(engine.engine === "gemini" ? "gemini" : "anthropic", engine.model)}
                 </span>
                 {artifact ? (
                   <Badge className={`mt-1 ${statusColor(artifact.status)}`}>
@@ -224,6 +235,13 @@ export function ProjectPipeline({
           <p className="text-sm text-foreground/60">This step has not run yet.</p>
         )}
 
+        {gateFailed && canApprove && (
+          <p className="text-sm text-amber-400 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2">
+            This gate failed after {MAX_QUALITY_LOOPS} automatic passes. Approve to continue anyway,
+            or regenerate a stage with feedback.
+          </p>
+        )}
+
         {canApprove && (
           <div className="flex flex-wrap gap-2 border-t border-foreground/10 pt-4">
             <Button
@@ -235,7 +253,7 @@ export function ProjectPipeline({
               }}
               disabled={!!loading}
             >
-              Approve & continue
+              {gateFailed ? "Approve anyway & continue" : "Approve & continue"}
             </Button>
           </div>
         )}

@@ -3,6 +3,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 import { PrismaClient } from "../src/generated/prisma/client";
 import { PIPELINE_STEPS } from "../src/lib/pipeline/types";
+import { AUDIT_STEPS } from "../src/lib/audit/types";
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const adapter = new PrismaPg(pool);
@@ -16,6 +17,20 @@ async function main() {
       update: {},
     });
   }
+
+  for (const step of AUDIT_STEPS) {
+    await prisma.auditModelSlot.upsert({
+      where: { step },
+      create: { step, enabled: false },
+      update: {},
+    });
+  }
+
+  await prisma.strategyModelSlot.upsert({
+    where: { id: "strategy" },
+    create: { id: "strategy", enabled: false },
+    update: {},
+  });
 
   const existing = await prisma.clientProfile.count();
   if (existing === 0) {

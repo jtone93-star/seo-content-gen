@@ -1,5 +1,13 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { clampBillingDay } from "@/lib/strategy/cycles";
+
+function normalizeBillingDay(value: unknown): number | null {
+  if (value === null || value === undefined || value === "") return null;
+  const n = Number(value);
+  if (!Number.isFinite(n)) return null;
+  return clampBillingDay(n);
+}
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -8,6 +16,13 @@ export async function GET(_req: Request, { params }: Params) {
   const client = await prisma.clientProfile.findUnique({ where: { id } });
   if (!client) return NextResponse.json({ error: "Not found" }, { status: 404 });
   return NextResponse.json(client);
+}
+
+function optionalText(value: unknown): string | null | undefined {
+  if (value === undefined) return undefined;
+  if (value === null) return null;
+  const text = String(value).trim();
+  return text || null;
 }
 
 export async function PATCH(request: Request, { params }: Params) {
@@ -25,6 +40,12 @@ export async function PATCH(request: Request, { params }: Params) {
       wordsToAvoid: body.wordsToAvoid,
       requiredDisclaimers: body.requiredDisclaimers,
       seoNotes: body.seoNotes,
+      billingDay: body.billingDay === undefined ? undefined : normalizeBillingDay(body.billingDay),
+      contactName: optionalText(body.contactName),
+      contactEmail: optionalText(body.contactEmail),
+      contactPhone: optionalText(body.contactPhone),
+      website: optionalText(body.website),
+      crmNotes: optionalText(body.crmNotes),
     },
   });
   return NextResponse.json(client);

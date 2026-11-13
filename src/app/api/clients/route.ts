@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { clampBillingDay } from "@/lib/strategy/cycles";
 
 export async function GET() {
   const clients = await prisma.clientProfile.findMany({
@@ -21,6 +22,10 @@ export async function POST(request: Request) {
       wordsToAvoid: body.wordsToAvoid ?? [],
       requiredDisclaimers: body.requiredDisclaimers || null,
       seoNotes: body.seoNotes || null,
+      billingDay:
+        body.billingDay == null || body.billingDay === ""
+          ? null
+          : clampBillingDay(Number(body.billingDay)),
     },
   });
   return NextResponse.json(client, { status: 201 });

@@ -37,6 +37,7 @@ export function ClientForm({ client }: ClientFormProps) {
         .filter(Boolean),
       requiredDisclaimers: fd.get("requiredDisclaimers") || null,
       seoNotes: fd.get("seoNotes") || null,
+      billingDay: fd.get("billingDay") ? Number(fd.get("billingDay")) : null,
     };
 
     const url = client ? `/api/clients/${client.id}` : "/api/clients";
@@ -117,6 +118,21 @@ export function ClientForm({ client }: ClientFormProps) {
           rows={2}
           defaultValue={client?.requiredDisclaimers ?? ""}
         />
+      </div>
+      <div>
+        <Label htmlFor="billingDay">Billing day of month</Label>
+        <Input
+          id="billingDay"
+          name="billingDay"
+          type="number"
+          min={1}
+          max={28}
+          placeholder="1–28"
+          defaultValue={client?.billingDay ?? ""}
+        />
+        <p className="text-xs text-foreground/55 mt-1">
+          Recurring anchor for monthly strategy cycles (e.g. 15 → each cycle runs from the 15th to the 14th).
+        </p>
       </div>
       <div>
         <Label htmlFor="seoNotes">SEO notes</Label>

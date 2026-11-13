@@ -14,6 +14,7 @@ export const PIPELINE_STEPS: PipelineStep[] = [
   "QA",
   "SEO",
   "TECHNICAL_SEO",
+  "SHIP_CHECK",
   "FINAL",
 ];
 
@@ -26,6 +27,7 @@ export const STEP_LABELS: Record<PipelineStep, string> = {
   QA: "QA & compliance",
   SEO: "SEO copy",
   TECHNICAL_SEO: "Technical SEO",
+  SHIP_CHECK: "Ship check",
   FINAL: "Final output",
 };
 
@@ -42,11 +44,13 @@ export const STEP_DESCRIPTIONS: Record<PipelineStep, string> = {
   EDIT:
     "Polishes the draft for clarity, tone match, flow, and concision without losing substance or SEO structure.",
   QA:
-    "Checks readability, banned words, claims that need sources, required disclaimers, and overall compliance against the client profile.",
+    "Checks how the piece reads, obvious factual misspeaks, banned words, disclaimers, and claims. Failed checks rewind to the stage that needs a fix (up to 3 passes).",
   SEO:
     "Tunes the copy for search and generative visibility: meta title/description, header hierarchy, keyword map, and short answer blocks.",
   TECHNICAL_SEO:
     "Produces slug, Open Graph tags, JSON-LD schema (including FAQ/speakable), indexing guidance, and an agent-friendly summary.",
+  SHIP_CHECK:
+    "Final publish-readiness gate after technical SEO. If the piece is not ship-ready, it rewinds to the stage that should be reworked (up to 3 passes) before Final.",
   FINAL:
     "Assembles the publish-ready package: final body, meta, headers, schema, export Markdown, answer blocks, and agent summary.",
 };
@@ -137,15 +141,35 @@ export interface QaClaim {
   status: "verified" | "needs_source" | "ok";
 }
 
+export interface QaFactMisspeak {
+  claim: string;
+  issue: string;
+  suggestedFix?: string;
+}
+
 export interface QaOutput {
   passed: boolean;
   readabilityScore: string;
   readingLevelMatch: boolean;
+  readabilityIssues: string[];
+  factMisspeaks: QaFactMisspeak[];
   claimsToVerify: QaClaim[];
   bannedWordsFound: string[];
   disclaimerIncluded: boolean;
   checklist: QaChecklistItem[];
   notes: string;
+  /** Stage to regenerate when this gate fails. */
+  rewindTo: PipelineStep | null;
+  /** Instructions applied when regenerating rewindTo. */
+  feedback: string;
+}
+
+export interface ShipCheckOutput {
+  passed: boolean;
+  checklist: QaChecklistItem[];
+  notes: string;
+  rewindTo: PipelineStep | null;
+  feedback: string;
 }
 
 export interface HeaderEntry {
@@ -211,12 +235,14 @@ export type StepOutput =
   | QaOutput
   | SeoOutput
   | TechnicalSeoOutput
+  | ShipCheckOutput
   | FinalOutput;
 
 export interface StepContext {
   project: ContentProject;
   client: ClientProfile;
   priorOutputs: Partial<Record<PipelineStep, StepOutput>>;
+  userFeedback?: string;
 }
 
 export interface StepExecutor {

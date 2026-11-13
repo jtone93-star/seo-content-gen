@@ -2,7 +2,12 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { SESSION_COOKIE, expectedSessionToken, isAuthEnabled, safeEqual } from "@/lib/auth";
 
-const PUBLIC_PATHS = ["/login", "/api/auth/login", "/api/auth/logout"];
+const PUBLIC_PATHS = [
+  "/login",
+  "/api/auth/login",
+  "/api/auth/logout",
+  "/api/google/oauth/callback",
+];
 
 export async function proxy(request: NextRequest) {
   // Gate disabled unless APP_PASSWORD is configured (keeps local dev open).

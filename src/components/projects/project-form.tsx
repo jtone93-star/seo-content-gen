@@ -12,9 +12,10 @@ import { parseUrlList } from "@/lib/utils";
 
 type ProjectFormProps = {
   clients: ClientProfile[];
+  defaultClientId?: string;
 };
 
-export function ProjectForm({ clients }: ProjectFormProps) {
+export function ProjectForm({ clients, defaultClientId }: ProjectFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -75,7 +76,12 @@ export function ProjectForm({ clients }: ProjectFormProps) {
     <form onSubmit={onSubmit} className="space-y-4 max-w-xl">
       <div>
         <Label htmlFor="clientProfileId">Client *</Label>
-        <Select id="clientProfileId" name="clientProfileId" required defaultValue={clients[0]?.id}>
+        <Select
+          id="clientProfileId"
+          name="clientProfileId"
+          required
+          defaultValue={defaultClientId && clients.some((c) => c.id === defaultClientId) ? defaultClientId : clients[0]?.id}
+        >
           {clients.map((c) => (
             <option key={c.id} value={c.id}>
               {c.name}

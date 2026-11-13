@@ -20,8 +20,18 @@ export type ClientProfileModel = runtime.Types.Result.DefaultSelection<Prisma.$C
 
 export type AggregateClientProfile = {
   _count: ClientProfileCountAggregateOutputType | null
+  _avg: ClientProfileAvgAggregateOutputType | null
+  _sum: ClientProfileSumAggregateOutputType | null
   _min: ClientProfileMinAggregateOutputType | null
   _max: ClientProfileMaxAggregateOutputType | null
+}
+
+export type ClientProfileAvgAggregateOutputType = {
+  billingDay: number | null
+}
+
+export type ClientProfileSumAggregateOutputType = {
+  billingDay: number | null
 }
 
 export type ClientProfileMinAggregateOutputType = {
@@ -34,6 +44,12 @@ export type ClientProfileMinAggregateOutputType = {
   pointOfView: string | null
   requiredDisclaimers: string | null
   seoNotes: string | null
+  billingDay: number | null
+  contactName: string | null
+  contactEmail: string | null
+  contactPhone: string | null
+  website: string | null
+  crmNotes: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -48,6 +64,12 @@ export type ClientProfileMaxAggregateOutputType = {
   pointOfView: string | null
   requiredDisclaimers: string | null
   seoNotes: string | null
+  billingDay: number | null
+  contactName: string | null
+  contactEmail: string | null
+  contactPhone: string | null
+  website: string | null
+  crmNotes: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -63,11 +85,25 @@ export type ClientProfileCountAggregateOutputType = {
   wordsToAvoid: number
   requiredDisclaimers: number
   seoNotes: number
+  billingDay: number
+  contactName: number
+  contactEmail: number
+  contactPhone: number
+  website: number
+  crmNotes: number
   createdAt: number
   updatedAt: number
   _all: number
 }
 
+
+export type ClientProfileAvgAggregateInputType = {
+  billingDay?: true
+}
+
+export type ClientProfileSumAggregateInputType = {
+  billingDay?: true
+}
 
 export type ClientProfileMinAggregateInputType = {
   id?: true
@@ -79,6 +115,12 @@ export type ClientProfileMinAggregateInputType = {
   pointOfView?: true
   requiredDisclaimers?: true
   seoNotes?: true
+  billingDay?: true
+  contactName?: true
+  contactEmail?: true
+  contactPhone?: true
+  website?: true
+  crmNotes?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -93,6 +135,12 @@ export type ClientProfileMaxAggregateInputType = {
   pointOfView?: true
   requiredDisclaimers?: true
   seoNotes?: true
+  billingDay?: true
+  contactName?: true
+  contactEmail?: true
+  contactPhone?: true
+  website?: true
+  crmNotes?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -108,6 +156,12 @@ export type ClientProfileCountAggregateInputType = {
   wordsToAvoid?: true
   requiredDisclaimers?: true
   seoNotes?: true
+  billingDay?: true
+  contactName?: true
+  contactEmail?: true
+  contactPhone?: true
+  website?: true
+  crmNotes?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -151,6 +205,18 @@ export type ClientProfileAggregateArgs<ExtArgs extends runtime.Types.Extensions.
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: ClientProfileAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: ClientProfileSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: ClientProfileMinAggregateInputType
@@ -181,6 +247,8 @@ export type ClientProfileGroupByArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   _count?: ClientProfileCountAggregateInputType | true
+  _avg?: ClientProfileAvgAggregateInputType
+  _sum?: ClientProfileSumAggregateInputType
   _min?: ClientProfileMinAggregateInputType
   _max?: ClientProfileMaxAggregateInputType
 }
@@ -196,9 +264,17 @@ export type ClientProfileGroupByOutputType = {
   wordsToAvoid: string[]
   requiredDisclaimers: string | null
   seoNotes: string | null
+  billingDay: number | null
+  contactName: string | null
+  contactEmail: string | null
+  contactPhone: string | null
+  website: string | null
+  crmNotes: string | null
   createdAt: Date
   updatedAt: Date
   _count: ClientProfileCountAggregateOutputType | null
+  _avg: ClientProfileAvgAggregateOutputType | null
+  _sum: ClientProfileSumAggregateOutputType | null
   _min: ClientProfileMinAggregateOutputType | null
   _max: ClientProfileMaxAggregateOutputType | null
 }
@@ -232,9 +308,17 @@ export type ClientProfileWhereInput = {
   wordsToAvoid?: Prisma.StringNullableListFilter<"ClientProfile">
   requiredDisclaimers?: Prisma.StringNullableFilter<"ClientProfile"> | string | null
   seoNotes?: Prisma.StringNullableFilter<"ClientProfile"> | string | null
+  billingDay?: Prisma.IntNullableFilter<"ClientProfile"> | number | null
+  contactName?: Prisma.StringNullableFilter<"ClientProfile"> | string | null
+  contactEmail?: Prisma.StringNullableFilter<"ClientProfile"> | string | null
+  contactPhone?: Prisma.StringNullableFilter<"ClientProfile"> | string | null
+  website?: Prisma.StringNullableFilter<"ClientProfile"> | string | null
+  crmNotes?: Prisma.StringNullableFilter<"ClientProfile"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ClientProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ClientProfile"> | Date | string
   projects?: Prisma.ContentProjectListRelationFilter
+  audits?: Prisma.AuditListRelationFilter
+  strategies?: Prisma.StrategyListRelationFilter
 }
 
 export type ClientProfileOrderByWithRelationInput = {
@@ -248,9 +332,17 @@ export type ClientProfileOrderByWithRelationInput = {
   wordsToAvoid?: Prisma.SortOrder
   requiredDisclaimers?: Prisma.SortOrderInput | Prisma.SortOrder
   seoNotes?: Prisma.SortOrderInput | Prisma.SortOrder
+  billingDay?: Prisma.SortOrderInput | Prisma.SortOrder
+  contactName?: Prisma.SortOrderInput | Prisma.SortOrder
+  contactEmail?: Prisma.SortOrderInput | Prisma.SortOrder
+  contactPhone?: Prisma.SortOrderInput | Prisma.SortOrder
+  website?: Prisma.SortOrderInput | Prisma.SortOrder
+  crmNotes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   projects?: Prisma.ContentProjectOrderByRelationAggregateInput
+  audits?: Prisma.AuditOrderByRelationAggregateInput
+  strategies?: Prisma.StrategyOrderByRelationAggregateInput
 }
 
 export type ClientProfileWhereUniqueInput = Prisma.AtLeast<{
@@ -267,9 +359,17 @@ export type ClientProfileWhereUniqueInput = Prisma.AtLeast<{
   wordsToAvoid?: Prisma.StringNullableListFilter<"ClientProfile">
   requiredDisclaimers?: Prisma.StringNullableFilter<"ClientProfile"> | string | null
   seoNotes?: Prisma.StringNullableFilter<"ClientProfile"> | string | null
+  billingDay?: Prisma.IntNullableFilter<"ClientProfile"> | number | null
+  contactName?: Prisma.StringNullableFilter<"ClientProfile"> | string | null
+  contactEmail?: Prisma.StringNullableFilter<"ClientProfile"> | string | null
+  contactPhone?: Prisma.StringNullableFilter<"ClientProfile"> | string | null
+  website?: Prisma.StringNullableFilter<"ClientProfile"> | string | null
+  crmNotes?: Prisma.StringNullableFilter<"ClientProfile"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ClientProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ClientProfile"> | Date | string
   projects?: Prisma.ContentProjectListRelationFilter
+  audits?: Prisma.AuditListRelationFilter
+  strategies?: Prisma.StrategyListRelationFilter
 }, "id">
 
 export type ClientProfileOrderByWithAggregationInput = {
@@ -283,11 +383,19 @@ export type ClientProfileOrderByWithAggregationInput = {
   wordsToAvoid?: Prisma.SortOrder
   requiredDisclaimers?: Prisma.SortOrderInput | Prisma.SortOrder
   seoNotes?: Prisma.SortOrderInput | Prisma.SortOrder
+  billingDay?: Prisma.SortOrderInput | Prisma.SortOrder
+  contactName?: Prisma.SortOrderInput | Prisma.SortOrder
+  contactEmail?: Prisma.SortOrderInput | Prisma.SortOrder
+  contactPhone?: Prisma.SortOrderInput | Prisma.SortOrder
+  website?: Prisma.SortOrderInput | Prisma.SortOrder
+  crmNotes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ClientProfileCountOrderByAggregateInput
+  _avg?: Prisma.ClientProfileAvgOrderByAggregateInput
   _max?: Prisma.ClientProfileMaxOrderByAggregateInput
   _min?: Prisma.ClientProfileMinOrderByAggregateInput
+  _sum?: Prisma.ClientProfileSumOrderByAggregateInput
 }
 
 export type ClientProfileScalarWhereWithAggregatesInput = {
@@ -304,6 +412,12 @@ export type ClientProfileScalarWhereWithAggregatesInput = {
   wordsToAvoid?: Prisma.StringNullableListFilter<"ClientProfile">
   requiredDisclaimers?: Prisma.StringNullableWithAggregatesFilter<"ClientProfile"> | string | null
   seoNotes?: Prisma.StringNullableWithAggregatesFilter<"ClientProfile"> | string | null
+  billingDay?: Prisma.IntNullableWithAggregatesFilter<"ClientProfile"> | number | null
+  contactName?: Prisma.StringNullableWithAggregatesFilter<"ClientProfile"> | string | null
+  contactEmail?: Prisma.StringNullableWithAggregatesFilter<"ClientProfile"> | string | null
+  contactPhone?: Prisma.StringNullableWithAggregatesFilter<"ClientProfile"> | string | null
+  website?: Prisma.StringNullableWithAggregatesFilter<"ClientProfile"> | string | null
+  crmNotes?: Prisma.StringNullableWithAggregatesFilter<"ClientProfile"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ClientProfile"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ClientProfile"> | Date | string
 }
@@ -319,9 +433,17 @@ export type ClientProfileCreateInput = {
   wordsToAvoid?: Prisma.ClientProfileCreatewordsToAvoidInput | string[]
   requiredDisclaimers?: string | null
   seoNotes?: string | null
+  billingDay?: number | null
+  contactName?: string | null
+  contactEmail?: string | null
+  contactPhone?: string | null
+  website?: string | null
+  crmNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   projects?: Prisma.ContentProjectCreateNestedManyWithoutClientProfileInput
+  audits?: Prisma.AuditCreateNestedManyWithoutClientProfileInput
+  strategies?: Prisma.StrategyCreateNestedManyWithoutClientProfileInput
 }
 
 export type ClientProfileUncheckedCreateInput = {
@@ -335,9 +457,17 @@ export type ClientProfileUncheckedCreateInput = {
   wordsToAvoid?: Prisma.ClientProfileCreatewordsToAvoidInput | string[]
   requiredDisclaimers?: string | null
   seoNotes?: string | null
+  billingDay?: number | null
+  contactName?: string | null
+  contactEmail?: string | null
+  contactPhone?: string | null
+  website?: string | null
+  crmNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   projects?: Prisma.ContentProjectUncheckedCreateNestedManyWithoutClientProfileInput
+  audits?: Prisma.AuditUncheckedCreateNestedManyWithoutClientProfileInput
+  strategies?: Prisma.StrategyUncheckedCreateNestedManyWithoutClientProfileInput
 }
 
 export type ClientProfileUpdateInput = {
@@ -351,9 +481,17 @@ export type ClientProfileUpdateInput = {
   wordsToAvoid?: Prisma.ClientProfileUpdatewordsToAvoidInput | string[]
   requiredDisclaimers?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   seoNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  contactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  crmNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projects?: Prisma.ContentProjectUpdateManyWithoutClientProfileNestedInput
+  audits?: Prisma.AuditUpdateManyWithoutClientProfileNestedInput
+  strategies?: Prisma.StrategyUpdateManyWithoutClientProfileNestedInput
 }
 
 export type ClientProfileUncheckedUpdateInput = {
@@ -367,9 +505,17 @@ export type ClientProfileUncheckedUpdateInput = {
   wordsToAvoid?: Prisma.ClientProfileUpdatewordsToAvoidInput | string[]
   requiredDisclaimers?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   seoNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  contactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  crmNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projects?: Prisma.ContentProjectUncheckedUpdateManyWithoutClientProfileNestedInput
+  audits?: Prisma.AuditUncheckedUpdateManyWithoutClientProfileNestedInput
+  strategies?: Prisma.StrategyUncheckedUpdateManyWithoutClientProfileNestedInput
 }
 
 export type ClientProfileCreateManyInput = {
@@ -383,6 +529,12 @@ export type ClientProfileCreateManyInput = {
   wordsToAvoid?: Prisma.ClientProfileCreatewordsToAvoidInput | string[]
   requiredDisclaimers?: string | null
   seoNotes?: string | null
+  billingDay?: number | null
+  contactName?: string | null
+  contactEmail?: string | null
+  contactPhone?: string | null
+  website?: string | null
+  crmNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -398,6 +550,12 @@ export type ClientProfileUpdateManyMutationInput = {
   wordsToAvoid?: Prisma.ClientProfileUpdatewordsToAvoidInput | string[]
   requiredDisclaimers?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   seoNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  contactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  crmNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -413,6 +571,12 @@ export type ClientProfileUncheckedUpdateManyInput = {
   wordsToAvoid?: Prisma.ClientProfileUpdatewordsToAvoidInput | string[]
   requiredDisclaimers?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   seoNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  contactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  crmNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -436,8 +600,18 @@ export type ClientProfileCountOrderByAggregateInput = {
   wordsToAvoid?: Prisma.SortOrder
   requiredDisclaimers?: Prisma.SortOrder
   seoNotes?: Prisma.SortOrder
+  billingDay?: Prisma.SortOrder
+  contactName?: Prisma.SortOrder
+  contactEmail?: Prisma.SortOrder
+  contactPhone?: Prisma.SortOrder
+  website?: Prisma.SortOrder
+  crmNotes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type ClientProfileAvgOrderByAggregateInput = {
+  billingDay?: Prisma.SortOrder
 }
 
 export type ClientProfileMaxOrderByAggregateInput = {
@@ -450,6 +624,12 @@ export type ClientProfileMaxOrderByAggregateInput = {
   pointOfView?: Prisma.SortOrder
   requiredDisclaimers?: Prisma.SortOrder
   seoNotes?: Prisma.SortOrder
+  billingDay?: Prisma.SortOrder
+  contactName?: Prisma.SortOrder
+  contactEmail?: Prisma.SortOrder
+  contactPhone?: Prisma.SortOrder
+  website?: Prisma.SortOrder
+  crmNotes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -464,8 +644,18 @@ export type ClientProfileMinOrderByAggregateInput = {
   pointOfView?: Prisma.SortOrder
   requiredDisclaimers?: Prisma.SortOrder
   seoNotes?: Prisma.SortOrder
+  billingDay?: Prisma.SortOrder
+  contactName?: Prisma.SortOrder
+  contactEmail?: Prisma.SortOrder
+  contactPhone?: Prisma.SortOrder
+  website?: Prisma.SortOrder
+  crmNotes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type ClientProfileSumOrderByAggregateInput = {
+  billingDay?: Prisma.SortOrder
 }
 
 export type ClientProfileScalarRelationFilter = {
@@ -490,6 +680,14 @@ export type ClientProfileUpdatewordsToAvoidInput = {
   push?: string | string[]
 }
 
+export type NullableIntFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
 export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
 }
@@ -508,6 +706,34 @@ export type ClientProfileUpdateOneRequiredWithoutProjectsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ClientProfileUpdateToOneWithWhereWithoutProjectsInput, Prisma.ClientProfileUpdateWithoutProjectsInput>, Prisma.ClientProfileUncheckedUpdateWithoutProjectsInput>
 }
 
+export type ClientProfileCreateNestedOneWithoutAuditsInput = {
+  create?: Prisma.XOR<Prisma.ClientProfileCreateWithoutAuditsInput, Prisma.ClientProfileUncheckedCreateWithoutAuditsInput>
+  connectOrCreate?: Prisma.ClientProfileCreateOrConnectWithoutAuditsInput
+  connect?: Prisma.ClientProfileWhereUniqueInput
+}
+
+export type ClientProfileUpdateOneRequiredWithoutAuditsNestedInput = {
+  create?: Prisma.XOR<Prisma.ClientProfileCreateWithoutAuditsInput, Prisma.ClientProfileUncheckedCreateWithoutAuditsInput>
+  connectOrCreate?: Prisma.ClientProfileCreateOrConnectWithoutAuditsInput
+  upsert?: Prisma.ClientProfileUpsertWithoutAuditsInput
+  connect?: Prisma.ClientProfileWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ClientProfileUpdateToOneWithWhereWithoutAuditsInput, Prisma.ClientProfileUpdateWithoutAuditsInput>, Prisma.ClientProfileUncheckedUpdateWithoutAuditsInput>
+}
+
+export type ClientProfileCreateNestedOneWithoutStrategiesInput = {
+  create?: Prisma.XOR<Prisma.ClientProfileCreateWithoutStrategiesInput, Prisma.ClientProfileUncheckedCreateWithoutStrategiesInput>
+  connectOrCreate?: Prisma.ClientProfileCreateOrConnectWithoutStrategiesInput
+  connect?: Prisma.ClientProfileWhereUniqueInput
+}
+
+export type ClientProfileUpdateOneRequiredWithoutStrategiesNestedInput = {
+  create?: Prisma.XOR<Prisma.ClientProfileCreateWithoutStrategiesInput, Prisma.ClientProfileUncheckedCreateWithoutStrategiesInput>
+  connectOrCreate?: Prisma.ClientProfileCreateOrConnectWithoutStrategiesInput
+  upsert?: Prisma.ClientProfileUpsertWithoutStrategiesInput
+  connect?: Prisma.ClientProfileWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ClientProfileUpdateToOneWithWhereWithoutStrategiesInput, Prisma.ClientProfileUpdateWithoutStrategiesInput>, Prisma.ClientProfileUncheckedUpdateWithoutStrategiesInput>
+}
+
 export type ClientProfileCreateWithoutProjectsInput = {
   id?: string
   name: string
@@ -519,8 +745,16 @@ export type ClientProfileCreateWithoutProjectsInput = {
   wordsToAvoid?: Prisma.ClientProfileCreatewordsToAvoidInput | string[]
   requiredDisclaimers?: string | null
   seoNotes?: string | null
+  billingDay?: number | null
+  contactName?: string | null
+  contactEmail?: string | null
+  contactPhone?: string | null
+  website?: string | null
+  crmNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  audits?: Prisma.AuditCreateNestedManyWithoutClientProfileInput
+  strategies?: Prisma.StrategyCreateNestedManyWithoutClientProfileInput
 }
 
 export type ClientProfileUncheckedCreateWithoutProjectsInput = {
@@ -534,8 +768,16 @@ export type ClientProfileUncheckedCreateWithoutProjectsInput = {
   wordsToAvoid?: Prisma.ClientProfileCreatewordsToAvoidInput | string[]
   requiredDisclaimers?: string | null
   seoNotes?: string | null
+  billingDay?: number | null
+  contactName?: string | null
+  contactEmail?: string | null
+  contactPhone?: string | null
+  website?: string | null
+  crmNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  audits?: Prisma.AuditUncheckedCreateNestedManyWithoutClientProfileInput
+  strategies?: Prisma.StrategyUncheckedCreateNestedManyWithoutClientProfileInput
 }
 
 export type ClientProfileCreateOrConnectWithoutProjectsInput = {
@@ -565,8 +807,16 @@ export type ClientProfileUpdateWithoutProjectsInput = {
   wordsToAvoid?: Prisma.ClientProfileUpdatewordsToAvoidInput | string[]
   requiredDisclaimers?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   seoNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  contactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  crmNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  audits?: Prisma.AuditUpdateManyWithoutClientProfileNestedInput
+  strategies?: Prisma.StrategyUpdateManyWithoutClientProfileNestedInput
 }
 
 export type ClientProfileUncheckedUpdateWithoutProjectsInput = {
@@ -580,8 +830,232 @@ export type ClientProfileUncheckedUpdateWithoutProjectsInput = {
   wordsToAvoid?: Prisma.ClientProfileUpdatewordsToAvoidInput | string[]
   requiredDisclaimers?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   seoNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  contactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  crmNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  audits?: Prisma.AuditUncheckedUpdateManyWithoutClientProfileNestedInput
+  strategies?: Prisma.StrategyUncheckedUpdateManyWithoutClientProfileNestedInput
+}
+
+export type ClientProfileCreateWithoutAuditsInput = {
+  id?: string
+  name: string
+  industry?: string | null
+  audience?: string | null
+  tone?: string | null
+  readingLevel?: string | null
+  pointOfView?: string | null
+  wordsToAvoid?: Prisma.ClientProfileCreatewordsToAvoidInput | string[]
+  requiredDisclaimers?: string | null
+  seoNotes?: string | null
+  billingDay?: number | null
+  contactName?: string | null
+  contactEmail?: string | null
+  contactPhone?: string | null
+  website?: string | null
+  crmNotes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  projects?: Prisma.ContentProjectCreateNestedManyWithoutClientProfileInput
+  strategies?: Prisma.StrategyCreateNestedManyWithoutClientProfileInput
+}
+
+export type ClientProfileUncheckedCreateWithoutAuditsInput = {
+  id?: string
+  name: string
+  industry?: string | null
+  audience?: string | null
+  tone?: string | null
+  readingLevel?: string | null
+  pointOfView?: string | null
+  wordsToAvoid?: Prisma.ClientProfileCreatewordsToAvoidInput | string[]
+  requiredDisclaimers?: string | null
+  seoNotes?: string | null
+  billingDay?: number | null
+  contactName?: string | null
+  contactEmail?: string | null
+  contactPhone?: string | null
+  website?: string | null
+  crmNotes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  projects?: Prisma.ContentProjectUncheckedCreateNestedManyWithoutClientProfileInput
+  strategies?: Prisma.StrategyUncheckedCreateNestedManyWithoutClientProfileInput
+}
+
+export type ClientProfileCreateOrConnectWithoutAuditsInput = {
+  where: Prisma.ClientProfileWhereUniqueInput
+  create: Prisma.XOR<Prisma.ClientProfileCreateWithoutAuditsInput, Prisma.ClientProfileUncheckedCreateWithoutAuditsInput>
+}
+
+export type ClientProfileUpsertWithoutAuditsInput = {
+  update: Prisma.XOR<Prisma.ClientProfileUpdateWithoutAuditsInput, Prisma.ClientProfileUncheckedUpdateWithoutAuditsInput>
+  create: Prisma.XOR<Prisma.ClientProfileCreateWithoutAuditsInput, Prisma.ClientProfileUncheckedCreateWithoutAuditsInput>
+  where?: Prisma.ClientProfileWhereInput
+}
+
+export type ClientProfileUpdateToOneWithWhereWithoutAuditsInput = {
+  where?: Prisma.ClientProfileWhereInput
+  data: Prisma.XOR<Prisma.ClientProfileUpdateWithoutAuditsInput, Prisma.ClientProfileUncheckedUpdateWithoutAuditsInput>
+}
+
+export type ClientProfileUpdateWithoutAuditsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  readingLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pointOfView?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordsToAvoid?: Prisma.ClientProfileUpdatewordsToAvoidInput | string[]
+  requiredDisclaimers?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seoNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  contactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  crmNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  projects?: Prisma.ContentProjectUpdateManyWithoutClientProfileNestedInput
+  strategies?: Prisma.StrategyUpdateManyWithoutClientProfileNestedInput
+}
+
+export type ClientProfileUncheckedUpdateWithoutAuditsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  readingLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pointOfView?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordsToAvoid?: Prisma.ClientProfileUpdatewordsToAvoidInput | string[]
+  requiredDisclaimers?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seoNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  contactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  crmNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  projects?: Prisma.ContentProjectUncheckedUpdateManyWithoutClientProfileNestedInput
+  strategies?: Prisma.StrategyUncheckedUpdateManyWithoutClientProfileNestedInput
+}
+
+export type ClientProfileCreateWithoutStrategiesInput = {
+  id?: string
+  name: string
+  industry?: string | null
+  audience?: string | null
+  tone?: string | null
+  readingLevel?: string | null
+  pointOfView?: string | null
+  wordsToAvoid?: Prisma.ClientProfileCreatewordsToAvoidInput | string[]
+  requiredDisclaimers?: string | null
+  seoNotes?: string | null
+  billingDay?: number | null
+  contactName?: string | null
+  contactEmail?: string | null
+  contactPhone?: string | null
+  website?: string | null
+  crmNotes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  projects?: Prisma.ContentProjectCreateNestedManyWithoutClientProfileInput
+  audits?: Prisma.AuditCreateNestedManyWithoutClientProfileInput
+}
+
+export type ClientProfileUncheckedCreateWithoutStrategiesInput = {
+  id?: string
+  name: string
+  industry?: string | null
+  audience?: string | null
+  tone?: string | null
+  readingLevel?: string | null
+  pointOfView?: string | null
+  wordsToAvoid?: Prisma.ClientProfileCreatewordsToAvoidInput | string[]
+  requiredDisclaimers?: string | null
+  seoNotes?: string | null
+  billingDay?: number | null
+  contactName?: string | null
+  contactEmail?: string | null
+  contactPhone?: string | null
+  website?: string | null
+  crmNotes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  projects?: Prisma.ContentProjectUncheckedCreateNestedManyWithoutClientProfileInput
+  audits?: Prisma.AuditUncheckedCreateNestedManyWithoutClientProfileInput
+}
+
+export type ClientProfileCreateOrConnectWithoutStrategiesInput = {
+  where: Prisma.ClientProfileWhereUniqueInput
+  create: Prisma.XOR<Prisma.ClientProfileCreateWithoutStrategiesInput, Prisma.ClientProfileUncheckedCreateWithoutStrategiesInput>
+}
+
+export type ClientProfileUpsertWithoutStrategiesInput = {
+  update: Prisma.XOR<Prisma.ClientProfileUpdateWithoutStrategiesInput, Prisma.ClientProfileUncheckedUpdateWithoutStrategiesInput>
+  create: Prisma.XOR<Prisma.ClientProfileCreateWithoutStrategiesInput, Prisma.ClientProfileUncheckedCreateWithoutStrategiesInput>
+  where?: Prisma.ClientProfileWhereInput
+}
+
+export type ClientProfileUpdateToOneWithWhereWithoutStrategiesInput = {
+  where?: Prisma.ClientProfileWhereInput
+  data: Prisma.XOR<Prisma.ClientProfileUpdateWithoutStrategiesInput, Prisma.ClientProfileUncheckedUpdateWithoutStrategiesInput>
+}
+
+export type ClientProfileUpdateWithoutStrategiesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  readingLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pointOfView?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordsToAvoid?: Prisma.ClientProfileUpdatewordsToAvoidInput | string[]
+  requiredDisclaimers?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seoNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  contactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  crmNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  projects?: Prisma.ContentProjectUpdateManyWithoutClientProfileNestedInput
+  audits?: Prisma.AuditUpdateManyWithoutClientProfileNestedInput
+}
+
+export type ClientProfileUncheckedUpdateWithoutStrategiesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  readingLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pointOfView?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordsToAvoid?: Prisma.ClientProfileUpdatewordsToAvoidInput | string[]
+  requiredDisclaimers?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seoNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  contactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  crmNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  projects?: Prisma.ContentProjectUncheckedUpdateManyWithoutClientProfileNestedInput
+  audits?: Prisma.AuditUncheckedUpdateManyWithoutClientProfileNestedInput
 }
 
 
@@ -591,10 +1065,14 @@ export type ClientProfileUncheckedUpdateWithoutProjectsInput = {
 
 export type ClientProfileCountOutputType = {
   projects: number
+  audits: number
+  strategies: number
 }
 
 export type ClientProfileCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   projects?: boolean | ClientProfileCountOutputTypeCountProjectsArgs
+  audits?: boolean | ClientProfileCountOutputTypeCountAuditsArgs
+  strategies?: boolean | ClientProfileCountOutputTypeCountStrategiesArgs
 }
 
 /**
@@ -614,6 +1092,20 @@ export type ClientProfileCountOutputTypeCountProjectsArgs<ExtArgs extends runtim
   where?: Prisma.ContentProjectWhereInput
 }
 
+/**
+ * ClientProfileCountOutputType without action
+ */
+export type ClientProfileCountOutputTypeCountAuditsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AuditWhereInput
+}
+
+/**
+ * ClientProfileCountOutputType without action
+ */
+export type ClientProfileCountOutputTypeCountStrategiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.StrategyWhereInput
+}
+
 
 export type ClientProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -626,9 +1118,17 @@ export type ClientProfileSelect<ExtArgs extends runtime.Types.Extensions.Interna
   wordsToAvoid?: boolean
   requiredDisclaimers?: boolean
   seoNotes?: boolean
+  billingDay?: boolean
+  contactName?: boolean
+  contactEmail?: boolean
+  contactPhone?: boolean
+  website?: boolean
+  crmNotes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   projects?: boolean | Prisma.ClientProfile$projectsArgs<ExtArgs>
+  audits?: boolean | Prisma.ClientProfile$auditsArgs<ExtArgs>
+  strategies?: boolean | Prisma.ClientProfile$strategiesArgs<ExtArgs>
   _count?: boolean | Prisma.ClientProfileCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["clientProfile"]>
 
@@ -643,6 +1143,12 @@ export type ClientProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   wordsToAvoid?: boolean
   requiredDisclaimers?: boolean
   seoNotes?: boolean
+  billingDay?: boolean
+  contactName?: boolean
+  contactEmail?: boolean
+  contactPhone?: boolean
+  website?: boolean
+  crmNotes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["clientProfile"]>
@@ -658,6 +1164,12 @@ export type ClientProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   wordsToAvoid?: boolean
   requiredDisclaimers?: boolean
   seoNotes?: boolean
+  billingDay?: boolean
+  contactName?: boolean
+  contactEmail?: boolean
+  contactPhone?: boolean
+  website?: boolean
+  crmNotes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["clientProfile"]>
@@ -673,13 +1185,21 @@ export type ClientProfileSelectScalar = {
   wordsToAvoid?: boolean
   requiredDisclaimers?: boolean
   seoNotes?: boolean
+  billingDay?: boolean
+  contactName?: boolean
+  contactEmail?: boolean
+  contactPhone?: boolean
+  website?: boolean
+  crmNotes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ClientProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "industry" | "audience" | "tone" | "readingLevel" | "pointOfView" | "wordsToAvoid" | "requiredDisclaimers" | "seoNotes" | "createdAt" | "updatedAt", ExtArgs["result"]["clientProfile"]>
+export type ClientProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "industry" | "audience" | "tone" | "readingLevel" | "pointOfView" | "wordsToAvoid" | "requiredDisclaimers" | "seoNotes" | "billingDay" | "contactName" | "contactEmail" | "contactPhone" | "website" | "crmNotes" | "createdAt" | "updatedAt", ExtArgs["result"]["clientProfile"]>
 export type ClientProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   projects?: boolean | Prisma.ClientProfile$projectsArgs<ExtArgs>
+  audits?: boolean | Prisma.ClientProfile$auditsArgs<ExtArgs>
+  strategies?: boolean | Prisma.ClientProfile$strategiesArgs<ExtArgs>
   _count?: boolean | Prisma.ClientProfileCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ClientProfileIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -689,6 +1209,8 @@ export type $ClientProfilePayload<ExtArgs extends runtime.Types.Extensions.Inter
   name: "ClientProfile"
   objects: {
     projects: Prisma.$ContentProjectPayload<ExtArgs>[]
+    audits: Prisma.$AuditPayload<ExtArgs>[]
+    strategies: Prisma.$StrategyPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -701,6 +1223,15 @@ export type $ClientProfilePayload<ExtArgs extends runtime.Types.Extensions.Inter
     wordsToAvoid: string[]
     requiredDisclaimers: string | null
     seoNotes: string | null
+    /**
+     * Recurring billing day of month (1–28). Anchors monthly cycle windows.
+     */
+    billingDay: number | null
+    contactName: string | null
+    contactEmail: string | null
+    contactPhone: string | null
+    website: string | null
+    crmNotes: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["clientProfile"]>
@@ -1098,6 +1629,8 @@ readonly fields: ClientProfileFieldRefs;
 export interface Prisma__ClientProfileClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   projects<T extends Prisma.ClientProfile$projectsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClientProfile$projectsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ContentProjectPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  audits<T extends Prisma.ClientProfile$auditsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClientProfile$auditsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  strategies<T extends Prisma.ClientProfile$strategiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClientProfile$strategiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StrategyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1137,6 +1670,12 @@ export interface ClientProfileFieldRefs {
   readonly wordsToAvoid: Prisma.FieldRef<"ClientProfile", 'String[]'>
   readonly requiredDisclaimers: Prisma.FieldRef<"ClientProfile", 'String'>
   readonly seoNotes: Prisma.FieldRef<"ClientProfile", 'String'>
+  readonly billingDay: Prisma.FieldRef<"ClientProfile", 'Int'>
+  readonly contactName: Prisma.FieldRef<"ClientProfile", 'String'>
+  readonly contactEmail: Prisma.FieldRef<"ClientProfile", 'String'>
+  readonly contactPhone: Prisma.FieldRef<"ClientProfile", 'String'>
+  readonly website: Prisma.FieldRef<"ClientProfile", 'String'>
+  readonly crmNotes: Prisma.FieldRef<"ClientProfile", 'String'>
   readonly createdAt: Prisma.FieldRef<"ClientProfile", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"ClientProfile", 'DateTime'>
 }
@@ -1553,6 +2092,54 @@ export type ClientProfile$projectsArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   distinct?: Prisma.ContentProjectScalarFieldEnum | Prisma.ContentProjectScalarFieldEnum[]
+}
+
+/**
+ * ClientProfile.audits
+ */
+export type ClientProfile$auditsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Audit
+   */
+  select?: Prisma.AuditSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Audit
+   */
+  omit?: Prisma.AuditOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AuditInclude<ExtArgs> | null
+  where?: Prisma.AuditWhereInput
+  orderBy?: Prisma.AuditOrderByWithRelationInput | Prisma.AuditOrderByWithRelationInput[]
+  cursor?: Prisma.AuditWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AuditScalarFieldEnum | Prisma.AuditScalarFieldEnum[]
+}
+
+/**
+ * ClientProfile.strategies
+ */
+export type ClientProfile$strategiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Strategy
+   */
+  select?: Prisma.StrategySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Strategy
+   */
+  omit?: Prisma.StrategyOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.StrategyInclude<ExtArgs> | null
+  where?: Prisma.StrategyWhereInput
+  orderBy?: Prisma.StrategyOrderByWithRelationInput | Prisma.StrategyOrderByWithRelationInput[]
+  cursor?: Prisma.StrategyWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.StrategyScalarFieldEnum | Prisma.StrategyScalarFieldEnum[]
 }
 
 /**

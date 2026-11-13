@@ -5,6 +5,7 @@ import type {
   QaOutput,
   ResearchOutput,
   SeoOutput,
+  ShipCheckOutput,
   TechnicalSeoOutput,
 } from "@/lib/pipeline/types";
 
@@ -78,6 +79,21 @@ export function normalizeQa(raw: unknown): QaOutput {
     disclaimerIncluded: o.disclaimerIncluded ?? true,
     checklist: arr(o.checklist),
     notes: o.notes ?? "",
+    readabilityIssues: arr(o.readabilityIssues),
+    factMisspeaks: arr(o.factMisspeaks),
+    rewindTo: o.rewindTo ?? null,
+    feedback: o.feedback ?? "",
+  };
+}
+
+export function normalizeShipCheck(raw: unknown): ShipCheckOutput {
+  const o = raw as Partial<ShipCheckOutput>;
+  return {
+    passed: o.passed ?? false,
+    checklist: arr(o.checklist),
+    notes: o.notes ?? "",
+    rewindTo: o.rewindTo ?? null,
+    feedback: o.feedback ?? "",
   };
 }
 

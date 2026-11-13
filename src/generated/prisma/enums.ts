@@ -35,6 +35,7 @@ export const PipelineStep = {
   QA: 'QA',
   SEO: 'SEO',
   TECHNICAL_SEO: 'TECHNICAL_SEO',
+  SHIP_CHECK: 'SHIP_CHECK',
   FINAL: 'FINAL'
 } as const
 
@@ -82,3 +83,97 @@ export const ArtifactStatus = {
 } as const
 
 export type ArtifactStatus = (typeof ArtifactStatus)[keyof typeof ArtifactStatus]
+
+
+export const AuditStep = {
+  CRAWL_TECHNICAL: 'CRAWL_TECHNICAL',
+  INDEXATION: 'INDEXATION',
+  VISIBILITY_DEMAND: 'VISIBILITY_DEMAND',
+  INTERNAL_LINKING: 'INTERNAL_LINKING',
+  PAGE_SHORTLIST: 'PAGE_SHORTLIST',
+  PAGE_DEEP_DIVE: 'PAGE_DEEP_DIVE',
+  KEYWORD_RELEVANCE: 'KEYWORD_RELEVANCE',
+  AI_CRAWLABILITY: 'AI_CRAWLABILITY',
+  AI_EXTRACTABILITY: 'AI_EXTRACTABILITY',
+  FINDINGS_ROLLUP: 'FINDINGS_ROLLUP'
+} as const
+
+export type AuditStep = (typeof AuditStep)[keyof typeof AuditStep]
+
+
+export const AuditDataSourceType = {
+  GA4: 'GA4',
+  GSC: 'GSC',
+  UPLOAD: 'UPLOAD',
+  NOTE: 'NOTE'
+} as const
+
+export type AuditDataSourceType = (typeof AuditDataSourceType)[keyof typeof AuditDataSourceType]
+
+
+export const StrategyLifecycle = {
+  LIVING: 'LIVING',
+  PAST: 'PAST'
+} as const
+
+export type StrategyLifecycle = (typeof StrategyLifecycle)[keyof typeof StrategyLifecycle]
+
+
+export const StrategyStatus = {
+  DRAFT: 'DRAFT',
+  ANALYZING: 'ANALYZING',
+  READY: 'READY',
+  FAILED: 'FAILED'
+} as const
+
+export type StrategyStatus = (typeof StrategyStatus)[keyof typeof StrategyStatus]
+
+
+export const StrategyRecommendationCategory = {
+  TECHNICAL: 'TECHNICAL',
+  CONTENT: 'CONTENT',
+  LINKING: 'LINKING',
+  UX: 'UX',
+  MEASUREMENT: 'MEASUREMENT',
+  AI_VISIBILITY: 'AI_VISIBILITY'
+} as const
+
+export type StrategyRecommendationCategory = (typeof StrategyRecommendationCategory)[keyof typeof StrategyRecommendationCategory]
+
+
+export const StrategyRecommendationStatus = {
+  PROPOSED: 'PROPOSED',
+  REJECTED: 'REJECTED',
+  BACKLOG: 'BACKLOG',
+  SCHEDULED: 'SCHEDULED',
+  DONE: 'DONE'
+} as const
+
+export type StrategyRecommendationStatus = (typeof StrategyRecommendationStatus)[keyof typeof StrategyRecommendationStatus]
+
+
+export const CycleStatus = {
+  PLANNED: 'PLANNED',
+  ACTIVE: 'ACTIVE',
+  COMPLETED: 'COMPLETED'
+} as const
+
+export type CycleStatus = (typeof CycleStatus)[keyof typeof CycleStatus]
+
+
+export const CycleItemStatus = {
+  PLANNED: 'PLANNED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  DONE: 'DONE',
+  BLOCKED: 'BLOCKED'
+} as const
+
+export type CycleItemStatus = (typeof CycleItemStatus)[keyof typeof CycleItemStatus]
+
+
+export const CycleItemWorkKind = {
+  CONTENT: 'CONTENT',
+  TECH: 'TECH'
+} as const
+
+export type CycleItemWorkKind = (typeof CycleItemWorkKind)[keyof typeof CycleItemWorkKind]

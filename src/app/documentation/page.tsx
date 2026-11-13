@@ -4,7 +4,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Documentation",
-  description: "How to use the Content Generator",
+  description: "How to use SEO Turtle Tool",
 };
 
 export default function DocumentationPage() {

@@ -287,6 +287,7 @@ export type ContentProjectWhereInput = {
   clientProfile?: Prisma.XOR<Prisma.ClientProfileScalarRelationFilter, Prisma.ClientProfileWhereInput>
   artifacts?: Prisma.StepArtifactListRelationFilter
   pipelineJobs?: Prisma.PipelineJobListRelationFilter
+  cycleItems?: Prisma.CycleItemListRelationFilter
 }
 
 export type ContentProjectOrderByWithRelationInput = {
@@ -307,6 +308,7 @@ export type ContentProjectOrderByWithRelationInput = {
   clientProfile?: Prisma.ClientProfileOrderByWithRelationInput
   artifacts?: Prisma.StepArtifactOrderByRelationAggregateInput
   pipelineJobs?: Prisma.PipelineJobOrderByRelationAggregateInput
+  cycleItems?: Prisma.CycleItemOrderByRelationAggregateInput
 }
 
 export type ContentProjectWhereUniqueInput = Prisma.AtLeast<{
@@ -330,6 +332,7 @@ export type ContentProjectWhereUniqueInput = Prisma.AtLeast<{
   clientProfile?: Prisma.XOR<Prisma.ClientProfileScalarRelationFilter, Prisma.ClientProfileWhereInput>
   artifacts?: Prisma.StepArtifactListRelationFilter
   pipelineJobs?: Prisma.PipelineJobListRelationFilter
+  cycleItems?: Prisma.CycleItemListRelationFilter
 }, "id">
 
 export type ContentProjectOrderByWithAggregationInput = {
@@ -391,6 +394,7 @@ export type ContentProjectCreateInput = {
   clientProfile: Prisma.ClientProfileCreateNestedOneWithoutProjectsInput
   artifacts?: Prisma.StepArtifactCreateNestedManyWithoutProjectInput
   pipelineJobs?: Prisma.PipelineJobCreateNestedManyWithoutProjectInput
+  cycleItems?: Prisma.CycleItemCreateNestedManyWithoutContentProjectInput
 }
 
 export type ContentProjectUncheckedCreateInput = {
@@ -410,6 +414,7 @@ export type ContentProjectUncheckedCreateInput = {
   updatedAt?: Date | string
   artifacts?: Prisma.StepArtifactUncheckedCreateNestedManyWithoutProjectInput
   pipelineJobs?: Prisma.PipelineJobUncheckedCreateNestedManyWithoutProjectInput
+  cycleItems?: Prisma.CycleItemUncheckedCreateNestedManyWithoutContentProjectInput
 }
 
 export type ContentProjectUpdateInput = {
@@ -429,6 +434,7 @@ export type ContentProjectUpdateInput = {
   clientProfile?: Prisma.ClientProfileUpdateOneRequiredWithoutProjectsNestedInput
   artifacts?: Prisma.StepArtifactUpdateManyWithoutProjectNestedInput
   pipelineJobs?: Prisma.PipelineJobUpdateManyWithoutProjectNestedInput
+  cycleItems?: Prisma.CycleItemUpdateManyWithoutContentProjectNestedInput
 }
 
 export type ContentProjectUncheckedUpdateInput = {
@@ -448,6 +454,7 @@ export type ContentProjectUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   artifacts?: Prisma.StepArtifactUncheckedUpdateManyWithoutProjectNestedInput
   pipelineJobs?: Prisma.PipelineJobUncheckedUpdateManyWithoutProjectNestedInput
+  cycleItems?: Prisma.CycleItemUncheckedUpdateManyWithoutContentProjectNestedInput
 }
 
 export type ContentProjectCreateManyInput = {
@@ -572,6 +579,11 @@ export type ContentProjectScalarRelationFilter = {
   isNot?: Prisma.ContentProjectWhereInput
 }
 
+export type ContentProjectNullableScalarRelationFilter = {
+  is?: Prisma.ContentProjectWhereInput | null
+  isNot?: Prisma.ContentProjectWhereInput | null
+}
+
 export type ContentProjectCreateNestedManyWithoutClientProfileInput = {
   create?: Prisma.XOR<Prisma.ContentProjectCreateWithoutClientProfileInput, Prisma.ContentProjectUncheckedCreateWithoutClientProfileInput> | Prisma.ContentProjectCreateWithoutClientProfileInput[] | Prisma.ContentProjectUncheckedCreateWithoutClientProfileInput[]
   connectOrCreate?: Prisma.ContentProjectCreateOrConnectWithoutClientProfileInput | Prisma.ContentProjectCreateOrConnectWithoutClientProfileInput[]
@@ -623,14 +635,6 @@ export type ContentProjectUpdatesourceUrlsInput = {
   push?: string | string[]
 }
 
-export type NullableIntFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type EnumContentTypeFieldUpdateOperationsInput = {
   set?: $Enums.ContentType
 }
@@ -675,6 +679,22 @@ export type ContentProjectUpdateOneRequiredWithoutArtifactsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ContentProjectUpdateToOneWithWhereWithoutArtifactsInput, Prisma.ContentProjectUpdateWithoutArtifactsInput>, Prisma.ContentProjectUncheckedUpdateWithoutArtifactsInput>
 }
 
+export type ContentProjectCreateNestedOneWithoutCycleItemsInput = {
+  create?: Prisma.XOR<Prisma.ContentProjectCreateWithoutCycleItemsInput, Prisma.ContentProjectUncheckedCreateWithoutCycleItemsInput>
+  connectOrCreate?: Prisma.ContentProjectCreateOrConnectWithoutCycleItemsInput
+  connect?: Prisma.ContentProjectWhereUniqueInput
+}
+
+export type ContentProjectUpdateOneWithoutCycleItemsNestedInput = {
+  create?: Prisma.XOR<Prisma.ContentProjectCreateWithoutCycleItemsInput, Prisma.ContentProjectUncheckedCreateWithoutCycleItemsInput>
+  connectOrCreate?: Prisma.ContentProjectCreateOrConnectWithoutCycleItemsInput
+  upsert?: Prisma.ContentProjectUpsertWithoutCycleItemsInput
+  disconnect?: Prisma.ContentProjectWhereInput | boolean
+  delete?: Prisma.ContentProjectWhereInput | boolean
+  connect?: Prisma.ContentProjectWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ContentProjectUpdateToOneWithWhereWithoutCycleItemsInput, Prisma.ContentProjectUpdateWithoutCycleItemsInput>, Prisma.ContentProjectUncheckedUpdateWithoutCycleItemsInput>
+}
+
 export type ContentProjectCreateWithoutClientProfileInput = {
   id?: string
   topic: string
@@ -691,6 +711,7 @@ export type ContentProjectCreateWithoutClientProfileInput = {
   updatedAt?: Date | string
   artifacts?: Prisma.StepArtifactCreateNestedManyWithoutProjectInput
   pipelineJobs?: Prisma.PipelineJobCreateNestedManyWithoutProjectInput
+  cycleItems?: Prisma.CycleItemCreateNestedManyWithoutContentProjectInput
 }
 
 export type ContentProjectUncheckedCreateWithoutClientProfileInput = {
@@ -709,6 +730,7 @@ export type ContentProjectUncheckedCreateWithoutClientProfileInput = {
   updatedAt?: Date | string
   artifacts?: Prisma.StepArtifactUncheckedCreateNestedManyWithoutProjectInput
   pipelineJobs?: Prisma.PipelineJobUncheckedCreateNestedManyWithoutProjectInput
+  cycleItems?: Prisma.CycleItemUncheckedCreateNestedManyWithoutContentProjectInput
 }
 
 export type ContentProjectCreateOrConnectWithoutClientProfileInput = {
@@ -773,6 +795,7 @@ export type ContentProjectCreateWithoutPipelineJobsInput = {
   updatedAt?: Date | string
   clientProfile: Prisma.ClientProfileCreateNestedOneWithoutProjectsInput
   artifacts?: Prisma.StepArtifactCreateNestedManyWithoutProjectInput
+  cycleItems?: Prisma.CycleItemCreateNestedManyWithoutContentProjectInput
 }
 
 export type ContentProjectUncheckedCreateWithoutPipelineJobsInput = {
@@ -791,6 +814,7 @@ export type ContentProjectUncheckedCreateWithoutPipelineJobsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   artifacts?: Prisma.StepArtifactUncheckedCreateNestedManyWithoutProjectInput
+  cycleItems?: Prisma.CycleItemUncheckedCreateNestedManyWithoutContentProjectInput
 }
 
 export type ContentProjectCreateOrConnectWithoutPipelineJobsInput = {
@@ -825,6 +849,7 @@ export type ContentProjectUpdateWithoutPipelineJobsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   clientProfile?: Prisma.ClientProfileUpdateOneRequiredWithoutProjectsNestedInput
   artifacts?: Prisma.StepArtifactUpdateManyWithoutProjectNestedInput
+  cycleItems?: Prisma.CycleItemUpdateManyWithoutContentProjectNestedInput
 }
 
 export type ContentProjectUncheckedUpdateWithoutPipelineJobsInput = {
@@ -843,6 +868,7 @@ export type ContentProjectUncheckedUpdateWithoutPipelineJobsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   artifacts?: Prisma.StepArtifactUncheckedUpdateManyWithoutProjectNestedInput
+  cycleItems?: Prisma.CycleItemUncheckedUpdateManyWithoutContentProjectNestedInput
 }
 
 export type ContentProjectCreateWithoutArtifactsInput = {
@@ -861,6 +887,7 @@ export type ContentProjectCreateWithoutArtifactsInput = {
   updatedAt?: Date | string
   clientProfile: Prisma.ClientProfileCreateNestedOneWithoutProjectsInput
   pipelineJobs?: Prisma.PipelineJobCreateNestedManyWithoutProjectInput
+  cycleItems?: Prisma.CycleItemCreateNestedManyWithoutContentProjectInput
 }
 
 export type ContentProjectUncheckedCreateWithoutArtifactsInput = {
@@ -879,6 +906,7 @@ export type ContentProjectUncheckedCreateWithoutArtifactsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   pipelineJobs?: Prisma.PipelineJobUncheckedCreateNestedManyWithoutProjectInput
+  cycleItems?: Prisma.CycleItemUncheckedCreateNestedManyWithoutContentProjectInput
 }
 
 export type ContentProjectCreateOrConnectWithoutArtifactsInput = {
@@ -913,6 +941,7 @@ export type ContentProjectUpdateWithoutArtifactsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   clientProfile?: Prisma.ClientProfileUpdateOneRequiredWithoutProjectsNestedInput
   pipelineJobs?: Prisma.PipelineJobUpdateManyWithoutProjectNestedInput
+  cycleItems?: Prisma.CycleItemUpdateManyWithoutContentProjectNestedInput
 }
 
 export type ContentProjectUncheckedUpdateWithoutArtifactsInput = {
@@ -930,6 +959,99 @@ export type ContentProjectUncheckedUpdateWithoutArtifactsInput = {
   errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  pipelineJobs?: Prisma.PipelineJobUncheckedUpdateManyWithoutProjectNestedInput
+  cycleItems?: Prisma.CycleItemUncheckedUpdateManyWithoutContentProjectNestedInput
+}
+
+export type ContentProjectCreateWithoutCycleItemsInput = {
+  id?: string
+  topic: string
+  targetKeyword?: string | null
+  sourceUrls?: Prisma.ContentProjectCreatesourceUrlsInput | string[]
+  pastedNotes?: string | null
+  targetLength?: number | null
+  contentType: $Enums.ContentType
+  runMode: $Enums.RunMode
+  status?: $Enums.ProjectStatus
+  currentStep?: $Enums.PipelineStep | null
+  errorMessage?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  clientProfile: Prisma.ClientProfileCreateNestedOneWithoutProjectsInput
+  artifacts?: Prisma.StepArtifactCreateNestedManyWithoutProjectInput
+  pipelineJobs?: Prisma.PipelineJobCreateNestedManyWithoutProjectInput
+}
+
+export type ContentProjectUncheckedCreateWithoutCycleItemsInput = {
+  id?: string
+  clientProfileId: string
+  topic: string
+  targetKeyword?: string | null
+  sourceUrls?: Prisma.ContentProjectCreatesourceUrlsInput | string[]
+  pastedNotes?: string | null
+  targetLength?: number | null
+  contentType: $Enums.ContentType
+  runMode: $Enums.RunMode
+  status?: $Enums.ProjectStatus
+  currentStep?: $Enums.PipelineStep | null
+  errorMessage?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  artifacts?: Prisma.StepArtifactUncheckedCreateNestedManyWithoutProjectInput
+  pipelineJobs?: Prisma.PipelineJobUncheckedCreateNestedManyWithoutProjectInput
+}
+
+export type ContentProjectCreateOrConnectWithoutCycleItemsInput = {
+  where: Prisma.ContentProjectWhereUniqueInput
+  create: Prisma.XOR<Prisma.ContentProjectCreateWithoutCycleItemsInput, Prisma.ContentProjectUncheckedCreateWithoutCycleItemsInput>
+}
+
+export type ContentProjectUpsertWithoutCycleItemsInput = {
+  update: Prisma.XOR<Prisma.ContentProjectUpdateWithoutCycleItemsInput, Prisma.ContentProjectUncheckedUpdateWithoutCycleItemsInput>
+  create: Prisma.XOR<Prisma.ContentProjectCreateWithoutCycleItemsInput, Prisma.ContentProjectUncheckedCreateWithoutCycleItemsInput>
+  where?: Prisma.ContentProjectWhereInput
+}
+
+export type ContentProjectUpdateToOneWithWhereWithoutCycleItemsInput = {
+  where?: Prisma.ContentProjectWhereInput
+  data: Prisma.XOR<Prisma.ContentProjectUpdateWithoutCycleItemsInput, Prisma.ContentProjectUncheckedUpdateWithoutCycleItemsInput>
+}
+
+export type ContentProjectUpdateWithoutCycleItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  topic?: Prisma.StringFieldUpdateOperationsInput | string
+  targetKeyword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceUrls?: Prisma.ContentProjectUpdatesourceUrlsInput | string[]
+  pastedNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  targetLength?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  contentType?: Prisma.EnumContentTypeFieldUpdateOperationsInput | $Enums.ContentType
+  runMode?: Prisma.EnumRunModeFieldUpdateOperationsInput | $Enums.RunMode
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  currentStep?: Prisma.NullableEnumPipelineStepFieldUpdateOperationsInput | $Enums.PipelineStep | null
+  errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  clientProfile?: Prisma.ClientProfileUpdateOneRequiredWithoutProjectsNestedInput
+  artifacts?: Prisma.StepArtifactUpdateManyWithoutProjectNestedInput
+  pipelineJobs?: Prisma.PipelineJobUpdateManyWithoutProjectNestedInput
+}
+
+export type ContentProjectUncheckedUpdateWithoutCycleItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  clientProfileId?: Prisma.StringFieldUpdateOperationsInput | string
+  topic?: Prisma.StringFieldUpdateOperationsInput | string
+  targetKeyword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceUrls?: Prisma.ContentProjectUpdatesourceUrlsInput | string[]
+  pastedNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  targetLength?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  contentType?: Prisma.EnumContentTypeFieldUpdateOperationsInput | $Enums.ContentType
+  runMode?: Prisma.EnumRunModeFieldUpdateOperationsInput | $Enums.RunMode
+  status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
+  currentStep?: Prisma.NullableEnumPipelineStepFieldUpdateOperationsInput | $Enums.PipelineStep | null
+  errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  artifacts?: Prisma.StepArtifactUncheckedUpdateManyWithoutProjectNestedInput
   pipelineJobs?: Prisma.PipelineJobUncheckedUpdateManyWithoutProjectNestedInput
 }
 
@@ -965,6 +1087,7 @@ export type ContentProjectUpdateWithoutClientProfileInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   artifacts?: Prisma.StepArtifactUpdateManyWithoutProjectNestedInput
   pipelineJobs?: Prisma.PipelineJobUpdateManyWithoutProjectNestedInput
+  cycleItems?: Prisma.CycleItemUpdateManyWithoutContentProjectNestedInput
 }
 
 export type ContentProjectUncheckedUpdateWithoutClientProfileInput = {
@@ -983,6 +1106,7 @@ export type ContentProjectUncheckedUpdateWithoutClientProfileInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   artifacts?: Prisma.StepArtifactUncheckedUpdateManyWithoutProjectNestedInput
   pipelineJobs?: Prisma.PipelineJobUncheckedUpdateManyWithoutProjectNestedInput
+  cycleItems?: Prisma.CycleItemUncheckedUpdateManyWithoutContentProjectNestedInput
 }
 
 export type ContentProjectUncheckedUpdateManyWithoutClientProfileInput = {
@@ -1009,11 +1133,13 @@ export type ContentProjectUncheckedUpdateManyWithoutClientProfileInput = {
 export type ContentProjectCountOutputType = {
   artifacts: number
   pipelineJobs: number
+  cycleItems: number
 }
 
 export type ContentProjectCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   artifacts?: boolean | ContentProjectCountOutputTypeCountArtifactsArgs
   pipelineJobs?: boolean | ContentProjectCountOutputTypeCountPipelineJobsArgs
+  cycleItems?: boolean | ContentProjectCountOutputTypeCountCycleItemsArgs
 }
 
 /**
@@ -1040,6 +1166,13 @@ export type ContentProjectCountOutputTypeCountPipelineJobsArgs<ExtArgs extends r
   where?: Prisma.PipelineJobWhereInput
 }
 
+/**
+ * ContentProjectCountOutputType without action
+ */
+export type ContentProjectCountOutputTypeCountCycleItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CycleItemWhereInput
+}
+
 
 export type ContentProjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1059,6 +1192,7 @@ export type ContentProjectSelect<ExtArgs extends runtime.Types.Extensions.Intern
   clientProfile?: boolean | Prisma.ClientProfileDefaultArgs<ExtArgs>
   artifacts?: boolean | Prisma.ContentProject$artifactsArgs<ExtArgs>
   pipelineJobs?: boolean | Prisma.ContentProject$pipelineJobsArgs<ExtArgs>
+  cycleItems?: boolean | Prisma.ContentProject$cycleItemsArgs<ExtArgs>
   _count?: boolean | Prisma.ContentProjectCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["contentProject"]>
 
@@ -1120,6 +1254,7 @@ export type ContentProjectInclude<ExtArgs extends runtime.Types.Extensions.Inter
   clientProfile?: boolean | Prisma.ClientProfileDefaultArgs<ExtArgs>
   artifacts?: boolean | Prisma.ContentProject$artifactsArgs<ExtArgs>
   pipelineJobs?: boolean | Prisma.ContentProject$pipelineJobsArgs<ExtArgs>
+  cycleItems?: boolean | Prisma.ContentProject$cycleItemsArgs<ExtArgs>
   _count?: boolean | Prisma.ContentProjectCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ContentProjectIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1135,6 +1270,7 @@ export type $ContentProjectPayload<ExtArgs extends runtime.Types.Extensions.Inte
     clientProfile: Prisma.$ClientProfilePayload<ExtArgs>
     artifacts: Prisma.$StepArtifactPayload<ExtArgs>[]
     pipelineJobs: Prisma.$PipelineJobPayload<ExtArgs>[]
+    cycleItems: Prisma.$CycleItemPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1548,6 +1684,7 @@ export interface Prisma__ContentProjectClient<T, Null = never, ExtArgs extends r
   clientProfile<T extends Prisma.ClientProfileDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClientProfileDefaultArgs<ExtArgs>>): Prisma.Prisma__ClientProfileClient<runtime.Types.Result.GetResult<Prisma.$ClientProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   artifacts<T extends Prisma.ContentProject$artifactsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ContentProject$artifactsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StepArtifactPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   pipelineJobs<T extends Prisma.ContentProject$pipelineJobsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ContentProject$pipelineJobsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PipelineJobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  cycleItems<T extends Prisma.ContentProject$cycleItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ContentProject$cycleItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CycleItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2037,6 +2174,30 @@ export type ContentProject$pipelineJobsArgs<ExtArgs extends runtime.Types.Extens
   take?: number
   skip?: number
   distinct?: Prisma.PipelineJobScalarFieldEnum | Prisma.PipelineJobScalarFieldEnum[]
+}
+
+/**
+ * ContentProject.cycleItems
+ */
+export type ContentProject$cycleItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CycleItem
+   */
+  select?: Prisma.CycleItemSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CycleItem
+   */
+  omit?: Prisma.CycleItemOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CycleItemInclude<ExtArgs> | null
+  where?: Prisma.CycleItemWhereInput
+  orderBy?: Prisma.CycleItemOrderByWithRelationInput | Prisma.CycleItemOrderByWithRelationInput[]
+  cursor?: Prisma.CycleItemWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CycleItemScalarFieldEnum | Prisma.CycleItemScalarFieldEnum[]
 }
 
 /**

@@ -27,6 +27,7 @@ enum PipelineStep {
   QA
   SEO
   TECHNICAL_SEO
+  SHIP_CHECK
   FINAL
 }
 
@@ -61,6 +62,74 @@ enum ArtifactStatus {
   SUPERSEDED
 }
 
+/// Site → page diagnostic pipeline (feeds the living Strategy).
+enum AuditStep {
+  CRAWL_TECHNICAL
+  INDEXATION
+  VISIBILITY_DEMAND
+  INTERNAL_LINKING
+  PAGE_SHORTLIST
+  PAGE_DEEP_DIVE
+  KEYWORD_RELEVANCE
+  AI_CRAWLABILITY
+  AI_EXTRACTABILITY
+  FINDINGS_ROLLUP
+}
+
+enum AuditDataSourceType {
+  GA4
+  GSC
+  UPLOAD
+  NOTE
+}
+
+enum StrategyLifecycle {
+  LIVING
+  PAST
+}
+
+enum StrategyStatus {
+  DRAFT
+  ANALYZING
+  READY
+  FAILED
+}
+
+enum StrategyRecommendationCategory {
+  TECHNICAL
+  CONTENT
+  LINKING
+  UX
+  MEASUREMENT
+  AI_VISIBILITY
+}
+
+enum StrategyRecommendationStatus {
+  PROPOSED
+  REJECTED
+  BACKLOG
+  SCHEDULED
+  DONE
+}
+
+enum CycleStatus {
+  PLANNED
+  ACTIVE
+  COMPLETED
+}
+
+enum CycleItemStatus {
+  PLANNED
+  IN_PROGRESS
+  DONE
+  BLOCKED
+}
+
+enum CycleItemWorkKind {
+  CONTENT
+  TECH
+}
+
 model ClientProfile {
   id                   String           @id @default(cuid())
   name                 String
@@ -72,9 +141,18 @@ model ClientProfile {
   wordsToAvoid         String[]         @default([])
   requiredDisclaimers  String?
   seoNotes             String?
+  /// Recurring billing day of month (1–28). Anchors monthly cycle windows.
+  billingDay           Int?
+  contactName          String?
+  contactEmail         String?
+  contactPhone         String?
+  website              String?
+  crmNotes             String?
   createdAt            DateTime         @default(now())
   updatedAt            DateTime         @updatedAt
   projects             ContentProject[]
+  audits               Audit[]
+  strategies           Strategy[]
 }
 
 model ContentProject {
@@ -95,6 +173,7 @@ model ContentProject {
   updatedAt       DateTime       @updatedAt
   artifacts       StepArtifact[]
   pipelineJobs    PipelineJob[]
+  cycleItems      CycleItem[]
 
   @@index([clientProfileId])
   @@index([status])
@@ -103,7 +182,7 @@ model ContentProject {
 model PipelineJob {
   id           String            @id @default(cuid())
   projectId    String
-  project      ContentProject      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  project      ContentProject    @relation(fields: [projectId], references: [id], onDelete: Cascade)
   type         PipelineJobType
   step         PipelineStep?
   feedback     String?
@@ -145,14 +224,244 @@ model ModelSlot {
   updatedAt DateTime     @updatedAt
 }
 
-/// Single-user MVP: one encrypted BYO provider API key for the whole app.
+model AuditModelSlot {
+  step      AuditStep @id
+  provider  String?
+  model     String?
+  enabled   Boolean   @default(false)
+  updatedAt DateTime  @updatedAt
+}
+
+/// One encrypted BYO API key per provider (`anthropic`, `gemini`).
 model AppCredential {
-  id            String   @id @default("singleton")
-  provider      String   @default("anthropic")
+  id            String   @id
+  provider      String
   keyCiphertext String
   keyIv         String
   keyTag        String
   keyLast4      String
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+}
+
+/// Site audit engagement: diagnose issues and note opportunities (not a growth strategy).
+model Audit {
+  id              String         @id @default(cuid())
+  clientProfileId String
+  clientProfile   ClientProfile  @relation(fields: [clientProfileId], references: [id], onDelete: Cascade)
+  name            String
+  /// Optional seed URL; site-wide stages use GSC/GA/crawl. Page stages use selectedPages.
+  seedUrl         String?
+  scopeNotes      String?
+  runMode         RunMode        @default(STEP_BY_STEP)
+  status          ProjectStatus  @default(DRAFT)
+  currentStep     AuditStep?
+  /// Pages approved after PAGE_SHORTLIST for deep-dive stages.
+  selectedPages   String[]       @default([])
+  errorMessage    String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  dataSources     AuditDataSource[]
+  artifacts       AuditArtifact[]
+  jobs            AuditJob[]
+  strategies      Strategy[]
+
+  @@index([clientProfileId])
+  @@index([status])
+}
+
+model AuditJob {
+  id           String            @id @default(cuid())
+  auditId      String
+  audit        Audit             @relation(fields: [auditId], references: [id], onDelete: Cascade)
+  type         PipelineJobType
+  step         AuditStep?
+  feedback     String?
+  status       PipelineJobStatus @default(PENDING)
+  attempts     Int               @default(0)
+  maxAttempts  Int               @default(3)
+  errorMessage String?
+  createdAt    DateTime          @default(now())
+  startedAt    DateTime?
+  completedAt  DateTime?
+
+  @@index([auditId])
+  @@index([status, createdAt])
+}
+
+model AuditDataSource {
+  id        String              @id @default(cuid())
+  auditId   String
+  audit     Audit               @relation(fields: [auditId], references: [id], onDelete: Cascade)
+  type      AuditDataSourceType
+  label     String
+  summary   Json
+  meta      Json?
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+
+  @@index([auditId])
+  @@index([type])
+}
+
+model AuditArtifact {
+  id            String         @id @default(cuid())
+  auditId       String
+  audit         Audit          @relation(fields: [auditId], references: [id], onDelete: Cascade)
+  step          AuditStep
+  version       Int            @default(1)
+  status        ArtifactStatus @default(PENDING)
+  inputSnapshot Json?
+  output        Json?
+  userFeedback  String?
+  approvedAt    DateTime?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@unique([auditId, step, version])
+  @@index([auditId])
+}
+
+model StrategyModelSlot {
+  id        String   @id @default("strategy")
+  provider  String?
+  model     String?
+  enabled   Boolean  @default(false)
+  updatedAt DateTime @updatedAt
+}
+
+/// One living strategy per client; older rows are Past Strategies (restorable).
+model Strategy {
+  id              String            @id @default(cuid())
+  clientProfileId String
+  clientProfile   ClientProfile     @relation(fields: [clientProfileId], references: [id], onDelete: Cascade)
+  name            String
+  lifecycle       StrategyLifecycle @default(LIVING)
+  status          StrategyStatus    @default(DRAFT)
+  sourceAuditId   String?
+  sourceAudit     Audit?            @relation(fields: [sourceAuditId], references: [id], onDelete: SetNull)
+  notes           String?
+  synthesis       String?
+  errorMessage    String?
+  archivedAt      DateTime?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  kpis            StrategyKpi[]
+  recommendations StrategyRecommendation[]
+  cycles          Cycle[]
+  jobs            StrategyJob[]
+
+  @@index([clientProfileId])
+  @@index([lifecycle])
+  @@index([status])
+  @@index([sourceAuditId])
+}
+
+model StrategyKpi {
+  id           String   @id @default(cuid())
+  strategyId   String
+  strategy     Strategy @relation(fields: [strategyId], references: [id], onDelete: Cascade)
+  metricKey    String
+  baseline     Float?
+  target       Float
+  currentValue Float?
+  deadline     DateTime?
+  lastSyncedAt DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([strategyId, metricKey])
+  @@index([strategyId])
+}
+
+model StrategyRecommendation {
+  id              String                         @id @default(cuid())
+  strategyId      String
+  strategy        Strategy                       @relation(fields: [strategyId], references: [id], onDelete: Cascade)
+  category        StrategyRecommendationCategory
+  title           String
+  rationale       String
+  instructions    String
+  evidence        Json
+  relatedUrls     String[]                       @default([])
+  targetKeyword   String?
+  priority        Int
+  effort          Int
+  impact          Int
+  status          StrategyRecommendationStatus   @default(PROPOSED)
+  createdAt       DateTime                       @default(now())
+  updatedAt       DateTime                       @updatedAt
+  cycleItems      CycleItem[]
+
+  @@index([strategyId])
+  @@index([category])
+  @@index([status])
+}
+
+model Cycle {
+  id         String      @id @default(cuid())
+  strategyId String
+  strategy   Strategy    @relation(fields: [strategyId], references: [id], onDelete: Cascade)
+  year       Int
+  month      Int
+  label      String
+  startDate  DateTime
+  endDate    DateTime
+  status     CycleStatus @default(PLANNED)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  items      CycleItem[]
+
+  @@unique([strategyId, year, month])
+  @@index([strategyId])
+}
+
+model CycleItem {
+  id               String            @id @default(cuid())
+  cycleId          String
+  cycle            Cycle             @relation(fields: [cycleId], references: [id], onDelete: Cascade)
+  recommendationId String
+  recommendation   StrategyRecommendation @relation(fields: [recommendationId], references: [id], onDelete: Cascade)
+  sortOrder        Int               @default(0)
+  workKind         CycleItemWorkKind
+  executionStatus  CycleItemStatus   @default(PLANNED)
+  contentProjectId String?
+  contentProject   ContentProject?   @relation(fields: [contentProjectId], references: [id], onDelete: SetNull)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  @@unique([recommendationId])
+  @@index([cycleId])
+  @@index([contentProjectId])
+}
+
+model StrategyJob {
+  id           String            @id @default(cuid())
+  strategyId   String
+  strategy     Strategy          @relation(fields: [strategyId], references: [id], onDelete: Cascade)
+  status       PipelineJobStatus @default(PENDING)
+  errorMessage String?
+  createdAt    DateTime          @default(now())
+  startedAt    DateTime?
+  completedAt  DateTime?
+
+  @@index([strategyId])
+  @@index([status, createdAt])
+}
+
+model OAuthAccount {
+  id                     String   @id @default("google")
+  provider               String   @default("google")
+  accessTokenCiphertext  String
+  accessTokenIv          String
+  accessTokenTag         String
+  refreshTokenCiphertext String?
+  refreshTokenIv         String?
+  refreshTokenTag        String?
+  scope                  String
+  expiresAt              DateTime?
+  analyticsPropertyId    String?
+  searchConsoleSiteUrl   String?
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
 }

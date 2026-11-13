@@ -5,14 +5,15 @@ import type { ReactNode } from "react";
 import ReactMarkdown from "react-markdown";
 
 const proseClass = [
-  "prose prose-neutral dark:prose-invert max-w-none",
-  "prose-headings:scroll-mt-8",
-  "prose-h1:text-2xl prose-h1:font-semibold prose-h1:tracking-tight",
-  "prose-h2:text-lg prose-h2:mt-10 prose-h2:border-b prose-h2:border-foreground/10 prose-h2:pb-2",
+  "prose prose-invert max-w-none",
+  "prose-headings:scroll-mt-8 prose-headings:text-foreground",
+  "prose-h1:text-3xl prose-h1:font-semibold prose-h1:tracking-tight",
+  "prose-h2:text-lg prose-h2:mt-10 prose-h2:border-b prose-h2:border-line prose-h2:pb-2",
   "prose-h3:text-base prose-h3:mt-6",
-  "prose-p:text-foreground/80 prose-li:text-foreground/80",
-  "prose-strong:text-foreground prose-code:text-sm prose-code:bg-foreground/5 prose-code:px-1 prose-code:rounded",
-  "prose-pre:bg-foreground/5 prose-pre:text-xs",
+  "prose-p:text-muted prose-li:text-muted",
+  "prose-strong:text-foreground prose-a:text-gold prose-a:no-underline hover:prose-a:underline",
+  "prose-code:text-sm prose-code:bg-white/[0.06] prose-code:px-1 prose-code:rounded",
+  "prose-pre:bg-surface prose-pre:text-xs prose-pre:border prose-pre:border-line",
   "prose-table:text-sm",
 ].join(" ");
 

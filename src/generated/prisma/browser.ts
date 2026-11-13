@@ -43,7 +43,72 @@ export type StepArtifact = Prisma.StepArtifactModel
  */
 export type ModelSlot = Prisma.ModelSlotModel
 /**
+ * Model AuditModelSlot
+ * 
+ */
+export type AuditModelSlot = Prisma.AuditModelSlotModel
+/**
  * Model AppCredential
- * Single-user MVP: one encrypted BYO provider API key for the whole app.
+ * One encrypted BYO API key per provider (`anthropic`, `gemini`).
  */
 export type AppCredential = Prisma.AppCredentialModel
+/**
+ * Model Audit
+ * Site audit engagement: diagnose issues and note opportunities (not a growth strategy).
+ */
+export type Audit = Prisma.AuditModel
+/**
+ * Model AuditJob
+ * 
+ */
+export type AuditJob = Prisma.AuditJobModel
+/**
+ * Model AuditDataSource
+ * 
+ */
+export type AuditDataSource = Prisma.AuditDataSourceModel
+/**
+ * Model AuditArtifact
+ * 
+ */
+export type AuditArtifact = Prisma.AuditArtifactModel
+/**
+ * Model StrategyModelSlot
+ * 
+ */
+export type StrategyModelSlot = Prisma.StrategyModelSlotModel
+/**
+ * Model Strategy
+ * One living strategy per client; older rows are Past Strategies (restorable).
+ */
+export type Strategy = Prisma.StrategyModel
+/**
+ * Model StrategyKpi
+ * 
+ */
+export type StrategyKpi = Prisma.StrategyKpiModel
+/**
+ * Model StrategyRecommendation
+ * 
+ */
+export type StrategyRecommendation = Prisma.StrategyRecommendationModel
+/**
+ * Model Cycle
+ * 
+ */
+export type Cycle = Prisma.CycleModel
+/**
+ * Model CycleItem
+ * 
+ */
+export type CycleItem = Prisma.CycleItemModel
+/**
+ * Model StrategyJob
+ * 
+ */
+export type StrategyJob = Prisma.StrategyJobModel
+/**
+ * Model OAuthAccount
+ * 
+ */
+export type OAuthAccount = Prisma.OAuthAccountModel

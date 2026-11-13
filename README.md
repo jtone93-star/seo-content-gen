@@ -1,8 +1,10 @@
-# Content Generator Tool
+# SEO Turtle Tool
 
-SEO-grade content production with a **9-step pipeline**, **client profiles**, **human review gates**, **BYO Claude** (your Anthropic API key), and **inline pipeline jobs** (Vercel-friendly — no separate worker host required).
+SEO-grade content production with a **10-step pipeline**, **client profiles**, **site audits**, **living strategy**, **human review gates**, **Claude-first BYO Anthropic keys**, and **inline pipeline jobs** (Vercel-friendly — no separate worker host required).
 
 Built for local development first (Next.js + Prisma + PostgreSQL). Hosting: **Vercel** + **Supabase** + **`APP_PASSWORD`** login gate.
+
+*(Repo / package folder may still say “Content Generator Tool”; the product name in the app is **SEO Turtle Tool**.)*
 
 ## Documentation
 
@@ -12,22 +14,30 @@ Built for local development first (Next.js + Prisma + PostgreSQL). Hosting: **Ve
 | How to use (operators) | [docs/HOW_TO_USE.md](docs/HOW_TO_USE.md) · in-app: [/documentation](http://localhost:3000/documentation) |
 | User stories | [docs/USER_STORIES.md](docs/USER_STORIES.md) · in-app: [/stories](http://localhost:3000/stories) |
 | Architecture | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
-| Deploy | [docs/DEPLOY.md](docs/DEPLOY.md) |
+| Deploy (Vercel) | [docs/DEPLOY.md](docs/DEPLOY.md) |
+| Desktop (Windows) | [docs/DESKTOP.md](docs/DESKTOP.md) |
 | Smoke tests | [docs/SMOKE_TESTS.md](docs/SMOKE_TESTS.md) |
+| Operator flow review | [docs/OPERATOR_FLOW_REVIEW.md](docs/OPERATOR_FLOW_REVIEW.md) |
+| Client portal (planned) | [docs/CLIENT_PORTAL.md](docs/CLIENT_PORTAL.md) |
 | Doc index | [docs/README.md](docs/README.md) |
 
 ## Features (current)
 
-- **Client profiles** — tone, audience, POV, words to avoid, SEO notes
-- **Content projects** — topic, keyword, URLs, pasted notes, target length, content type
-- **9-step pipeline** — Brief → SERP research → Outline → Draft → Edit → QA → SEO copy → Technical SEO → Final
+- **Client hubs** — Overview / Audits / Strategy / Content tabs per client
+- **Site audits** — diagnostic pipeline → findings pack (CSV/Excel export)
+- **Living strategy** — one active plan per client; KPIs, backlog, cycles, Excel tech work packages
+- **Content projects** — topic, keyword, URLs, pasted notes, target length, content type (from client Content tab or cycle Start)
+- **10-step pipeline** — Brief → SERP research → Outline → Draft → Edit → QA & compliance → SEO copy → Technical SEO → Ship check → Final
+- **Quality loops** — QA and ship check auto-rewind up to 3 passes each
 - **Run modes** — step-by-step (approve each stage) or full auto
 - **Review UX** — stepper, stage descriptions, reopen any stage, regenerate with feedback
-- **Engine badges** — per stage shows **Using: Claude** or **Using: Mock**
+- **Engine badges** — per stage shows **Using: Claude · model** or **Using: Mock**
 - **Job execution** — Start / Approve / Regenerate run in the API request (works on Vercel without a worker)
-- **BYO Claude** — save an encrypted Anthropic API key; pick a model per step on `/settings/models`
+- **Claude-first AI** — save one Anthropic API key; pick Mock or a Claude model and apply to strategy, audits, and content on `/settings/models`
+- **Dashboard** — workspace KPI tiles (clients, audits, living strategies, content projects)
+- **Windows desktop** — optional fully local Electron install (`npm run desktop:dist`; see [docs/DESKTOP.md](docs/DESKTOP.md))
 - **App password** — set `APP_PASSWORD` on Vercel to require `/login` (Hobby-friendly)
-- **In-app Documentation** — footer link to how-to guide
+- **In-app Documentation** — footer link to how-to guide + user stories
 
 ## Prerequisites
 
@@ -57,7 +67,7 @@ Generate a key:
 node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 ```
 
-`APP_ENCRYPTION_KEY` is required to save a BYO Anthropic API key.
+`APP_ENCRYPTION_KEY` is required to save the BYO Anthropic API key.
 
 ### 3. Install PostgreSQL (Windows)
 
@@ -145,15 +155,26 @@ Research uses **your URLs and pasted notes** in MVP (no live web APIs yet).
 ## Project structure
 
 ```
-docs/                    # USER_STORIES, ARCHITECTURE, DEPLOY, SMOKE_TESTS
+docs/                    # USER_STORIES, ARCHITECTURE, DEPLOY, DESKTOP, SMOKE_TESTS
+desktop/                 # Electron main/preload + embedded Postgres bootstrap
 prisma/                  # Schema and migrations
-src/lib/pipeline/        # Orchestrator and executors (mock + Anthropic)
+src/lib/pipeline/        # Orchestrator and executors (mock + Anthropic + Gemini)
 src/lib/jobs/            # Enqueue and process jobs
-src/lib/credentials.ts   # Encrypted BYO API key
+src/lib/credentials.ts   # Encrypted BYO API keys
+src/lib/desktop-config.ts # Desktop AppData config helpers
 src/worker/              # Worker entrypoint
 src/app/                 # Pages and API routes
 src/components/          # UI components
 ```
+
+## Desktop (Windows)
+
+```powershell
+npm run desktop:dev     # Electron + next dev + embedded Postgres
+npm run desktop:dist    # Build NSIS installer → release/
+```
+
+See [docs/DESKTOP.md](docs/DESKTOP.md).
 
 ## Hosting
 

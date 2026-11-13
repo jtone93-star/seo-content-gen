@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import { Nav } from "@/components/layout/nav";
+import { Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
+import { AppShell } from "@/components/layout/app-shell";
+import { isAuthEnabled } from "@/lib/auth";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
+  variable: "--font-plus-jakarta",
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
@@ -14,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Content Generator",
-  description: "SEO-friendly content generation pipeline",
+  title: "SEO Turtle Tool",
+  description: "SEO audits, living strategy, and content generation",
 };
 
 export default function RootLayout({
@@ -26,11 +28,10 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${plusJakarta.variable} ${geistMono.variable} ${plusJakarta.className} h-full antialiased dark`}
     >
-      <body className="min-h-full flex flex-col bg-background text-foreground">
-        <Nav />
-        <main className="flex-1 mx-auto w-full max-w-5xl px-4 py-8">{children}</main>
+      <body className="min-h-full bg-background text-foreground font-sans">
+        <AppShell authEnabled={isAuthEnabled()}>{children}</AppShell>
       </body>
     </html>
   );

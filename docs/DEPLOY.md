@@ -1,6 +1,6 @@
 # Deploy
 
-Hosting target: **Vercel-only** for the app. Pipeline jobs run **inside** the Start / Approve / Regenerate API routes (no separate always-on worker required).
+Hosting for **SEO Turtle Tool**: **Vercel-only** for the app. Pipeline jobs run **inside** the Start / Approve / Regenerate API routes (no separate always-on worker required).
 
 Access control for MVP: **app password gate** (`APP_PASSWORD`) — works on Hobby. Vercel’s paid Password Protection is optional and not required.
 
@@ -14,10 +14,10 @@ You → /login (APP_PASSWORD) → Next.js on Vercel
                                     ▼
                                Supabase Postgres
                                     │
-                               Anthropic API (BYO key)
+                               Anthropic API (BYO Claude key)
 ```
 
-`maxDuration` on those routes is **300s** (needs a Vercel plan that allows it). Step-by-step is the sweet spot. Full auto + Claude on all 9 steps may still hit timeouts — prefer step-by-step on Vercel, or enable Claude only on a few steps.
+`maxDuration` on those routes is **300s** (needs a Vercel plan that allows it). Step-by-step is the sweet spot. Full auto + live models on all 10 steps (plus QA/ship-check rewinds) may still hit timeouts — prefer step-by-step on Vercel, or enable Claude/Gemini only on a few steps.
 
 Optional: `npm run worker` still exists for local draining of leftover PENDING jobs; it is **not** required for normal Start/Approve/Regenerate.
 
@@ -36,7 +36,7 @@ Resume / verify:
 1. Set **`APP_PASSWORD`** on Vercel (Production) → Redeploy
 2. Open the live URL in incognito → should hit `/login`
 3. Sign in → run hosted smoke tests ([SMOKE_TESTS.md](./SMOKE_TESTS.md) § F + G)
-4. Optionally connect Claude on hosted `/settings/models`
+4. Optionally connect Claude on hosted `/settings/models` (one model for all engines)
 
 ## Checklist
 

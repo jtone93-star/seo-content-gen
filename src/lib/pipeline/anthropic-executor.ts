@@ -1,5 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import type { PipelineStep } from "@/generated/prisma/client";
+import { extractJson } from "@/lib/llm-json";
 import { AI_VISIBILITY_RULES } from "./ai-visibility";
 import { STEP_LABELS } from "./types";
 import type { StepContext, StepExecutor, StepOutput } from "./types";
@@ -40,9 +41,9 @@ const STEP_SPECS: Record<PipelineStep, { instruction: string; shape: string }> =
   },
   QA: {
     instruction:
-      "Run QA & compliance. Check readability, reading-level match, claims that need sources, banned words, and whether required disclaimers are present. Return an overall pass/fail plus a detailed checklist.",
+      "Run QA & compliance on the edited draft. Check: (1) how it reads — awkward phrasing, overly long sentences, reading-level mismatch; (2) obvious factual misspeaks or internally inconsistent claims versus the brief, research notes, and client profile (do not invent live web facts; flag what looks wrong or unsupported); (3) banned words; (4) required disclaimers; (5) claims that need a source. If it fails, set passed=false, choose rewindTo as the earliest stage that can fix the issues (RESEARCH, OUTLINE, DRAFT, or EDIT — prefer EDIT for wording/facts in the copy), and put concrete fix instructions in feedback.",
     shape:
-      '{"passed":true,"readabilityScore":"string","readingLevelMatch":true,"claimsToVerify":[{"claim":"string","status":"ok|needs_source|verified"}],"bannedWordsFound":["string"],"disclaimerIncluded":true,"checklist":[{"item":"string","passed":true}],"notes":"string"}',
+      '{"passed":true,"readabilityScore":"string","readingLevelMatch":true,"readabilityIssues":["string"],"factMisspeaks":[{"claim":"string","issue":"string","suggestedFix":"string"}],"claimsToVerify":[{"claim":"string","status":"ok|needs_source|verified"}],"bannedWordsFound":["string"],"disclaimerIncluded":true,"checklist":[{"item":"string","passed":true}],"notes":"string","rewindTo":null,"feedback":"string"}',
   },
   SEO: {
     instruction:
@@ -56,6 +57,12 @@ const STEP_SPECS: Record<PipelineStep, { instruction: string; shape: string }> =
     shape:
       '{"slug":"string","metaTitle":"string","metaDescription":"string","ogTitle":"string","ogDescription":"string","schemaType":"string","schemaJsonLd":"json-ld string","canonicalUrl":null,"indexRecommendation":"index","hreflang":null,"publishingChecklist":[{"item":"string","passed":true}],"agentSummary":"string","speakableSelectors":["string"]}',
   },
+  SHIP_CHECK: {
+    instruction:
+      "Judge whether the piece is ready to ship. Review SEO copy, technical SEO, structure, meta length, schema, answer-first openings, FAQ, and whether Final packaging would look publishable. This is not the brand/compliance QA. If it fails, set passed=false, rewindTo as OUTLINE, DRAFT, EDIT, SEO, or TECHNICAL_SEO (the latest stage that can fix the issue), and put concrete fix instructions in feedback.",
+    shape:
+      '{"passed":true,"checklist":[{"item":"string","passed":true}],"notes":"string","rewindTo":null,"feedback":"string"}',
+  },
   FINAL: {
     instruction:
       "Assemble the final deliverable. Combine the optimized copy and technical metadata into a publish-ready package. Return the final Markdown body, meta title/description, header hierarchy, slug, schema type + JSON-LD, an export-ready Markdown document (with front matter), an agent summary, and answer blocks.",
@@ -64,7 +71,7 @@ const STEP_SPECS: Record<PipelineStep, { instruction: string; shape: string }> =
   },
 };
 
-function buildSystemPrompt(step: PipelineStep, ctx: StepContext): string {
+export function buildSystemPrompt(step: PipelineStep, ctx: StepContext): string {
   const { client } = ctx;
   const wordsToAvoid = client.wordsToAvoid?.length ? client.wordsToAvoid.join(", ") : "none";
 
@@ -89,7 +96,7 @@ function buildSystemPrompt(step: PipelineStep, ctx: StepContext): string {
   ].join("\n");
 }
 
-function buildUserPrompt(step: PipelineStep, ctx: StepContext): string {
+export function buildUserPrompt(step: PipelineStep, ctx: StepContext): string {
   const { project, priorOutputs } = ctx;
   const spec = STEP_SPECS[step];
 
@@ -104,6 +111,10 @@ function buildUserPrompt(step: PipelineStep, ctx: StepContext): string {
     "PASTED RESEARCH NOTES:",
     project.pastedNotes?.trim() || "(none provided)",
   ];
+
+  if (ctx.userFeedback?.trim()) {
+    lines.push("", "FEEDBACK TO APPLY ON THIS RUN:", ctx.userFeedback.trim());
+  }
 
   const priorKeys = Object.keys(priorOutputs) as PipelineStep[];
   if (priorKeys.length) {
@@ -122,25 +133,6 @@ function buildUserPrompt(step: PipelineStep, ctx: StepContext): string {
   );
 
   return lines.join("\n");
-}
-
-function extractJson(text: string): unknown {
-  const trimmed = text.trim();
-  // Strip ```json ... ``` fences if the model added them despite instructions.
-  const fenced = trimmed.match(/```(?:json)?\s*([\s\S]*?)```/i);
-  const candidate = fenced ? fenced[1] : trimmed;
-
-  try {
-    return JSON.parse(candidate);
-  } catch {
-    // Fall back to slicing between the first { and last }.
-    const start = candidate.indexOf("{");
-    const end = candidate.lastIndexOf("}");
-    if (start !== -1 && end !== -1 && end > start) {
-      return JSON.parse(candidate.slice(start, end + 1));
-    }
-    throw new Error("Claude did not return parseable JSON for this step.");
-  }
 }
 
 export function createAnthropicExecutor(
@@ -164,7 +156,7 @@ export function createAnthropicExecutor(
         .map((block) => (block.type === "text" ? block.text : ""))
         .join("\n");
 
-      const parsed = extractJson(text) as Record<string, unknown>;
+      const parsed = extractJson(text, "Claude") as Record<string, unknown>;
 
       // Guarantee the final step carries the project's real content type.
       if (step === "FINAL") {

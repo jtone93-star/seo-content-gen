@@ -8,6 +8,7 @@ import type {
   QaOutput,
   ResearchOutput,
   SeoOutput,
+  ShipCheckOutput,
   StepContext,
   StepExecutor,
   StepOutput,
@@ -308,7 +309,7 @@ function mockEdit(ctx: StepContext): EditOutput {
   return {
     body,
     changesSummary: [
-      `Aligned voice with ${ctx.client.tone ?? "client tone"}`,
+      ctx.userFeedback ? `Applied QA/ship-check feedback: ${ctx.userFeedback.slice(0, 180)}` : `Aligned voice with ${ctx.client.tone ?? "client tone"}`,
       `Applied ${ctx.client.pointOfView ?? "POV"} consistently`,
       ctx.client.wordsToAvoid.length
         ? `Checked against words to avoid: ${ctx.client.wordsToAvoid.join(", ")}`
@@ -320,6 +321,15 @@ function mockEdit(ctx: StepContext): EditOutput {
   };
 }
 
+function longSentences(body: string): string[] {
+  return body
+    .split(/(?<=[.!?])\s+/)
+    .map((s) => s.trim())
+    .filter((s) => s.split(/\s+/).length > 45)
+    .slice(0, 5)
+    .map((s) => `Sentence is hard to read (${s.split(/\s+/).length} words): “${s.slice(0, 120)}…”`);
+}
+
 function mockQa(ctx: StepContext): QaOutput {
   const edit = ctx.priorOutputs.EDIT as EditOutput | undefined;
   const body = edit?.body ?? "";
@@ -329,10 +339,21 @@ function mockQa(ctx: StepContext): QaOutput {
   const hasDisclaimer = ctx.client.requiredDisclaimers
     ? body.toLowerCase().includes(ctx.client.requiredDisclaimers.slice(0, 20).toLowerCase())
     : true;
+  const readabilityIssues = longSentences(body);
+  const factMisspeaks: QaOutput["factMisspeaks"] = [];
+  if (/\bguaranteed\b/i.test(body)) {
+    factMisspeaks.push({
+      claim: "Uses “guaranteed” without evidence",
+      issue: "Absolute outcome claims usually overreach unless the client profile supports them.",
+      suggestedFix: "Soften to a qualified claim or cite the supporting note.",
+    });
+  }
 
   const checklist = [
     { item: "Matches client tone and audience", passed: true },
-    { item: "Reading level appropriate", passed: true },
+    { item: "Reading level appropriate", passed: readabilityIssues.length === 0 },
+    { item: "Copy is readable (no overloaded sentences)", passed: readabilityIssues.length === 0 },
+    { item: "No obvious factual misspeaks", passed: factMisspeaks.length === 0 },
     { item: "No banned words", passed: bannedFound.length === 0 },
     { item: "Required disclaimers present", passed: hasDisclaimer },
     { item: "Claims flagged for human verification", passed: true },
@@ -348,7 +369,9 @@ function mockQa(ctx: StepContext): QaOutput {
   return {
     passed,
     readabilityScore: ctx.client.readingLevel ?? "General business (~Grade 8–10)",
-    readingLevelMatch: true,
+    readingLevelMatch: readabilityIssues.length === 0,
+    readabilityIssues,
+    factMisspeaks,
     claimsToVerify: [
       { claim: "Statistics and third-party data cited in draft", status: "needs_source" },
       { claim: "Product/service claims match client offerings", status: "ok" },
@@ -357,8 +380,19 @@ function mockQa(ctx: StepContext): QaOutput {
     disclaimerIncluded: hasDisclaimer,
     checklist,
     notes: passed
-      ? "Ready for SEO copy — GEO / AI-visibility checks passed."
-      : "Resolve failed checks (including AI visibility items) before publishing.",
+      ? "Ready for SEO copy — readability, facts, and compliance checks passed."
+      : "Rework the failed checks (readability, misspeaks, or compliance) before SEO.",
+    rewindTo: passed ? null : "EDIT",
+    feedback: passed
+      ? ""
+      : [
+          bannedFound.length ? `Remove banned words: ${bannedFound.join(", ")}.` : "",
+          readabilityIssues.length ? "Shorten overloaded sentences so the piece scans cleanly." : "",
+          factMisspeaks.length ? factMisspeaks.map((f) => f.suggestedFix ?? f.issue).join(" ") : "",
+          !hasDisclaimer ? "Include the required disclaimer." : "",
+        ]
+          .filter(Boolean)
+          .join(" "),
   };
 }
 
@@ -544,6 +578,49 @@ function mockTechnicalSeo(ctx: StepContext): TechnicalSeoOutput {
   };
 }
 
+function mockShipCheck(ctx: StepContext): ShipCheckOutput {
+  const seo = ctx.priorOutputs.SEO as SeoOutput | undefined;
+  const technical = ctx.priorOutputs.TECHNICAL_SEO as TechnicalSeoOutput | undefined;
+  const body = seo?.body ?? "";
+
+  const checklist = [
+    { item: "Meta title present and under 60 characters", passed: !!seo?.metaTitle && seo.metaTitle.length <= 60 },
+    {
+      item: "Meta description present and under 160 characters",
+      passed: !!seo?.metaDescription && seo.metaDescription.length <= 160,
+    },
+    { item: "Primary keyword mapped", passed: !!seo?.primaryKeyword },
+    { item: "Answer blocks present", passed: (seo?.answerBlocks.length ?? 0) > 0 },
+    { item: "Slug present", passed: !!technical?.slug },
+    { item: "JSON-LD present", passed: !!technical?.schemaJsonLd && technical.schemaJsonLd !== "{}" },
+    { item: "Agent summary present", passed: !!technical?.agentSummary },
+    { item: "Key takeaways / TL;DR in body", passed: /key takeaways|tl;?dr/i.test(body) },
+    { item: "FAQ section in body", passed: /frequently asked|\n### .+\?/i.test(body) },
+  ];
+
+  const passed = checklist.every((c) => c.passed);
+  const failed = checklist.filter((c) => !c.passed).map((c) => c.item);
+  const rewindTo = !passed
+    ? failed.some((item) => /slug|json-ld|agent summary/i.test(item))
+      ? "TECHNICAL_SEO"
+      : failed.some((item) => /meta|keyword|answer/i.test(item))
+        ? "SEO"
+        : "EDIT"
+    : null;
+
+  return {
+    passed,
+    checklist,
+    notes: passed
+      ? "Ship check passed — package is ready for Final output."
+      : `Ship check failed: ${failed.join("; ")}.`,
+    rewindTo,
+    feedback: passed
+      ? ""
+      : `Fix before Final: ${failed.join("; ")}. Keep meta, schema, and body aligned.`,
+  };
+}
+
 function mockFinal(ctx: StepContext): FinalOutput {
   const seo = ctx.priorOutputs.SEO as SeoOutput | undefined;
   const technical = ctx.priorOutputs.TECHNICAL_SEO as TechnicalSeoOutput | undefined;
@@ -600,6 +677,7 @@ const executors: Record<PipelineStep, (ctx: StepContext) => StepOutput> = {
   QA: mockQa,
   SEO: mockSeo,
   TECHNICAL_SEO: mockTechnicalSeo,
+  SHIP_CHECK: mockShipCheck,
   FINAL: mockFinal,
 };
 

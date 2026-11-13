@@ -8,10 +8,10 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variants: Record<Variant, string> = {
-  primary: "bg-foreground text-background hover:opacity-90",
-  secondary: "border border-foreground/20 hover:bg-foreground/5",
-  ghost: "hover:bg-foreground/5",
-  danger: "bg-red-600 text-white hover:bg-red-700",
+  primary: "bg-gold text-gold-ink hover:bg-gold/90",
+  secondary: "border border-line bg-transparent text-foreground hover:border-gold/40 hover:bg-white/[0.03]",
+  ghost: "text-muted hover:bg-white/[0.04] hover:text-foreground",
+  danger: "bg-red-900/80 text-red-100 hover:bg-red-800",
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(

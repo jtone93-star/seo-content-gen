@@ -35,7 +35,7 @@ export default async function ProjectPage({ params }: Props) {
         <Link href="/" className="text-sm text-foreground/60 hover:text-foreground">
           ← Dashboard
         </Link>
-        <h1 className="text-2xl font-semibold mt-2">{project.topic}</h1>
+        <h1 className="text-3xl font-semibold tracking-tight mt-2">{project.topic}</h1>
         <p className="text-sm text-foreground/70 mt-1">
           {project.clientProfile.name} · {CONTENT_TYPE_LABELS[project.contentType]}
           {project.targetKeyword && ` · Keyword: ${project.targetKeyword}`}

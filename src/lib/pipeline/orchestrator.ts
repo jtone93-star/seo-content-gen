@@ -3,11 +3,18 @@ import { prisma } from "@/lib/prisma";
 import { PIPELINE_STEPS } from "./types";
 import type { StepContext, StepOutput } from "./types";
 import { runStep } from "./executor-registry";
+import { isQualityGate, MAX_QUALITY_LOOPS, parseQualityGate } from "./quality-loop";
 
 function nextStep(current: PipelineStep): PipelineStep | null {
   const idx = PIPELINE_STEPS.indexOf(current);
   if (idx < 0 || idx >= PIPELINE_STEPS.length - 1) return null;
   return PIPELINE_STEPS[idx + 1];
+}
+
+function downstreamSteps(step: PipelineStep): PipelineStep[] {
+  const idx = PIPELINE_STEPS.indexOf(step);
+  if (idx < 0) return [];
+  return PIPELINE_STEPS.slice(idx + 1);
 }
 
 async function loadPriorOutputs(projectId: string): Promise<Partial<Record<PipelineStep, StepOutput>>> {
@@ -25,7 +32,7 @@ async function loadPriorOutputs(projectId: string): Promise<Partial<Record<Pipel
   return byStep;
 }
 
-async function buildContext(projectId: string): Promise<StepContext> {
+async function buildContext(projectId: string, userFeedback?: string): Promise<StepContext> {
   const project = await prisma.contentProject.findUniqueOrThrow({
     where: { id: projectId },
     include: { clientProfile: true },
@@ -35,13 +42,18 @@ async function buildContext(projectId: string): Promise<StepContext> {
     project,
     client: project.clientProfile,
     priorOutputs: await loadPriorOutputs(projectId),
+    userFeedback,
   };
+}
+
+async function gateAttemptCount(projectId: string, step: PipelineStep): Promise<number> {
+  return prisma.stepArtifact.count({ where: { projectId, step } });
 }
 
 export async function executeStep(
   projectId: string,
   step: PipelineStep,
-  options?: { userFeedback?: string; version?: number },
+  options?: { userFeedback?: string; version?: number; qualityLoopUntil?: PipelineStep },
 ): Promise<void> {
   const project = await prisma.contentProject.findUniqueOrThrow({
     where: { id: projectId },
@@ -61,7 +73,7 @@ export async function executeStep(
     });
   }
 
-  const ctx = await buildContext(projectId);
+  const ctx = await buildContext(projectId, options?.userFeedback);
   const inputSnapshot = {
     topic: project.topic,
     targetKeyword: project.targetKeyword,
@@ -89,12 +101,71 @@ export async function executeStep(
     data: { status: "RUNNING", currentStep: step, errorMessage: null },
   });
 
+  let output: StepOutput;
   try {
-    const output = await runStep(ctx, step);
-    const isLast = step === "FINAL";
-    // In step-by-step mode, every stage—including final—requires explicit approval.
-    const pauseForReview = project.runMode === "STEP_BY_STEP";
+    output = await runStep(ctx, step);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Unknown error";
+    await prisma.stepArtifact.update({
+      where: { id: artifact.id },
+      data: { status: "REJECTED" },
+    });
+    await prisma.contentProject.update({
+      where: { id: projectId },
+      data: { status: "FAILED", errorMessage: message },
+    });
+    throw err;
+  }
 
+  const isLast = step === "FINAL";
+  const inQualityLoop = !!options?.qualityLoopUntil;
+  const pauseForReview =
+    project.runMode === "STEP_BY_STEP" && (!inQualityLoop || step === options.qualityLoopUntil);
+
+  if (isQualityGate(step)) {
+    const gate = parseQualityGate(step, output);
+    const attempts = await gateAttemptCount(projectId, step);
+    const canRewind = !gate.passed && !!gate.rewindTo && attempts < MAX_QUALITY_LOOPS;
+
+    if (canRewind && gate.rewindTo) {
+      await prisma.stepArtifact.update({
+        where: { id: artifact.id },
+        data: {
+          output: output as object,
+          status: "APPROVED",
+          approvedAt: new Date(),
+        },
+      });
+      await regenerateStep(projectId, gate.rewindTo, gate.feedback, step);
+      return;
+    }
+
+    const forceHuman = !gate.passed && attempts >= MAX_QUALITY_LOOPS;
+    const pause = pauseForReview || forceHuman;
+    await prisma.stepArtifact.update({
+      where: { id: artifact.id },
+      data: {
+        output: output as object,
+        status: pause ? "AWAITING_REVIEW" : "APPROVED",
+        approvedAt: pause ? null : new Date(),
+      },
+    });
+
+    if (pause) {
+      const loopNote = forceHuman
+        ? `${step === "QA" ? "QA & compliance" : "Ship check"} still failing after ${MAX_QUALITY_LOOPS} passes. Review the report, then approve to continue or regenerate a stage.`
+        : null;
+      await prisma.contentProject.update({
+        where: { id: projectId },
+        data: {
+          status: "PAUSED_FOR_REVIEW",
+          currentStep: step,
+          errorMessage: loopNote,
+        },
+      });
+      return;
+    }
+  } else {
     await prisma.stepArtifact.update({
       where: { id: artifact.id },
       data: {
@@ -119,22 +190,11 @@ export async function executeStep(
       });
       return;
     }
+  }
 
-    const following = nextStep(step);
-    if (following) {
-      await executeStep(projectId, following);
-    }
-  } catch (err) {
-    const message = err instanceof Error ? err.message : "Unknown error";
-    await prisma.stepArtifact.update({
-      where: { id: artifact.id },
-      data: { status: "REJECTED" },
-    });
-    await prisma.contentProject.update({
-      where: { id: projectId },
-      data: { status: "FAILED", errorMessage: message },
-    });
-    throw err;
+  const following = nextStep(step);
+  if (following) {
+    await executeStep(projectId, following, { qualityLoopUntil: options?.qualityLoopUntil });
   }
 }
 
@@ -169,24 +229,24 @@ export async function approveStep(projectId: string, step: PipelineStep): Promis
   if (!following) {
     await prisma.contentProject.update({
       where: { id: projectId },
-      data: { status: "COMPLETED" },
+      data: { status: "COMPLETED", errorMessage: null },
     });
     return;
   }
 
-  await executeStep(projectId, following);
-}
+  await prisma.contentProject.update({
+    where: { id: projectId },
+    data: { errorMessage: null },
+  });
 
-function downstreamSteps(step: PipelineStep): PipelineStep[] {
-  const idx = PIPELINE_STEPS.indexOf(step);
-  if (idx < 0) return [];
-  return PIPELINE_STEPS.slice(idx + 1);
+  await executeStep(projectId, following);
 }
 
 export async function regenerateStep(
   projectId: string,
   step: PipelineStep,
   userFeedback?: string,
+  qualityLoopUntil?: PipelineStep,
 ): Promise<void> {
   const later = downstreamSteps(step);
   if (later.length > 0) {
@@ -196,5 +256,5 @@ export async function regenerateStep(
     });
   }
 
-  await executeStep(projectId, step, { userFeedback });
+  await executeStep(projectId, step, { userFeedback, qualityLoopUntil });
 }
