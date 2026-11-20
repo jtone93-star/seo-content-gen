@@ -14,7 +14,8 @@ import type * as Prisma from "../internal/prismaNamespace"
 
 /**
  * Model OAuthAccount
- * 
+ * One Google connection per client. Tokens and the chosen GA4 property / Search Console
+ * site belong to that client only, so one client's data is never pulled for another.
  */
 export type OAuthAccountModel = runtime.Types.Result.DefaultSelection<Prisma.$OAuthAccountPayload>
 
@@ -26,7 +27,9 @@ export type AggregateOAuthAccount = {
 
 export type OAuthAccountMinAggregateOutputType = {
   id: string | null
+  clientId: string | null
   provider: string | null
+  accountEmail: string | null
   accessTokenCiphertext: string | null
   accessTokenIv: string | null
   accessTokenTag: string | null
@@ -36,6 +39,7 @@ export type OAuthAccountMinAggregateOutputType = {
   scope: string | null
   expiresAt: Date | null
   analyticsPropertyId: string | null
+  analyticsPropertyName: string | null
   searchConsoleSiteUrl: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -43,7 +47,9 @@ export type OAuthAccountMinAggregateOutputType = {
 
 export type OAuthAccountMaxAggregateOutputType = {
   id: string | null
+  clientId: string | null
   provider: string | null
+  accountEmail: string | null
   accessTokenCiphertext: string | null
   accessTokenIv: string | null
   accessTokenTag: string | null
@@ -53,6 +59,7 @@ export type OAuthAccountMaxAggregateOutputType = {
   scope: string | null
   expiresAt: Date | null
   analyticsPropertyId: string | null
+  analyticsPropertyName: string | null
   searchConsoleSiteUrl: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -60,7 +67,9 @@ export type OAuthAccountMaxAggregateOutputType = {
 
 export type OAuthAccountCountAggregateOutputType = {
   id: number
+  clientId: number
   provider: number
+  accountEmail: number
   accessTokenCiphertext: number
   accessTokenIv: number
   accessTokenTag: number
@@ -70,6 +79,7 @@ export type OAuthAccountCountAggregateOutputType = {
   scope: number
   expiresAt: number
   analyticsPropertyId: number
+  analyticsPropertyName: number
   searchConsoleSiteUrl: number
   createdAt: number
   updatedAt: number
@@ -79,7 +89,9 @@ export type OAuthAccountCountAggregateOutputType = {
 
 export type OAuthAccountMinAggregateInputType = {
   id?: true
+  clientId?: true
   provider?: true
+  accountEmail?: true
   accessTokenCiphertext?: true
   accessTokenIv?: true
   accessTokenTag?: true
@@ -89,6 +101,7 @@ export type OAuthAccountMinAggregateInputType = {
   scope?: true
   expiresAt?: true
   analyticsPropertyId?: true
+  analyticsPropertyName?: true
   searchConsoleSiteUrl?: true
   createdAt?: true
   updatedAt?: true
@@ -96,7 +109,9 @@ export type OAuthAccountMinAggregateInputType = {
 
 export type OAuthAccountMaxAggregateInputType = {
   id?: true
+  clientId?: true
   provider?: true
+  accountEmail?: true
   accessTokenCiphertext?: true
   accessTokenIv?: true
   accessTokenTag?: true
@@ -106,6 +121,7 @@ export type OAuthAccountMaxAggregateInputType = {
   scope?: true
   expiresAt?: true
   analyticsPropertyId?: true
+  analyticsPropertyName?: true
   searchConsoleSiteUrl?: true
   createdAt?: true
   updatedAt?: true
@@ -113,7 +129,9 @@ export type OAuthAccountMaxAggregateInputType = {
 
 export type OAuthAccountCountAggregateInputType = {
   id?: true
+  clientId?: true
   provider?: true
+  accountEmail?: true
   accessTokenCiphertext?: true
   accessTokenIv?: true
   accessTokenTag?: true
@@ -123,6 +141,7 @@ export type OAuthAccountCountAggregateInputType = {
   scope?: true
   expiresAt?: true
   analyticsPropertyId?: true
+  analyticsPropertyName?: true
   searchConsoleSiteUrl?: true
   createdAt?: true
   updatedAt?: true
@@ -203,7 +222,9 @@ export type OAuthAccountGroupByArgs<ExtArgs extends runtime.Types.Extensions.Int
 
 export type OAuthAccountGroupByOutputType = {
   id: string
+  clientId: string
   provider: string
+  accountEmail: string | null
   accessTokenCiphertext: string
   accessTokenIv: string
   accessTokenTag: string
@@ -213,6 +234,7 @@ export type OAuthAccountGroupByOutputType = {
   scope: string
   expiresAt: Date | null
   analyticsPropertyId: string | null
+  analyticsPropertyName: string | null
   searchConsoleSiteUrl: string | null
   createdAt: Date
   updatedAt: Date
@@ -241,7 +263,9 @@ export type OAuthAccountWhereInput = {
   OR?: Prisma.OAuthAccountWhereInput[]
   NOT?: Prisma.OAuthAccountWhereInput | Prisma.OAuthAccountWhereInput[]
   id?: Prisma.StringFilter<"OAuthAccount"> | string
+  clientId?: Prisma.StringFilter<"OAuthAccount"> | string
   provider?: Prisma.StringFilter<"OAuthAccount"> | string
+  accountEmail?: Prisma.StringNullableFilter<"OAuthAccount"> | string | null
   accessTokenCiphertext?: Prisma.StringFilter<"OAuthAccount"> | string
   accessTokenIv?: Prisma.StringFilter<"OAuthAccount"> | string
   accessTokenTag?: Prisma.StringFilter<"OAuthAccount"> | string
@@ -251,14 +275,18 @@ export type OAuthAccountWhereInput = {
   scope?: Prisma.StringFilter<"OAuthAccount"> | string
   expiresAt?: Prisma.DateTimeNullableFilter<"OAuthAccount"> | Date | string | null
   analyticsPropertyId?: Prisma.StringNullableFilter<"OAuthAccount"> | string | null
+  analyticsPropertyName?: Prisma.StringNullableFilter<"OAuthAccount"> | string | null
   searchConsoleSiteUrl?: Prisma.StringNullableFilter<"OAuthAccount"> | string | null
   createdAt?: Prisma.DateTimeFilter<"OAuthAccount"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"OAuthAccount"> | Date | string
+  client?: Prisma.XOR<Prisma.ClientProfileScalarRelationFilter, Prisma.ClientProfileWhereInput>
 }
 
 export type OAuthAccountOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  clientId?: Prisma.SortOrder
   provider?: Prisma.SortOrder
+  accountEmail?: Prisma.SortOrderInput | Prisma.SortOrder
   accessTokenCiphertext?: Prisma.SortOrder
   accessTokenIv?: Prisma.SortOrder
   accessTokenTag?: Prisma.SortOrder
@@ -268,17 +296,21 @@ export type OAuthAccountOrderByWithRelationInput = {
   scope?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   analyticsPropertyId?: Prisma.SortOrderInput | Prisma.SortOrder
+  analyticsPropertyName?: Prisma.SortOrderInput | Prisma.SortOrder
   searchConsoleSiteUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  client?: Prisma.ClientProfileOrderByWithRelationInput
 }
 
 export type OAuthAccountWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  clientId?: string
   AND?: Prisma.OAuthAccountWhereInput | Prisma.OAuthAccountWhereInput[]
   OR?: Prisma.OAuthAccountWhereInput[]
   NOT?: Prisma.OAuthAccountWhereInput | Prisma.OAuthAccountWhereInput[]
   provider?: Prisma.StringFilter<"OAuthAccount"> | string
+  accountEmail?: Prisma.StringNullableFilter<"OAuthAccount"> | string | null
   accessTokenCiphertext?: Prisma.StringFilter<"OAuthAccount"> | string
   accessTokenIv?: Prisma.StringFilter<"OAuthAccount"> | string
   accessTokenTag?: Prisma.StringFilter<"OAuthAccount"> | string
@@ -288,14 +320,18 @@ export type OAuthAccountWhereUniqueInput = Prisma.AtLeast<{
   scope?: Prisma.StringFilter<"OAuthAccount"> | string
   expiresAt?: Prisma.DateTimeNullableFilter<"OAuthAccount"> | Date | string | null
   analyticsPropertyId?: Prisma.StringNullableFilter<"OAuthAccount"> | string | null
+  analyticsPropertyName?: Prisma.StringNullableFilter<"OAuthAccount"> | string | null
   searchConsoleSiteUrl?: Prisma.StringNullableFilter<"OAuthAccount"> | string | null
   createdAt?: Prisma.DateTimeFilter<"OAuthAccount"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"OAuthAccount"> | Date | string
-}, "id">
+  client?: Prisma.XOR<Prisma.ClientProfileScalarRelationFilter, Prisma.ClientProfileWhereInput>
+}, "id" | "clientId">
 
 export type OAuthAccountOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  clientId?: Prisma.SortOrder
   provider?: Prisma.SortOrder
+  accountEmail?: Prisma.SortOrderInput | Prisma.SortOrder
   accessTokenCiphertext?: Prisma.SortOrder
   accessTokenIv?: Prisma.SortOrder
   accessTokenTag?: Prisma.SortOrder
@@ -305,6 +341,7 @@ export type OAuthAccountOrderByWithAggregationInput = {
   scope?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   analyticsPropertyId?: Prisma.SortOrderInput | Prisma.SortOrder
+  analyticsPropertyName?: Prisma.SortOrderInput | Prisma.SortOrder
   searchConsoleSiteUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -318,7 +355,9 @@ export type OAuthAccountScalarWhereWithAggregatesInput = {
   OR?: Prisma.OAuthAccountScalarWhereWithAggregatesInput[]
   NOT?: Prisma.OAuthAccountScalarWhereWithAggregatesInput | Prisma.OAuthAccountScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"OAuthAccount"> | string
+  clientId?: Prisma.StringWithAggregatesFilter<"OAuthAccount"> | string
   provider?: Prisma.StringWithAggregatesFilter<"OAuthAccount"> | string
+  accountEmail?: Prisma.StringNullableWithAggregatesFilter<"OAuthAccount"> | string | null
   accessTokenCiphertext?: Prisma.StringWithAggregatesFilter<"OAuthAccount"> | string
   accessTokenIv?: Prisma.StringWithAggregatesFilter<"OAuthAccount"> | string
   accessTokenTag?: Prisma.StringWithAggregatesFilter<"OAuthAccount"> | string
@@ -328,6 +367,7 @@ export type OAuthAccountScalarWhereWithAggregatesInput = {
   scope?: Prisma.StringWithAggregatesFilter<"OAuthAccount"> | string
   expiresAt?: Prisma.DateTimeNullableWithAggregatesFilter<"OAuthAccount"> | Date | string | null
   analyticsPropertyId?: Prisma.StringNullableWithAggregatesFilter<"OAuthAccount"> | string | null
+  analyticsPropertyName?: Prisma.StringNullableWithAggregatesFilter<"OAuthAccount"> | string | null
   searchConsoleSiteUrl?: Prisma.StringNullableWithAggregatesFilter<"OAuthAccount"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"OAuthAccount"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"OAuthAccount"> | Date | string
@@ -336,6 +376,7 @@ export type OAuthAccountScalarWhereWithAggregatesInput = {
 export type OAuthAccountCreateInput = {
   id?: string
   provider?: string
+  accountEmail?: string | null
   accessTokenCiphertext: string
   accessTokenIv: string
   accessTokenTag: string
@@ -345,14 +386,18 @@ export type OAuthAccountCreateInput = {
   scope: string
   expiresAt?: Date | string | null
   analyticsPropertyId?: string | null
+  analyticsPropertyName?: string | null
   searchConsoleSiteUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  client: Prisma.ClientProfileCreateNestedOneWithoutGoogleAccountInput
 }
 
 export type OAuthAccountUncheckedCreateInput = {
   id?: string
+  clientId: string
   provider?: string
+  accountEmail?: string | null
   accessTokenCiphertext: string
   accessTokenIv: string
   accessTokenTag: string
@@ -362,6 +407,7 @@ export type OAuthAccountUncheckedCreateInput = {
   scope: string
   expiresAt?: Date | string | null
   analyticsPropertyId?: string | null
+  analyticsPropertyName?: string | null
   searchConsoleSiteUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -370,6 +416,7 @@ export type OAuthAccountUncheckedCreateInput = {
 export type OAuthAccountUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   provider?: Prisma.StringFieldUpdateOperationsInput | string
+  accountEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accessTokenCiphertext?: Prisma.StringFieldUpdateOperationsInput | string
   accessTokenIv?: Prisma.StringFieldUpdateOperationsInput | string
   accessTokenTag?: Prisma.StringFieldUpdateOperationsInput | string
@@ -379,14 +426,18 @@ export type OAuthAccountUpdateInput = {
   scope?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   analyticsPropertyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  analyticsPropertyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   searchConsoleSiteUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  client?: Prisma.ClientProfileUpdateOneRequiredWithoutGoogleAccountNestedInput
 }
 
 export type OAuthAccountUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  clientId?: Prisma.StringFieldUpdateOperationsInput | string
   provider?: Prisma.StringFieldUpdateOperationsInput | string
+  accountEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accessTokenCiphertext?: Prisma.StringFieldUpdateOperationsInput | string
   accessTokenIv?: Prisma.StringFieldUpdateOperationsInput | string
   accessTokenTag?: Prisma.StringFieldUpdateOperationsInput | string
@@ -396,6 +447,7 @@ export type OAuthAccountUncheckedUpdateInput = {
   scope?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   analyticsPropertyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  analyticsPropertyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   searchConsoleSiteUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -403,7 +455,9 @@ export type OAuthAccountUncheckedUpdateInput = {
 
 export type OAuthAccountCreateManyInput = {
   id?: string
+  clientId: string
   provider?: string
+  accountEmail?: string | null
   accessTokenCiphertext: string
   accessTokenIv: string
   accessTokenTag: string
@@ -413,6 +467,7 @@ export type OAuthAccountCreateManyInput = {
   scope: string
   expiresAt?: Date | string | null
   analyticsPropertyId?: string | null
+  analyticsPropertyName?: string | null
   searchConsoleSiteUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -421,6 +476,7 @@ export type OAuthAccountCreateManyInput = {
 export type OAuthAccountUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   provider?: Prisma.StringFieldUpdateOperationsInput | string
+  accountEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accessTokenCiphertext?: Prisma.StringFieldUpdateOperationsInput | string
   accessTokenIv?: Prisma.StringFieldUpdateOperationsInput | string
   accessTokenTag?: Prisma.StringFieldUpdateOperationsInput | string
@@ -430,6 +486,7 @@ export type OAuthAccountUpdateManyMutationInput = {
   scope?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   analyticsPropertyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  analyticsPropertyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   searchConsoleSiteUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -437,7 +494,9 @@ export type OAuthAccountUpdateManyMutationInput = {
 
 export type OAuthAccountUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  clientId?: Prisma.StringFieldUpdateOperationsInput | string
   provider?: Prisma.StringFieldUpdateOperationsInput | string
+  accountEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accessTokenCiphertext?: Prisma.StringFieldUpdateOperationsInput | string
   accessTokenIv?: Prisma.StringFieldUpdateOperationsInput | string
   accessTokenTag?: Prisma.StringFieldUpdateOperationsInput | string
@@ -447,14 +506,22 @@ export type OAuthAccountUncheckedUpdateManyInput = {
   scope?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   analyticsPropertyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  analyticsPropertyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   searchConsoleSiteUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+export type OAuthAccountNullableScalarRelationFilter = {
+  is?: Prisma.OAuthAccountWhereInput | null
+  isNot?: Prisma.OAuthAccountWhereInput | null
+}
+
 export type OAuthAccountCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  clientId?: Prisma.SortOrder
   provider?: Prisma.SortOrder
+  accountEmail?: Prisma.SortOrder
   accessTokenCiphertext?: Prisma.SortOrder
   accessTokenIv?: Prisma.SortOrder
   accessTokenTag?: Prisma.SortOrder
@@ -464,6 +531,7 @@ export type OAuthAccountCountOrderByAggregateInput = {
   scope?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   analyticsPropertyId?: Prisma.SortOrder
+  analyticsPropertyName?: Prisma.SortOrder
   searchConsoleSiteUrl?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -471,7 +539,9 @@ export type OAuthAccountCountOrderByAggregateInput = {
 
 export type OAuthAccountMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  clientId?: Prisma.SortOrder
   provider?: Prisma.SortOrder
+  accountEmail?: Prisma.SortOrder
   accessTokenCiphertext?: Prisma.SortOrder
   accessTokenIv?: Prisma.SortOrder
   accessTokenTag?: Prisma.SortOrder
@@ -481,6 +551,7 @@ export type OAuthAccountMaxOrderByAggregateInput = {
   scope?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   analyticsPropertyId?: Prisma.SortOrder
+  analyticsPropertyName?: Prisma.SortOrder
   searchConsoleSiteUrl?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -488,7 +559,9 @@ export type OAuthAccountMaxOrderByAggregateInput = {
 
 export type OAuthAccountMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  clientId?: Prisma.SortOrder
   provider?: Prisma.SortOrder
+  accountEmail?: Prisma.SortOrder
   accessTokenCiphertext?: Prisma.SortOrder
   accessTokenIv?: Prisma.SortOrder
   accessTokenTag?: Prisma.SortOrder
@@ -498,16 +571,143 @@ export type OAuthAccountMinOrderByAggregateInput = {
   scope?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   analyticsPropertyId?: Prisma.SortOrder
+  analyticsPropertyName?: Prisma.SortOrder
   searchConsoleSiteUrl?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type OAuthAccountCreateNestedOneWithoutClientInput = {
+  create?: Prisma.XOR<Prisma.OAuthAccountCreateWithoutClientInput, Prisma.OAuthAccountUncheckedCreateWithoutClientInput>
+  connectOrCreate?: Prisma.OAuthAccountCreateOrConnectWithoutClientInput
+  connect?: Prisma.OAuthAccountWhereUniqueInput
+}
+
+export type OAuthAccountUncheckedCreateNestedOneWithoutClientInput = {
+  create?: Prisma.XOR<Prisma.OAuthAccountCreateWithoutClientInput, Prisma.OAuthAccountUncheckedCreateWithoutClientInput>
+  connectOrCreate?: Prisma.OAuthAccountCreateOrConnectWithoutClientInput
+  connect?: Prisma.OAuthAccountWhereUniqueInput
+}
+
+export type OAuthAccountUpdateOneWithoutClientNestedInput = {
+  create?: Prisma.XOR<Prisma.OAuthAccountCreateWithoutClientInput, Prisma.OAuthAccountUncheckedCreateWithoutClientInput>
+  connectOrCreate?: Prisma.OAuthAccountCreateOrConnectWithoutClientInput
+  upsert?: Prisma.OAuthAccountUpsertWithoutClientInput
+  disconnect?: Prisma.OAuthAccountWhereInput | boolean
+  delete?: Prisma.OAuthAccountWhereInput | boolean
+  connect?: Prisma.OAuthAccountWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OAuthAccountUpdateToOneWithWhereWithoutClientInput, Prisma.OAuthAccountUpdateWithoutClientInput>, Prisma.OAuthAccountUncheckedUpdateWithoutClientInput>
+}
+
+export type OAuthAccountUncheckedUpdateOneWithoutClientNestedInput = {
+  create?: Prisma.XOR<Prisma.OAuthAccountCreateWithoutClientInput, Prisma.OAuthAccountUncheckedCreateWithoutClientInput>
+  connectOrCreate?: Prisma.OAuthAccountCreateOrConnectWithoutClientInput
+  upsert?: Prisma.OAuthAccountUpsertWithoutClientInput
+  disconnect?: Prisma.OAuthAccountWhereInput | boolean
+  delete?: Prisma.OAuthAccountWhereInput | boolean
+  connect?: Prisma.OAuthAccountWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OAuthAccountUpdateToOneWithWhereWithoutClientInput, Prisma.OAuthAccountUpdateWithoutClientInput>, Prisma.OAuthAccountUncheckedUpdateWithoutClientInput>
+}
+
+export type OAuthAccountCreateWithoutClientInput = {
+  id?: string
+  provider?: string
+  accountEmail?: string | null
+  accessTokenCiphertext: string
+  accessTokenIv: string
+  accessTokenTag: string
+  refreshTokenCiphertext?: string | null
+  refreshTokenIv?: string | null
+  refreshTokenTag?: string | null
+  scope: string
+  expiresAt?: Date | string | null
+  analyticsPropertyId?: string | null
+  analyticsPropertyName?: string | null
+  searchConsoleSiteUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type OAuthAccountUncheckedCreateWithoutClientInput = {
+  id?: string
+  provider?: string
+  accountEmail?: string | null
+  accessTokenCiphertext: string
+  accessTokenIv: string
+  accessTokenTag: string
+  refreshTokenCiphertext?: string | null
+  refreshTokenIv?: string | null
+  refreshTokenTag?: string | null
+  scope: string
+  expiresAt?: Date | string | null
+  analyticsPropertyId?: string | null
+  analyticsPropertyName?: string | null
+  searchConsoleSiteUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type OAuthAccountCreateOrConnectWithoutClientInput = {
+  where: Prisma.OAuthAccountWhereUniqueInput
+  create: Prisma.XOR<Prisma.OAuthAccountCreateWithoutClientInput, Prisma.OAuthAccountUncheckedCreateWithoutClientInput>
+}
+
+export type OAuthAccountUpsertWithoutClientInput = {
+  update: Prisma.XOR<Prisma.OAuthAccountUpdateWithoutClientInput, Prisma.OAuthAccountUncheckedUpdateWithoutClientInput>
+  create: Prisma.XOR<Prisma.OAuthAccountCreateWithoutClientInput, Prisma.OAuthAccountUncheckedCreateWithoutClientInput>
+  where?: Prisma.OAuthAccountWhereInput
+}
+
+export type OAuthAccountUpdateToOneWithWhereWithoutClientInput = {
+  where?: Prisma.OAuthAccountWhereInput
+  data: Prisma.XOR<Prisma.OAuthAccountUpdateWithoutClientInput, Prisma.OAuthAccountUncheckedUpdateWithoutClientInput>
+}
+
+export type OAuthAccountUpdateWithoutClientInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  provider?: Prisma.StringFieldUpdateOperationsInput | string
+  accountEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accessTokenCiphertext?: Prisma.StringFieldUpdateOperationsInput | string
+  accessTokenIv?: Prisma.StringFieldUpdateOperationsInput | string
+  accessTokenTag?: Prisma.StringFieldUpdateOperationsInput | string
+  refreshTokenCiphertext?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  refreshTokenIv?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  refreshTokenTag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scope?: Prisma.StringFieldUpdateOperationsInput | string
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  analyticsPropertyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  analyticsPropertyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  searchConsoleSiteUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type OAuthAccountUncheckedUpdateWithoutClientInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  provider?: Prisma.StringFieldUpdateOperationsInput | string
+  accountEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accessTokenCiphertext?: Prisma.StringFieldUpdateOperationsInput | string
+  accessTokenIv?: Prisma.StringFieldUpdateOperationsInput | string
+  accessTokenTag?: Prisma.StringFieldUpdateOperationsInput | string
+  refreshTokenCiphertext?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  refreshTokenIv?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  refreshTokenTag?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scope?: Prisma.StringFieldUpdateOperationsInput | string
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  analyticsPropertyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  analyticsPropertyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  searchConsoleSiteUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
 
 export type OAuthAccountSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  clientId?: boolean
   provider?: boolean
+  accountEmail?: boolean
   accessTokenCiphertext?: boolean
   accessTokenIv?: boolean
   accessTokenTag?: boolean
@@ -517,14 +717,18 @@ export type OAuthAccountSelect<ExtArgs extends runtime.Types.Extensions.Internal
   scope?: boolean
   expiresAt?: boolean
   analyticsPropertyId?: boolean
+  analyticsPropertyName?: boolean
   searchConsoleSiteUrl?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  client?: boolean | Prisma.ClientProfileDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["oAuthAccount"]>
 
 export type OAuthAccountSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  clientId?: boolean
   provider?: boolean
+  accountEmail?: boolean
   accessTokenCiphertext?: boolean
   accessTokenIv?: boolean
   accessTokenTag?: boolean
@@ -534,14 +738,18 @@ export type OAuthAccountSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   scope?: boolean
   expiresAt?: boolean
   analyticsPropertyId?: boolean
+  analyticsPropertyName?: boolean
   searchConsoleSiteUrl?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  client?: boolean | Prisma.ClientProfileDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["oAuthAccount"]>
 
 export type OAuthAccountSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  clientId?: boolean
   provider?: boolean
+  accountEmail?: boolean
   accessTokenCiphertext?: boolean
   accessTokenIv?: boolean
   accessTokenTag?: boolean
@@ -551,14 +759,18 @@ export type OAuthAccountSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   scope?: boolean
   expiresAt?: boolean
   analyticsPropertyId?: boolean
+  analyticsPropertyName?: boolean
   searchConsoleSiteUrl?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  client?: boolean | Prisma.ClientProfileDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["oAuthAccount"]>
 
 export type OAuthAccountSelectScalar = {
   id?: boolean
+  clientId?: boolean
   provider?: boolean
+  accountEmail?: boolean
   accessTokenCiphertext?: boolean
   accessTokenIv?: boolean
   accessTokenTag?: boolean
@@ -568,19 +780,36 @@ export type OAuthAccountSelectScalar = {
   scope?: boolean
   expiresAt?: boolean
   analyticsPropertyId?: boolean
+  analyticsPropertyName?: boolean
   searchConsoleSiteUrl?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type OAuthAccountOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "provider" | "accessTokenCiphertext" | "accessTokenIv" | "accessTokenTag" | "refreshTokenCiphertext" | "refreshTokenIv" | "refreshTokenTag" | "scope" | "expiresAt" | "analyticsPropertyId" | "searchConsoleSiteUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["oAuthAccount"]>
+export type OAuthAccountOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "clientId" | "provider" | "accountEmail" | "accessTokenCiphertext" | "accessTokenIv" | "accessTokenTag" | "refreshTokenCiphertext" | "refreshTokenIv" | "refreshTokenTag" | "scope" | "expiresAt" | "analyticsPropertyId" | "analyticsPropertyName" | "searchConsoleSiteUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["oAuthAccount"]>
+export type OAuthAccountInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  client?: boolean | Prisma.ClientProfileDefaultArgs<ExtArgs>
+}
+export type OAuthAccountIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  client?: boolean | Prisma.ClientProfileDefaultArgs<ExtArgs>
+}
+export type OAuthAccountIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  client?: boolean | Prisma.ClientProfileDefaultArgs<ExtArgs>
+}
 
 export type $OAuthAccountPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "OAuthAccount"
-  objects: {}
+  objects: {
+    client: Prisma.$ClientProfilePayload<ExtArgs>
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    clientId: string
     provider: string
+    /**
+     * Google account that signed in for this client.
+     */
+    accountEmail: string | null
     accessTokenCiphertext: string
     accessTokenIv: string
     accessTokenTag: string
@@ -590,6 +819,7 @@ export type $OAuthAccountPayload<ExtArgs extends runtime.Types.Extensions.Intern
     scope: string
     expiresAt: Date | null
     analyticsPropertyId: string | null
+    analyticsPropertyName: string | null
     searchConsoleSiteUrl: string | null
     createdAt: Date
     updatedAt: Date
@@ -987,6 +1217,7 @@ readonly fields: OAuthAccountFieldRefs;
  */
 export interface Prisma__OAuthAccountClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  client<T extends Prisma.ClientProfileDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClientProfileDefaultArgs<ExtArgs>>): Prisma.Prisma__ClientProfileClient<runtime.Types.Result.GetResult<Prisma.$ClientProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1017,7 +1248,9 @@ export interface Prisma__OAuthAccountClient<T, Null = never, ExtArgs extends run
  */
 export interface OAuthAccountFieldRefs {
   readonly id: Prisma.FieldRef<"OAuthAccount", 'String'>
+  readonly clientId: Prisma.FieldRef<"OAuthAccount", 'String'>
   readonly provider: Prisma.FieldRef<"OAuthAccount", 'String'>
+  readonly accountEmail: Prisma.FieldRef<"OAuthAccount", 'String'>
   readonly accessTokenCiphertext: Prisma.FieldRef<"OAuthAccount", 'String'>
   readonly accessTokenIv: Prisma.FieldRef<"OAuthAccount", 'String'>
   readonly accessTokenTag: Prisma.FieldRef<"OAuthAccount", 'String'>
@@ -1027,6 +1260,7 @@ export interface OAuthAccountFieldRefs {
   readonly scope: Prisma.FieldRef<"OAuthAccount", 'String'>
   readonly expiresAt: Prisma.FieldRef<"OAuthAccount", 'DateTime'>
   readonly analyticsPropertyId: Prisma.FieldRef<"OAuthAccount", 'String'>
+  readonly analyticsPropertyName: Prisma.FieldRef<"OAuthAccount", 'String'>
   readonly searchConsoleSiteUrl: Prisma.FieldRef<"OAuthAccount", 'String'>
   readonly createdAt: Prisma.FieldRef<"OAuthAccount", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"OAuthAccount", 'DateTime'>
@@ -1047,6 +1281,10 @@ export type OAuthAccountFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.
    */
   omit?: Prisma.OAuthAccountOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OAuthAccountInclude<ExtArgs> | null
+  /**
    * Filter, which OAuthAccount to fetch.
    */
   where: Prisma.OAuthAccountWhereUniqueInput
@@ -1065,6 +1303,10 @@ export type OAuthAccountFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Exte
    */
   omit?: Prisma.OAuthAccountOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OAuthAccountInclude<ExtArgs> | null
+  /**
    * Filter, which OAuthAccount to fetch.
    */
   where: Prisma.OAuthAccountWhereUniqueInput
@@ -1082,6 +1324,10 @@ export type OAuthAccountFindFirstArgs<ExtArgs extends runtime.Types.Extensions.I
    * Omit specific fields from the OAuthAccount
    */
   omit?: Prisma.OAuthAccountOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OAuthAccountInclude<ExtArgs> | null
   /**
    * Filter, which OAuthAccount to fetch.
    */
@@ -1131,6 +1377,10 @@ export type OAuthAccountFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Exten
    */
   omit?: Prisma.OAuthAccountOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OAuthAccountInclude<ExtArgs> | null
+  /**
    * Filter, which OAuthAccount to fetch.
    */
   where?: Prisma.OAuthAccountWhereInput
@@ -1178,6 +1428,10 @@ export type OAuthAccountFindManyArgs<ExtArgs extends runtime.Types.Extensions.In
    * Omit specific fields from the OAuthAccount
    */
   omit?: Prisma.OAuthAccountOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OAuthAccountInclude<ExtArgs> | null
   /**
    * Filter, which OAuthAccounts to fetch.
    */
@@ -1227,6 +1481,10 @@ export type OAuthAccountCreateArgs<ExtArgs extends runtime.Types.Extensions.Inte
    */
   omit?: Prisma.OAuthAccountOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OAuthAccountInclude<ExtArgs> | null
+  /**
    * The data needed to create a OAuthAccount.
    */
   data: Prisma.XOR<Prisma.OAuthAccountCreateInput, Prisma.OAuthAccountUncheckedCreateInput>
@@ -1260,6 +1518,10 @@ export type OAuthAccountCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Ex
    */
   data: Prisma.OAuthAccountCreateManyInput | Prisma.OAuthAccountCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OAuthAccountIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1274,6 +1536,10 @@ export type OAuthAccountUpdateArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Omit specific fields from the OAuthAccount
    */
   omit?: Prisma.OAuthAccountOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OAuthAccountInclude<ExtArgs> | null
   /**
    * The data needed to update a OAuthAccount.
    */
@@ -1326,6 +1592,10 @@ export type OAuthAccountUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Ex
    * Limit how many OAuthAccounts to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OAuthAccountIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1340,6 +1610,10 @@ export type OAuthAccountUpsertArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Omit specific fields from the OAuthAccount
    */
   omit?: Prisma.OAuthAccountOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OAuthAccountInclude<ExtArgs> | null
   /**
    * The filter to search for the OAuthAccount to update in case it exists.
    */
@@ -1366,6 +1640,10 @@ export type OAuthAccountDeleteArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Omit specific fields from the OAuthAccount
    */
   omit?: Prisma.OAuthAccountOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OAuthAccountInclude<ExtArgs> | null
   /**
    * Filter which OAuthAccount to delete.
    */
@@ -1398,4 +1676,8 @@ export type OAuthAccountDefaultArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Omit specific fields from the OAuthAccount
    */
   omit?: Prisma.OAuthAccountOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OAuthAccountInclude<ExtArgs> | null
 }

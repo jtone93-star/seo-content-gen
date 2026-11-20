@@ -112,7 +112,7 @@ export async function analyzeStrategy(strategyId: string) {
   });
   if (!strategy) throw new StrategyError("Strategy not found.");
   if (strategy.lifecycle !== "LIVING") {
-    throw new StrategyError("Restore this as the living strategy before generating recommendations.");
+    throw new StrategyError("Restore this strategy before generating recommendations.");
   }
 
   await prisma.strategy.update({
@@ -252,7 +252,7 @@ export async function createCycle(strategyId: string, year: number, month: numbe
     include: { clientProfile: true },
   });
   if (!strategy) throw new StrategyError("Strategy not found.");
-  if (strategy.lifecycle !== "LIVING") throw new StrategyError("Cycles can only be added on the living strategy.");
+  if (strategy.lifecycle !== "LIVING") throw new StrategyError("Cycles can only be added on the current strategy.");
   const billingDay = strategy.clientProfile.billingDay;
   if (!billingDay) throw new StrategyError("Set a billing day (1–28) on the client before creating cycles.");
 
@@ -362,7 +362,7 @@ export async function assignToCycle(cycleId: string, recommendationIds: string[]
     include: { strategy: true, items: true },
   });
   if (!cycle) throw new StrategyError("Cycle not found.");
-  if (cycle.strategy.lifecycle !== "LIVING") throw new StrategyError("Assign items on the living strategy.");
+  if (cycle.strategy.lifecycle !== "LIVING") throw new StrategyError("Assign items on the current strategy.");
 
   const recs = await prisma.strategyRecommendation.findMany({
     where: { id: { in: recommendationIds }, strategyId: cycle.strategyId },
@@ -464,7 +464,7 @@ export async function startCycleWork(cycleId: string, cycleItemIds?: string[]) {
   });
   if (!cycle) throw new StrategyError("Cycle not found.");
   if (cycle.strategy.lifecycle !== "LIVING") {
-    throw new StrategyError("Start work from the living strategy.");
+    throw new StrategyError("Start work from the current strategy.");
   }
 
   const selected = cycleItemIds?.length

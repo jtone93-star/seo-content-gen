@@ -2,7 +2,7 @@
 
 ## Overview
 
-SEO Turtle Tool is a **Next.js** application with a **PostgreSQL** database (Prisma), a **sequential SEO content pipeline**, **site audits**, a **living strategy** module, and a **Postgres-backed job record** that is processed **inline in the API request** (Vercel-friendly). An optional local `npm run worker` can still drain leftover PENDING jobs.
+SEO Turtle Tool is a **Next.js** application with a **PostgreSQL** database (Prisma), a **sequential SEO content pipeline**, **site audits**, a **strategy** module, and a **Postgres-backed job record** that is processed **inline in the API request** (Vercel-friendly). An optional local `npm run worker` can still drain leftover PENDING jobs.
 
 ```text
 ┌─────────────┐   enqueue + run    ┌──────────────┐
@@ -36,14 +36,14 @@ Production: **Vercel** (web + inline jobs) + **Supabase** (Postgres) + **Deploym
 | `ModelSlot` | Per-step AI provider/model (`anthropic` or `gemini` + model id, or mock when disabled) |
 | `AppCredential` | One encrypted BYO API key per provider (`anthropic`, `gemini`; AES-256-GCM via `APP_ENCRYPTION_KEY`) |
 | `Audit` | Diagnostic pipeline; findings pack feeds strategy |
-| `Strategy` | One living plan per client (`LIVING` / `PAST`); restorable history |
+| `Strategy` | One current plan per client (`LIVING` / `PAST`); restorable history |
 | `StrategyKpi` | Catalog metric with baseline, target, current |
 | `StrategyRecommendation` | Typed play: proposed → backlog → scheduled → done |
 | `Cycle` / `CycleItem` | Manual monthly windows from billing day; start content or tech |
 | `StrategyModelSlot` | Claude / mock configuration for strategy synthesis (set via global AI defaults) |
-| `OAuthAccount` | Encrypted Google OAuth tokens and selected GA4/GSC resources |
+| `OAuthAccount` | One Google connection per client (`clientId` unique): encrypted OAuth tokens, signed-in account email, and that client's GA4 property / GSC site |
 
-## Living strategy flow
+## Strategy flow
 
 1. A client has at most one `Strategy` with `lifecycle = LIVING`. Creating another archives the current row to Past Strategies (`PAST`); restore swaps them.
 2. Structured KPIs are chosen from a fixed catalog (`src/lib/strategy/kpi-catalog.ts`). Currents sync from linked audit GA4/GSC summaries and from completed cycle items.
@@ -119,19 +119,20 @@ Optional `npm run worker` still claims PENDING jobs (local leftover drain / futu
 | GET | `/api/settings/anthropic-models` | List Claude models available to the connected key |
 | GET/PATCH | `/api/settings/ai-defaults` | Claude-first global model — applies to strategy, audit, and content slots |
 | GET | `/api/settings/gemini-models` | Legacy: list Gemini models (hidden from operator UI) |
-| POST | `/api/strategies` | Create living strategy (archives previous) |
-| GET/PATCH | `/api/strategies/[id]` | Load / update living or past strategy |
+| POST | `/api/strategies` | Create strategy (archives previous) |
+| GET/PATCH | `/api/strategies/[id]` | Load / update current or past strategy |
 | POST | `/api/strategies/[id]/analyze` | Generate recommendations inline |
-| POST | `/api/strategies/[id]/restore` | Restore a past strategy as living |
+| POST | `/api/strategies/[id]/restore` | Restore a past strategy as current |
 | POST | `/api/strategies/[id]/recommendations` | Approve/reject into backlog |
 | POST | `/api/strategies/[id]/cycles` | Create one month or next N cycles |
 | POST | `/api/strategies/[id]/cycles/[cycleId]/assign` | Schedule backlog items |
 | POST | `/api/strategies/[id]/cycles/[cycleId]/start` | Start all or selected work |
 | GET | `/api/strategies/[id]/cycles/[cycleId]/export` | Excel work package |
 | PATCH | `/api/settings/strategy-model` | Claude / Gemini / mock for strategy synthesis |
-| GET | `/api/google/oauth/start` | Start Google OAuth |
-| GET | `/api/google/oauth/callback` | Store encrypted Google OAuth tokens |
-| GET/PATCH | `/api/google/properties` | List/select GA4 property and GSC site |
+| GET | `/api/google/oauth/start?clientId=` | Start Google OAuth for one client (client id travels in the signed state) |
+| GET | `/api/google/oauth/callback` | Store encrypted Google OAuth tokens on that client |
+| GET/POST/DELETE | `/api/clients/[id]/google` | That client's connection: status + available GA4/GSC resources, save selection, disconnect |
+| POST | `/api/audits/[id]/sources/google` | Sync GA4/GSC summaries from the audit's own client connection |
 | POST | `/api/auth/login` | App password login (sets session cookie) |
 | POST | `/api/auth/logout` | Clear session cookie |
 

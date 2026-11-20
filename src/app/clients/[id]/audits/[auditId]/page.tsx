@@ -8,7 +8,7 @@ type Props = { params: Promise<{ id: string; auditId: string }> };
 
 export default async function AuditDetailPage({ params }: Props) {
   const { id, auditId } = await params;
-  const [audit, modelSlots] = await Promise.all([
+  const [audit, modelSlots, google] = await Promise.all([
     prisma.audit.findFirst({
       where: { id: auditId, clientProfileId: id },
       include: {
@@ -19,9 +19,19 @@ export default async function AuditDetailPage({ params }: Props) {
       },
     }),
     prisma.auditModelSlot.findMany(),
+    // The Google connection that belongs to this audit's client.
+    prisma.oAuthAccount.findUnique({
+      where: { clientId: id },
+      select: {
+        accountEmail: true,
+        analyticsPropertyId: true,
+        analyticsPropertyName: true,
+        searchConsoleSiteUrl: true,
+      },
+    }),
   ]);
 
   if (!audit) notFound();
 
-  return <AuditPipeline audit={audit} modelSlots={modelSlots} clientId={id} />;
+  return <AuditPipeline audit={audit} modelSlots={modelSlots} clientId={id} google={google} />;
 }

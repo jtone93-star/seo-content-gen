@@ -57,7 +57,7 @@ export default async function ModelSettingsPage() {
       <div>
         <h1 className="text-3xl font-semibold tracking-tight">AI models</h1>
         <p className="text-sm text-foreground/70">
-          Connect Claude and choose one model for living strategy, site audits, and content. Switch
+          Connect Claude and choose one model for strategy, site audits, and content. Switch
           tiers anytime (for example Sonnet → Opus) without reconfiguring each stage.
         </p>
       </div>

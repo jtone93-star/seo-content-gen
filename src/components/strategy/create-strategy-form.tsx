@@ -71,9 +71,9 @@ export function CreateStrategyForm({
     <Card>
       <form onSubmit={onSubmit} className="space-y-4">
         <div>
-          <h3 className="font-medium">Start the living strategy</h3>
+          <h3 className="font-medium">Start the strategy</h3>
           <p className="text-sm text-foreground/65 mt-1">
-            Creating a new living strategy automatically moves the current one to Past Strategies.
+            Creating a new strategy automatically moves the current one to Past Strategies.
           </p>
         </div>
         <div>
@@ -134,7 +134,7 @@ export function CreateStrategyForm({
         </div>
         {error && <p className="text-sm text-red-400">{error}</p>}
         <Button type="submit" disabled={loading}>
-          {loading ? "Creating…" : "Create living strategy"}
+          {loading ? "Creating…" : "Create strategy"}
         </Button>
       </form>
     </Card>

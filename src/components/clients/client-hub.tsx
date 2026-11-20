@@ -10,6 +10,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { CONTENT_TYPE_LABELS } from "@/lib/pipeline/types";
 import { StrategyPanel, type HubStrategy } from "@/components/strategy/strategy-panel";
+import { ClientGoogleCard } from "@/components/clients/client-google-card";
 import { ClientInfoButton } from "@/components/clients/client-info-panel";
 import { KpiDashboard } from "@/components/strategy/kpi-dashboard";
 import { partitionCycles } from "@/lib/strategy/cycles";
@@ -35,6 +36,7 @@ export function ClientHub({
   living,
   past,
   initialTab,
+  googleSignInFailed,
 }: {
   client: ClientProfile;
   audits: Audit[];
@@ -42,6 +44,7 @@ export function ClientHub({
   living: HubStrategy | null;
   past: HubStrategy[];
   initialTab?: string;
+  googleSignInFailed?: boolean;
 }) {
   const router = useRouter();
   // Default landing is Overview; only honor an explicit valid ?tab=
@@ -126,6 +129,7 @@ export function ClientHub({
           setBillingDay={setBillingDay}
           savingDay={savingDay}
           saveBillingDay={saveBillingDay}
+          googleSignInFailed={googleSignInFailed}
           onTab={go}
         />
       )}
@@ -154,6 +158,7 @@ function OverviewTab({
   setBillingDay,
   savingDay,
   saveBillingDay,
+  googleSignInFailed,
   onTab,
 }: {
   client: ClientProfile;
@@ -164,6 +169,7 @@ function OverviewTab({
   setBillingDay: (v: string) => void;
   savingDay: boolean;
   saveBillingDay: () => void;
+  googleSignInFailed?: boolean;
   onTab: (tab: TabId) => void;
 }) {
   return (
@@ -184,7 +190,7 @@ function OverviewTab({
         </Card>
         <Card>
           <p className="text-4xl font-semibold tracking-tight tabular-nums">{living ? living.recommendations.length : 0}</p>
-          <p className="text-sm text-foreground/60">Living strategy recs</p>
+          <p className="text-sm text-foreground/60">Strategy recs</p>
         </Card>
         <Card>
           <p className="text-4xl font-semibold tracking-tight tabular-nums">{projects.length}</p>
@@ -238,12 +244,18 @@ function OverviewTab({
         </div>
       </Card>
 
+      <ClientGoogleCard
+        clientId={client.id}
+        clientName={client.name}
+        signInFailed={googleSignInFailed}
+      />
+
       {living ? (
         <WorkSnapshot living={living} billingDay={client.billingDay} onTab={onTab} />
       ) : (
         <Card>
           <p className="text-sm text-foreground/70">
-            No living strategy yet.{" "}
+            No strategy yet.{" "}
             <button type="button" className="font-medium hover:underline" onClick={() => onTab("strategy")}>
               Create one
             </button>{" "}
@@ -269,7 +281,7 @@ function WorkSnapshot({
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h2 className="font-medium">Living strategy · {living.name}</h2>
+        <h2 className="font-medium">Strategy · {living.name}</h2>
         <button type="button" className="text-sm hover:underline" onClick={() => onTab("strategy")}>
           Open strategy
         </button>
@@ -308,7 +320,7 @@ function PerformanceTab({
     return (
       <Card>
         <p className="text-sm text-foreground/70">
-          Performance tracks goals once a living strategy exists.{" "}
+          Performance tracks goals once a strategy exists.{" "}
           <button type="button" className="font-medium hover:underline" onClick={() => onTab("strategy")}>
             Create one
           </button>{" "}

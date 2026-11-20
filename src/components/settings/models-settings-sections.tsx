@@ -109,7 +109,7 @@ export function ModelsSettingsSections({
         <div>
           <h3 className="font-medium">Default for everything</h3>
           <p className="text-sm text-foreground/65 mt-1">
-            One click sets living strategy, every audit stage, and every content pipeline stage.
+            One click sets strategy, every audit stage, and every content pipeline stage.
             You can still override any section or stage below.
           </p>
         </div>
@@ -142,7 +142,7 @@ export function ModelsSettingsSections({
       </div>
 
       <div className="space-y-4">
-        <h2 className="text-lg font-medium">Living strategy</h2>
+        <h2 className="text-lg font-medium">Strategy</h2>
         <StrategyModelSlotForm
           slot={strategySlot}
           anthropicConnected={anthropicConnected}

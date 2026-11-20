@@ -95,7 +95,7 @@ export function ClaudeDefaultsForm({
         </Badge>
       </div>
       <p className="text-sm text-foreground/70">
-        One Claude model powers living strategy, site audits, and the content pipeline. Use Mock for
+        One Claude model powers strategy, site audits, and the content pipeline. Use Mock for
         free dry runs. Switch to a higher-tier model (for example Opus) when a job needs more depth.
       </p>
 

@@ -46,7 +46,7 @@ export function StrategyModelSlotForm({
   return (
     <div className="rounded-xl border border-line p-4 space-y-3">
       <div className="flex items-center gap-2">
-        <h3 className="font-medium">Living strategy synthesis</h3>
+        <h3 className="font-medium">Strategy synthesis</h3>
         <Badge className={slot?.enabled ? "bg-gold/15 text-gold" : ""}>
           {engineBadgeLabel(engineFromSlot(slot), slot?.model ?? "")}
         </Badge>

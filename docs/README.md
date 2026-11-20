@@ -7,6 +7,7 @@
 | [ARCHITECTURE.md](./ARCHITECTURE.md) | System design, data model, Claude-first AI, and pipeline flow |
 | [OPERATOR_FLOW_REVIEW.md](./OPERATOR_FLOW_REVIEW.md) | Internal delivery path review + P0/P1 UX punch list |
 | [CLIENT_PORTAL.md](./CLIENT_PORTAL.md) | Planned client dashboard scope, auth, and data mapping |
+| [BACKLOG.md](./BACKLOG.md) | Feature backlog: agreed features not yet built |
 | [DESKTOP.md](./DESKTOP.md) | Windows desktop install (Electron + embedded Postgres) |
 | [DEPLOY.md](./DEPLOY.md) | Hosting handoff: Vercel + Supabase + `APP_PASSWORD` |
 | [SMOKE_TESTS.md](./SMOKE_TESTS.md) | Manual smoke-test checklist (local + hosted) |

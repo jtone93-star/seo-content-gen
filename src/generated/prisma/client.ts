@@ -103,7 +103,7 @@ export type AuditArtifact = Prisma.AuditArtifactModel
 export type StrategyModelSlot = Prisma.StrategyModelSlotModel
 /**
  * Model Strategy
- * One living strategy per client; older rows are Past Strategies (restorable).
+ * One strategy per client; older rows are Past Strategies (restorable).
  */
 export type Strategy = Prisma.StrategyModel
 /**
@@ -133,6 +133,7 @@ export type CycleItem = Prisma.CycleItemModel
 export type StrategyJob = Prisma.StrategyJobModel
 /**
  * Model OAuthAccount
- * 
+ * One Google connection per client. Tokens and the chosen GA4 property / Search Console
+ * site belong to that client only, so one client's data is never pulled for another.
  */
 export type OAuthAccount = Prisma.OAuthAccountModel

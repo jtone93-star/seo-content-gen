@@ -87,7 +87,6 @@ export function StrategyPanel({
             <div>
               <div className="flex flex-wrap items-center gap-2">
                 <h2 className="text-2xl font-semibold tracking-tight">{living.name}</h2>
-                <Badge className="bg-teal/15 text-teal">Living</Badge>
                 <Badge>{statusLabel(living.status)}</Badge>
               </div>
               <p className="text-sm text-foreground/65 mt-1">
@@ -114,7 +113,7 @@ export function StrategyPanel({
                 Export Excel
               </a>
               <Button type="button" variant="secondary" onClick={() => setShowCreate((v) => !v)}>
-                {showCreate ? "Hide new strategy" : "New living strategy"}
+                {showCreate ? "Hide new strategy" : "New strategy"}
               </Button>
             </div>
           </div>

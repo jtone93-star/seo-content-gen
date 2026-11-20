@@ -2161,7 +2161,9 @@ export type StrategyJobScalarFieldEnum = (typeof StrategyJobScalarFieldEnum)[key
 
 export const OAuthAccountScalarFieldEnum = {
   id: 'id',
+  clientId: 'clientId',
   provider: 'provider',
+  accountEmail: 'accountEmail',
   accessTokenCiphertext: 'accessTokenCiphertext',
   accessTokenIv: 'accessTokenIv',
   accessTokenTag: 'accessTokenTag',
@@ -2171,6 +2173,7 @@ export const OAuthAccountScalarFieldEnum = {
   scope: 'scope',
   expiresAt: 'expiresAt',
   analyticsPropertyId: 'analyticsPropertyId',
+  analyticsPropertyName: 'analyticsPropertyName',
   searchConsoleSiteUrl: 'searchConsoleSiteUrl',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

@@ -12,7 +12,7 @@ No separate worker required for normal Start / Approve / Regenerate.
 
 | # | Steps | Pass if |
 |---|--------|---------|
-| A1 | Open `/` | Dashboard loads with KPI tiles (Clients, Audits, Living strategies, Content projects) — or DB unavailable message if Postgres is down |
+| A1 | Open `/` | Dashboard loads with KPI tiles (Clients, Audits, Strategies, Content projects) — or DB unavailable message if Postgres is down |
 | A2 | Create a client with tone + words to avoid | Client appears on `/clients` |
 | A3 | Edit that client | Changes persist |
 | A4 | Client → Content → New content: topic, keyword, URL, notes, step-by-step | Project opens; Start pipeline available |
@@ -58,7 +58,7 @@ No separate worker required for normal Start / Approve / Regenerate.
 |---|--------|---------|
 | E1 | Footer **Documentation** link | Opens `/documentation` with how-to guide (SEO Turtle Tool) |
 | E2 | From Documentation, open User stories | `/stories` renders acceptance criteria |
-| E3 | Skim how-to vs user stories | Matches current product: 10 stages, Claude-first AI, living strategy, dashboard tiles |
+| E3 | Skim how-to vs user stories | Matches current product: 10 stages, Claude-first AI, strategy, dashboard tiles |
 
 ## F. Hosted (Vercel + Supabase)
 
@@ -82,18 +82,18 @@ No separate worker required for normal Start / Approve / Regenerate.
 
 ---
 
-## H. Living strategy
+## H. Strategy
 
 | # | Steps | Pass if |
 |---|--------|---------|
 | H1 | Client page tabs | Overview / Audits / Strategy / Content switch without losing the client |
 | H2 | Set billing day 1–28 | Saved; cycles use that window |
-| H3 | Create living strategy + KPIs | Strategy dashboard cards show targets |
+| H3 | Create strategy + KPIs | Strategy dashboard cards show targets |
 | H4 | Generate recommendations (mock) | Proposed plays appear; approve → Backlog |
 | H5 | Create a cycle; assign a backlog item | Item shows on the cycle |
 | H6 | Start selected content item | Content project is created and linked |
 | H7 | Download cycle Excel | Workbook has How to execute + Tech/Content sheets |
-| H8 | Create a second living strategy | First appears under Past Strategies; Restore swaps them |
+| H8 | Create a second strategy | First appears under Past Strategies; Restore swaps them |
 
 ---
 
@@ -107,10 +107,11 @@ Prereqs: built installer from `npm run desktop:dist`, or `npm run desktop:dev` f
 | I2 | Create a client; start a mock content project | Pipeline stages complete locally |
 | I3 | AI models → save Claude key → Apply live model → regenerate a step | Live artifact; key shows Connected ····last4 |
 | I4 | AI models → paste Google client ID/secret → Save | “Configured”; redirect URI shown as `http://127.0.0.1:47821/api/google/oauth/callback` |
-| I5 | Connect Google on an audit; pick GA4 + GSC; sync | Sources update without using Vercel |
+| I5 | Client Overview → Connect Google; pick GA4 + GSC; then Sync Google on an audit | Card shows the connected account; audit sources update without using Vercel |
+| I5b | On a second client, connect Google and pick the first client's GA4 property | Save is refused and names the client that already uses it |
 | I6 | Quit and relaunch | Data persists (clients/projects still present) |
 | I7 | Confirm data folder | `%APPDATA%\SEO Turtle Tool\` contains `config.json` and `pg-data\` |
 
 ---
 
-*Keep this list in sync when behavior changes. Last updated: Windows desktop (Electron + embedded Postgres), SEO Turtle naming, dashboard KPI tiles, 10-step pipeline + QA/ship-check rewinds, Claude-first AI defaults, living strategy.*
+*Keep this list in sync when behavior changes. Last updated: Windows desktop (Electron + embedded Postgres), SEO Turtle naming, dashboard KPI tiles, 10-step pipeline + QA/ship-check rewinds, Claude-first AI defaults, strategy.*

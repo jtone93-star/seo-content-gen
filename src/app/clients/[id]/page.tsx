@@ -7,12 +7,12 @@ export const dynamic = "force-dynamic";
 
 type Props = {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ tab?: string }>;
+  searchParams: Promise<{ tab?: string; google?: string }>;
 };
 
 export default async function ClientHubPage({ params, searchParams }: Props) {
   const { id } = await params;
-  const { tab } = await searchParams;
+  const { tab, google } = await searchParams;
 
   const client = await prisma.clientProfile.findUnique({
     where: { id },
@@ -47,6 +47,7 @@ export default async function ClientHubPage({ params, searchParams }: Props) {
       living={living}
       past={past}
       initialTab={tab}
+      googleSignInFailed={google === "error"}
     />
   );
 }

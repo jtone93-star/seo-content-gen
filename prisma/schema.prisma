@@ -62,7 +62,7 @@ enum ArtifactStatus {
   SUPERSEDED
 }
 
-/// Site → page diagnostic pipeline (feeds the living Strategy).
+/// Site → page diagnostic pipeline (feeds the Strategy).
 enum AuditStep {
   CRAWL_TECHNICAL
   INDEXATION
@@ -153,6 +153,7 @@ model ClientProfile {
   projects             ContentProject[]
   audits               Audit[]
   strategies           Strategy[]
+  googleAccount        OAuthAccount?
 }
 
 model ContentProject {
@@ -330,7 +331,7 @@ model StrategyModelSlot {
   updatedAt DateTime @updatedAt
 }
 
-/// One living strategy per client; older rows are Past Strategies (restorable).
+/// One strategy per client; older rows are Past Strategies (restorable).
 model Strategy {
   id              String            @id @default(cuid())
   clientProfileId String
@@ -449,9 +450,15 @@ model StrategyJob {
   @@index([status, createdAt])
 }
 
+/// One Google connection per client. Tokens and the chosen GA4 property / Search Console
+/// site belong to that client only, so one client's data is never pulled for another.
 model OAuthAccount {
-  id                     String   @id @default("google")
-  provider               String   @default("google")
+  id                     String        @id @default(cuid())
+  clientId               String        @unique
+  client                 ClientProfile @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  provider               String        @default("google")
+  /// Google account that signed in for this client.
+  accountEmail           String?
   accessTokenCiphertext  String
   accessTokenIv          String
   accessTokenTag         String
@@ -461,7 +468,8 @@ model OAuthAccount {
   scope                  String
   expiresAt              DateTime?
   analyticsPropertyId    String?
+  analyticsPropertyName  String?
   searchConsoleSiteUrl   String?
-  createdAt              DateTime @default(now())
-  updatedAt              DateTime @updatedAt
+  createdAt              DateTime      @default(now())
+  updatedAt              DateTime      @updatedAt
 }

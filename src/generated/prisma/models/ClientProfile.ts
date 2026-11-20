@@ -319,6 +319,7 @@ export type ClientProfileWhereInput = {
   projects?: Prisma.ContentProjectListRelationFilter
   audits?: Prisma.AuditListRelationFilter
   strategies?: Prisma.StrategyListRelationFilter
+  googleAccount?: Prisma.XOR<Prisma.OAuthAccountNullableScalarRelationFilter, Prisma.OAuthAccountWhereInput> | null
 }
 
 export type ClientProfileOrderByWithRelationInput = {
@@ -343,6 +344,7 @@ export type ClientProfileOrderByWithRelationInput = {
   projects?: Prisma.ContentProjectOrderByRelationAggregateInput
   audits?: Prisma.AuditOrderByRelationAggregateInput
   strategies?: Prisma.StrategyOrderByRelationAggregateInput
+  googleAccount?: Prisma.OAuthAccountOrderByWithRelationInput
 }
 
 export type ClientProfileWhereUniqueInput = Prisma.AtLeast<{
@@ -370,6 +372,7 @@ export type ClientProfileWhereUniqueInput = Prisma.AtLeast<{
   projects?: Prisma.ContentProjectListRelationFilter
   audits?: Prisma.AuditListRelationFilter
   strategies?: Prisma.StrategyListRelationFilter
+  googleAccount?: Prisma.XOR<Prisma.OAuthAccountNullableScalarRelationFilter, Prisma.OAuthAccountWhereInput> | null
 }, "id">
 
 export type ClientProfileOrderByWithAggregationInput = {
@@ -444,6 +447,7 @@ export type ClientProfileCreateInput = {
   projects?: Prisma.ContentProjectCreateNestedManyWithoutClientProfileInput
   audits?: Prisma.AuditCreateNestedManyWithoutClientProfileInput
   strategies?: Prisma.StrategyCreateNestedManyWithoutClientProfileInput
+  googleAccount?: Prisma.OAuthAccountCreateNestedOneWithoutClientInput
 }
 
 export type ClientProfileUncheckedCreateInput = {
@@ -468,6 +472,7 @@ export type ClientProfileUncheckedCreateInput = {
   projects?: Prisma.ContentProjectUncheckedCreateNestedManyWithoutClientProfileInput
   audits?: Prisma.AuditUncheckedCreateNestedManyWithoutClientProfileInput
   strategies?: Prisma.StrategyUncheckedCreateNestedManyWithoutClientProfileInput
+  googleAccount?: Prisma.OAuthAccountUncheckedCreateNestedOneWithoutClientInput
 }
 
 export type ClientProfileUpdateInput = {
@@ -492,6 +497,7 @@ export type ClientProfileUpdateInput = {
   projects?: Prisma.ContentProjectUpdateManyWithoutClientProfileNestedInput
   audits?: Prisma.AuditUpdateManyWithoutClientProfileNestedInput
   strategies?: Prisma.StrategyUpdateManyWithoutClientProfileNestedInput
+  googleAccount?: Prisma.OAuthAccountUpdateOneWithoutClientNestedInput
 }
 
 export type ClientProfileUncheckedUpdateInput = {
@@ -516,6 +522,7 @@ export type ClientProfileUncheckedUpdateInput = {
   projects?: Prisma.ContentProjectUncheckedUpdateManyWithoutClientProfileNestedInput
   audits?: Prisma.AuditUncheckedUpdateManyWithoutClientProfileNestedInput
   strategies?: Prisma.StrategyUncheckedUpdateManyWithoutClientProfileNestedInput
+  googleAccount?: Prisma.OAuthAccountUncheckedUpdateOneWithoutClientNestedInput
 }
 
 export type ClientProfileCreateManyInput = {
@@ -734,6 +741,20 @@ export type ClientProfileUpdateOneRequiredWithoutStrategiesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ClientProfileUpdateToOneWithWhereWithoutStrategiesInput, Prisma.ClientProfileUpdateWithoutStrategiesInput>, Prisma.ClientProfileUncheckedUpdateWithoutStrategiesInput>
 }
 
+export type ClientProfileCreateNestedOneWithoutGoogleAccountInput = {
+  create?: Prisma.XOR<Prisma.ClientProfileCreateWithoutGoogleAccountInput, Prisma.ClientProfileUncheckedCreateWithoutGoogleAccountInput>
+  connectOrCreate?: Prisma.ClientProfileCreateOrConnectWithoutGoogleAccountInput
+  connect?: Prisma.ClientProfileWhereUniqueInput
+}
+
+export type ClientProfileUpdateOneRequiredWithoutGoogleAccountNestedInput = {
+  create?: Prisma.XOR<Prisma.ClientProfileCreateWithoutGoogleAccountInput, Prisma.ClientProfileUncheckedCreateWithoutGoogleAccountInput>
+  connectOrCreate?: Prisma.ClientProfileCreateOrConnectWithoutGoogleAccountInput
+  upsert?: Prisma.ClientProfileUpsertWithoutGoogleAccountInput
+  connect?: Prisma.ClientProfileWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ClientProfileUpdateToOneWithWhereWithoutGoogleAccountInput, Prisma.ClientProfileUpdateWithoutGoogleAccountInput>, Prisma.ClientProfileUncheckedUpdateWithoutGoogleAccountInput>
+}
+
 export type ClientProfileCreateWithoutProjectsInput = {
   id?: string
   name: string
@@ -755,6 +776,7 @@ export type ClientProfileCreateWithoutProjectsInput = {
   updatedAt?: Date | string
   audits?: Prisma.AuditCreateNestedManyWithoutClientProfileInput
   strategies?: Prisma.StrategyCreateNestedManyWithoutClientProfileInput
+  googleAccount?: Prisma.OAuthAccountCreateNestedOneWithoutClientInput
 }
 
 export type ClientProfileUncheckedCreateWithoutProjectsInput = {
@@ -778,6 +800,7 @@ export type ClientProfileUncheckedCreateWithoutProjectsInput = {
   updatedAt?: Date | string
   audits?: Prisma.AuditUncheckedCreateNestedManyWithoutClientProfileInput
   strategies?: Prisma.StrategyUncheckedCreateNestedManyWithoutClientProfileInput
+  googleAccount?: Prisma.OAuthAccountUncheckedCreateNestedOneWithoutClientInput
 }
 
 export type ClientProfileCreateOrConnectWithoutProjectsInput = {
@@ -817,6 +840,7 @@ export type ClientProfileUpdateWithoutProjectsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   audits?: Prisma.AuditUpdateManyWithoutClientProfileNestedInput
   strategies?: Prisma.StrategyUpdateManyWithoutClientProfileNestedInput
+  googleAccount?: Prisma.OAuthAccountUpdateOneWithoutClientNestedInput
 }
 
 export type ClientProfileUncheckedUpdateWithoutProjectsInput = {
@@ -840,6 +864,7 @@ export type ClientProfileUncheckedUpdateWithoutProjectsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   audits?: Prisma.AuditUncheckedUpdateManyWithoutClientProfileNestedInput
   strategies?: Prisma.StrategyUncheckedUpdateManyWithoutClientProfileNestedInput
+  googleAccount?: Prisma.OAuthAccountUncheckedUpdateOneWithoutClientNestedInput
 }
 
 export type ClientProfileCreateWithoutAuditsInput = {
@@ -863,6 +888,7 @@ export type ClientProfileCreateWithoutAuditsInput = {
   updatedAt?: Date | string
   projects?: Prisma.ContentProjectCreateNestedManyWithoutClientProfileInput
   strategies?: Prisma.StrategyCreateNestedManyWithoutClientProfileInput
+  googleAccount?: Prisma.OAuthAccountCreateNestedOneWithoutClientInput
 }
 
 export type ClientProfileUncheckedCreateWithoutAuditsInput = {
@@ -886,6 +912,7 @@ export type ClientProfileUncheckedCreateWithoutAuditsInput = {
   updatedAt?: Date | string
   projects?: Prisma.ContentProjectUncheckedCreateNestedManyWithoutClientProfileInput
   strategies?: Prisma.StrategyUncheckedCreateNestedManyWithoutClientProfileInput
+  googleAccount?: Prisma.OAuthAccountUncheckedCreateNestedOneWithoutClientInput
 }
 
 export type ClientProfileCreateOrConnectWithoutAuditsInput = {
@@ -925,6 +952,7 @@ export type ClientProfileUpdateWithoutAuditsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projects?: Prisma.ContentProjectUpdateManyWithoutClientProfileNestedInput
   strategies?: Prisma.StrategyUpdateManyWithoutClientProfileNestedInput
+  googleAccount?: Prisma.OAuthAccountUpdateOneWithoutClientNestedInput
 }
 
 export type ClientProfileUncheckedUpdateWithoutAuditsInput = {
@@ -948,6 +976,7 @@ export type ClientProfileUncheckedUpdateWithoutAuditsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projects?: Prisma.ContentProjectUncheckedUpdateManyWithoutClientProfileNestedInput
   strategies?: Prisma.StrategyUncheckedUpdateManyWithoutClientProfileNestedInput
+  googleAccount?: Prisma.OAuthAccountUncheckedUpdateOneWithoutClientNestedInput
 }
 
 export type ClientProfileCreateWithoutStrategiesInput = {
@@ -971,6 +1000,7 @@ export type ClientProfileCreateWithoutStrategiesInput = {
   updatedAt?: Date | string
   projects?: Prisma.ContentProjectCreateNestedManyWithoutClientProfileInput
   audits?: Prisma.AuditCreateNestedManyWithoutClientProfileInput
+  googleAccount?: Prisma.OAuthAccountCreateNestedOneWithoutClientInput
 }
 
 export type ClientProfileUncheckedCreateWithoutStrategiesInput = {
@@ -994,6 +1024,7 @@ export type ClientProfileUncheckedCreateWithoutStrategiesInput = {
   updatedAt?: Date | string
   projects?: Prisma.ContentProjectUncheckedCreateNestedManyWithoutClientProfileInput
   audits?: Prisma.AuditUncheckedCreateNestedManyWithoutClientProfileInput
+  googleAccount?: Prisma.OAuthAccountUncheckedCreateNestedOneWithoutClientInput
 }
 
 export type ClientProfileCreateOrConnectWithoutStrategiesInput = {
@@ -1033,6 +1064,7 @@ export type ClientProfileUpdateWithoutStrategiesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projects?: Prisma.ContentProjectUpdateManyWithoutClientProfileNestedInput
   audits?: Prisma.AuditUpdateManyWithoutClientProfileNestedInput
+  googleAccount?: Prisma.OAuthAccountUpdateOneWithoutClientNestedInput
 }
 
 export type ClientProfileUncheckedUpdateWithoutStrategiesInput = {
@@ -1056,6 +1088,119 @@ export type ClientProfileUncheckedUpdateWithoutStrategiesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projects?: Prisma.ContentProjectUncheckedUpdateManyWithoutClientProfileNestedInput
   audits?: Prisma.AuditUncheckedUpdateManyWithoutClientProfileNestedInput
+  googleAccount?: Prisma.OAuthAccountUncheckedUpdateOneWithoutClientNestedInput
+}
+
+export type ClientProfileCreateWithoutGoogleAccountInput = {
+  id?: string
+  name: string
+  industry?: string | null
+  audience?: string | null
+  tone?: string | null
+  readingLevel?: string | null
+  pointOfView?: string | null
+  wordsToAvoid?: Prisma.ClientProfileCreatewordsToAvoidInput | string[]
+  requiredDisclaimers?: string | null
+  seoNotes?: string | null
+  billingDay?: number | null
+  contactName?: string | null
+  contactEmail?: string | null
+  contactPhone?: string | null
+  website?: string | null
+  crmNotes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  projects?: Prisma.ContentProjectCreateNestedManyWithoutClientProfileInput
+  audits?: Prisma.AuditCreateNestedManyWithoutClientProfileInput
+  strategies?: Prisma.StrategyCreateNestedManyWithoutClientProfileInput
+}
+
+export type ClientProfileUncheckedCreateWithoutGoogleAccountInput = {
+  id?: string
+  name: string
+  industry?: string | null
+  audience?: string | null
+  tone?: string | null
+  readingLevel?: string | null
+  pointOfView?: string | null
+  wordsToAvoid?: Prisma.ClientProfileCreatewordsToAvoidInput | string[]
+  requiredDisclaimers?: string | null
+  seoNotes?: string | null
+  billingDay?: number | null
+  contactName?: string | null
+  contactEmail?: string | null
+  contactPhone?: string | null
+  website?: string | null
+  crmNotes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  projects?: Prisma.ContentProjectUncheckedCreateNestedManyWithoutClientProfileInput
+  audits?: Prisma.AuditUncheckedCreateNestedManyWithoutClientProfileInput
+  strategies?: Prisma.StrategyUncheckedCreateNestedManyWithoutClientProfileInput
+}
+
+export type ClientProfileCreateOrConnectWithoutGoogleAccountInput = {
+  where: Prisma.ClientProfileWhereUniqueInput
+  create: Prisma.XOR<Prisma.ClientProfileCreateWithoutGoogleAccountInput, Prisma.ClientProfileUncheckedCreateWithoutGoogleAccountInput>
+}
+
+export type ClientProfileUpsertWithoutGoogleAccountInput = {
+  update: Prisma.XOR<Prisma.ClientProfileUpdateWithoutGoogleAccountInput, Prisma.ClientProfileUncheckedUpdateWithoutGoogleAccountInput>
+  create: Prisma.XOR<Prisma.ClientProfileCreateWithoutGoogleAccountInput, Prisma.ClientProfileUncheckedCreateWithoutGoogleAccountInput>
+  where?: Prisma.ClientProfileWhereInput
+}
+
+export type ClientProfileUpdateToOneWithWhereWithoutGoogleAccountInput = {
+  where?: Prisma.ClientProfileWhereInput
+  data: Prisma.XOR<Prisma.ClientProfileUpdateWithoutGoogleAccountInput, Prisma.ClientProfileUncheckedUpdateWithoutGoogleAccountInput>
+}
+
+export type ClientProfileUpdateWithoutGoogleAccountInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  readingLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pointOfView?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordsToAvoid?: Prisma.ClientProfileUpdatewordsToAvoidInput | string[]
+  requiredDisclaimers?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seoNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  contactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  crmNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  projects?: Prisma.ContentProjectUpdateManyWithoutClientProfileNestedInput
+  audits?: Prisma.AuditUpdateManyWithoutClientProfileNestedInput
+  strategies?: Prisma.StrategyUpdateManyWithoutClientProfileNestedInput
+}
+
+export type ClientProfileUncheckedUpdateWithoutGoogleAccountInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  readingLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pointOfView?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  wordsToAvoid?: Prisma.ClientProfileUpdatewordsToAvoidInput | string[]
+  requiredDisclaimers?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seoNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  contactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  crmNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  projects?: Prisma.ContentProjectUncheckedUpdateManyWithoutClientProfileNestedInput
+  audits?: Prisma.AuditUncheckedUpdateManyWithoutClientProfileNestedInput
+  strategies?: Prisma.StrategyUncheckedUpdateManyWithoutClientProfileNestedInput
 }
 
 
@@ -1129,6 +1274,7 @@ export type ClientProfileSelect<ExtArgs extends runtime.Types.Extensions.Interna
   projects?: boolean | Prisma.ClientProfile$projectsArgs<ExtArgs>
   audits?: boolean | Prisma.ClientProfile$auditsArgs<ExtArgs>
   strategies?: boolean | Prisma.ClientProfile$strategiesArgs<ExtArgs>
+  googleAccount?: boolean | Prisma.ClientProfile$googleAccountArgs<ExtArgs>
   _count?: boolean | Prisma.ClientProfileCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["clientProfile"]>
 
@@ -1200,6 +1346,7 @@ export type ClientProfileInclude<ExtArgs extends runtime.Types.Extensions.Intern
   projects?: boolean | Prisma.ClientProfile$projectsArgs<ExtArgs>
   audits?: boolean | Prisma.ClientProfile$auditsArgs<ExtArgs>
   strategies?: boolean | Prisma.ClientProfile$strategiesArgs<ExtArgs>
+  googleAccount?: boolean | Prisma.ClientProfile$googleAccountArgs<ExtArgs>
   _count?: boolean | Prisma.ClientProfileCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ClientProfileIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1211,6 +1358,7 @@ export type $ClientProfilePayload<ExtArgs extends runtime.Types.Extensions.Inter
     projects: Prisma.$ContentProjectPayload<ExtArgs>[]
     audits: Prisma.$AuditPayload<ExtArgs>[]
     strategies: Prisma.$StrategyPayload<ExtArgs>[]
+    googleAccount: Prisma.$OAuthAccountPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1631,6 +1779,7 @@ export interface Prisma__ClientProfileClient<T, Null = never, ExtArgs extends ru
   projects<T extends Prisma.ClientProfile$projectsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClientProfile$projectsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ContentProjectPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   audits<T extends Prisma.ClientProfile$auditsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClientProfile$auditsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   strategies<T extends Prisma.ClientProfile$strategiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClientProfile$strategiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StrategyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  googleAccount<T extends Prisma.ClientProfile$googleAccountArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClientProfile$googleAccountArgs<ExtArgs>>): Prisma.Prisma__OAuthAccountClient<runtime.Types.Result.GetResult<Prisma.$OAuthAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2140,6 +2289,25 @@ export type ClientProfile$strategiesArgs<ExtArgs extends runtime.Types.Extension
   take?: number
   skip?: number
   distinct?: Prisma.StrategyScalarFieldEnum | Prisma.StrategyScalarFieldEnum[]
+}
+
+/**
+ * ClientProfile.googleAccount
+ */
+export type ClientProfile$googleAccountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the OAuthAccount
+   */
+  select?: Prisma.OAuthAccountSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the OAuthAccount
+   */
+  omit?: Prisma.OAuthAccountOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OAuthAccountInclude<ExtArgs> | null
+  where?: Prisma.OAuthAccountWhereInput
 }
 
 /**

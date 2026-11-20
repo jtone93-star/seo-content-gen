@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { AuditDataSourceType, type Prisma } from "@/generated/prisma/client";
-import { fetchGa4LandingPageSummary, listAnalyticsProperties } from "@/lib/google/analytics";
+import { fetchGa4LandingPageSummary } from "@/lib/google/analytics";
 import {
   getAuthenticatedOAuth2Client,
   getGoogleConnectionStatus,
@@ -19,26 +19,31 @@ export async function POST(request: Request, { params }: Params) {
 
   const redirectUri = resolveOAuthRedirectUri(request);
   if (!redirectUri || !isGoogleOAuthConfigured(redirectUri)) {
-    return NextResponse.json({ error: "Google OAuth is not configured." }, { status: 503 });
+    return NextResponse.json({ error: "Google sign-in is not set up for this app yet." }, { status: 503 });
   }
 
-  const connection = await getGoogleConnectionStatus();
+  // Google data always comes from the connection that belongs to this audit's client.
+  const clientId = audit.clientProfileId;
+  const connection = await getGoogleConnectionStatus(clientId);
   if (!connection.connected) {
-    return NextResponse.json({ error: "Connect Google before importing analytics data." }, { status: 400 });
-  }
-
-  const { analyticsPropertyId, searchConsoleSiteUrl } = connection.selections;
-  if (!analyticsPropertyId && !searchConsoleSiteUrl) {
     return NextResponse.json(
-      { error: "Select a GA4 property and/or Search Console site first." },
+      { error: "Connect Google on this client's Overview before importing analytics data." },
       { status: 400 },
     );
   }
 
-  const auth = await getAuthenticatedOAuth2Client(redirectUri);
+  const { analyticsPropertyId, analyticsPropertyName, searchConsoleSiteUrl } = connection.selections;
+  if (!analyticsPropertyId && !searchConsoleSiteUrl) {
+    return NextResponse.json(
+      { error: "Choose a GA4 property and/or Search Console site on this client's Overview first." },
+      { status: 400 },
+    );
+  }
+
+  const auth = await getAuthenticatedOAuth2Client(clientId, redirectUri);
   if (!auth) {
     return NextResponse.json(
-      { error: "Google connection is invalid or expired. Reconnect Google." },
+      { error: "Google connection is invalid or expired. Reconnect Google on this client's Overview." },
       { status: 401 },
     );
   }
@@ -48,12 +53,10 @@ export async function POST(request: Request, { params }: Params) {
 
   try {
     if (analyticsPropertyId) {
-      const properties = await listAnalyticsProperties(auth);
-      const selected = properties.find((p) => p.propertyId === analyticsPropertyId);
       const summary = await fetchGa4LandingPageSummary(
         auth,
         analyticsPropertyId,
-        selected?.displayName,
+        analyticsPropertyName ?? undefined,
       );
       await prisma.auditDataSource.deleteMany({
         where: { auditId, type: AuditDataSourceType.GA4 },

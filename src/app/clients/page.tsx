@@ -76,9 +76,9 @@ export default async function ClientsPage() {
                         <Badge className="bg-gold/15 text-gold">{c._count.audits} audits</Badge>
                         <Badge className="bg-gold/10 text-gold">{c._count.projects} content</Badge>
                         {living ? (
-                          <Badge className="bg-gold/20 text-gold">Living · {living.name}</Badge>
+                          <Badge className="bg-gold/20 text-gold">Strategy · {living.name}</Badge>
                         ) : (
-                          <Badge>No living strategy</Badge>
+                          <Badge>No strategy</Badge>
                         )}
                       </div>
                       <Link

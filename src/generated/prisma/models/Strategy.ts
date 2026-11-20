@@ -14,7 +14,7 @@ import type * as Prisma from "../internal/prismaNamespace"
 
 /**
  * Model Strategy
- * One living strategy per client; older rows are Past Strategies (restorable).
+ * One strategy per client; older rows are Past Strategies (restorable).
  */
 export type StrategyModel = runtime.Types.Result.DefaultSelection<Prisma.$StrategyPayload>
 

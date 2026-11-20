@@ -3,7 +3,6 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { GoogleDataConnection } from "@/components/strategy/google-data-connection";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -32,6 +31,14 @@ type AuditWithRelations = Audit & {
   artifacts: AuditArtifact[];
   jobs: AuditJob[];
 };
+
+/** The client's Google connection, set on the client Overview. Null when not connected. */
+type ClientGoogle = {
+  accountEmail: string | null;
+  analyticsPropertyId: string | null;
+  analyticsPropertyName: string | null;
+  searchConsoleSiteUrl: string | null;
+} | null;
 
 function latestArtifact(artifacts: AuditArtifact[], step: AuditStep) {
   return artifacts
@@ -314,14 +321,74 @@ function renderOutput(output: unknown) {
   );
 }
 
+/** Shows which Google data this audit will pull. The choice itself lives on the client Overview. */
+function GoogleSourceCard({
+  google,
+  clientId,
+  clientName,
+}: {
+  google: ClientGoogle;
+  clientId: string;
+  clientName: string;
+}) {
+  const overview = (
+    <Link href={`/clients/${clientId}`} className="font-medium hover:underline">
+      {clientName}&apos;s Overview
+    </Link>
+  );
+
+  if (!google) {
+    return (
+      <Card>
+        <p className="font-medium">Google data</p>
+        <p className="mt-1 text-sm text-foreground/65">
+          No Google account is connected for {clientName}. Connect it on {overview}.
+        </p>
+      </Card>
+    );
+  }
+
+  const hasSelection = Boolean(google.analyticsPropertyId || google.searchConsoleSiteUrl);
+  return (
+    <Card>
+      <p className="font-medium">Google data</p>
+      {hasSelection ? (
+        <dl className="mt-2 grid gap-2 text-sm sm:grid-cols-3">
+          <div>
+            <dt className="text-foreground/50">Analytics property</dt>
+            <dd>{google.analyticsPropertyName ?? google.analyticsPropertyId ?? "None"}</dd>
+          </div>
+          <div>
+            <dt className="text-foreground/50">Search Console site</dt>
+            <dd className="break-all">{google.searchConsoleSiteUrl ?? "None"}</dd>
+          </div>
+          <div>
+            <dt className="text-foreground/50">Google account</dt>
+            <dd className="break-all">{google.accountEmail ?? "Connected"}</dd>
+          </div>
+        </dl>
+      ) : (
+        <p className="mt-1 text-sm text-foreground/65">
+          Google is connected, but no Analytics property or Search Console site is chosen yet.
+        </p>
+      )}
+      <p className="mt-2 text-sm text-foreground/60">
+        Sync Google pulls from this client&apos;s connection. Change it on {overview}.
+      </p>
+    </Card>
+  );
+}
+
 export function AuditPipeline({
   audit,
   modelSlots,
   clientId,
+  google,
 }: {
   audit: AuditWithRelations;
   modelSlots: AuditModelSlot[];
   clientId: string;
+  google: ClientGoogle;
 }) {
   const router = useRouter();
   const [busy, setBusy] = useState<string | null>(null);
@@ -456,10 +523,7 @@ export function AuditPipeline({
 
       <section className="space-y-3">
         <h2 className="text-lg font-medium">Data sources</h2>
-        <GoogleDataConnection
-          returnTo={`/clients/${clientId}/audits/${audit.id}`}
-          onSaved={() => router.refresh()}
-        />
+        <GoogleSourceCard google={google} clientId={clientId} clientName={audit.clientProfile.name} />
         {audit.dataSources.length === 0 ? (
           <Card>
             <p className="text-sm text-foreground/70">

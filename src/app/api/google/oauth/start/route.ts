@@ -8,8 +8,21 @@ import {
   resolveOAuthRedirectUri,
   sanitizeReturnPath,
 } from "@/lib/google/oauth";
+import { prisma } from "@/lib/prisma";
 
 export async function GET(request: Request) {
+  const url = new URL(request.url);
+  const clientId = url.searchParams.get("clientId");
+  const client = clientId
+    ? await prisma.clientProfile.findUnique({ where: { id: clientId }, select: { id: true } })
+    : null;
+  if (!client) {
+    return NextResponse.json(
+      { error: "Start the Google connection from a client's Overview." },
+      { status: 400 },
+    );
+  }
+
   const redirectUri = resolveOAuthRedirectUri(request);
   if (!redirectUri || !isGoogleOAuthConfigured(redirectUri)) {
     return NextResponse.json(
@@ -23,9 +36,8 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Google OAuth is not configured." }, { status: 503 });
   }
 
-  const url = new URL(request.url);
-  const returnTo = sanitizeReturnPath(url.searchParams.get("returnTo"));
-  const { state, nonce } = createOAuthState(returnTo, redirectUri);
+  const returnTo = sanitizeReturnPath(url.searchParams.get("returnTo") ?? `/clients/${client.id}`);
+  const { state, nonce } = createOAuthState(client.id, returnTo, redirectUri);
   const authUrl = buildGoogleAuthUrl(config, state);
 
   const response = NextResponse.redirect(authUrl);

@@ -35,7 +35,7 @@ export default async function ClientDashboardPage({ params }: Props) {
   });
   if (!client) notFound();
 
-  let living = client.strategies[0] ?? null;
+  let living = client.strategies.at(0) ?? null;
   if (living && client.billingDay) {
     await ensureWorkingWindows(living.id);
     living = await prisma.strategy.findUnique({

@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "SEO Turtle Tool",
-  description: "SEO audits, living strategy, and content generation",
+  description: "SEO audits, strategy, and content generation",
 };
 
 export default function RootLayout({

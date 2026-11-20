@@ -46,7 +46,7 @@ npm run desktop:dev
    `http://127.0.0.1:47821/api/google/oauth/callback`
 
 5. Enable APIs: Google Analytics Data, Google Analytics Admin, Search Console.
-6. On a client audit/strategy page, use **Connect Google**, pick GA4 property + Search Console site, then sync.
+6. On each client's **Overview**, use **Connect Google**, pick that client's GA4 property + Search Console site, then use **Sync Google** on an audit.
 
 App password gate is **off** by default on desktop (single-user).
 

@@ -49,7 +49,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    await exchangeGoogleAuthCode(code, payload.redirectUri);
+    await exchangeGoogleAuthCode(payload.clientId, code, payload.redirectUri);
   } catch (err) {
     const message = err instanceof Error ? err.message : "token_exchange_failed";
     const response = redirectWithStatus(request, returnTo, { google: "error", reason: message });

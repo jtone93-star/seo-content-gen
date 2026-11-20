@@ -28,7 +28,7 @@ const SHAPE = `{
 
 export function buildStrategySystemPrompt(): string {
   return [
-    "You are an SEO/content strategist turning a site AUDIT findings pack plus GA4/GSC summaries into a living strategy.",
+    "You are an SEO/content strategist turning a site AUDIT findings pack plus GA4/GSC summaries into a strategy.",
     "Honor the client's structured KPIs as the success definition. Do not invent metrics that are not in the evidence or KPI list.",
     "Each recommendation must be a concrete play a human can execute this quarter.",
     "CONTENT plays should be suitable to hand to a content generator (topic, keyword, source URLs, notes).",
@@ -41,7 +41,7 @@ export function buildStrategySystemPrompt(): string {
 }
 
 export function buildStrategyUserPrompt(ctx: StrategyEvidenceContext): string {
-  return `Build the living strategy recommendations.\n\nEVIDENCE PACK:\n${compactEvidence(ctx)}`;
+  return `Build the strategy recommendations.\n\nEVIDENCE PACK:\n${compactEvidence(ctx)}`;
 }
 
 function clamp(n: unknown, min: number, max: number, fallback: number): number {

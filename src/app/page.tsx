@@ -44,7 +44,7 @@ export default async function DashboardPage() {
         <p className="text-xs uppercase tracking-wider text-gold">Workspace</p>
         <h1 className="text-3xl font-semibold tracking-tight mt-1">Dashboard</h1>
         <p className="mt-1 text-muted text-sm max-w-xl">
-          Audits, living strategy, and content pipeline — one place to see what’s moving.
+          Audits, strategy, and content pipeline — one place to see what’s moving.
         </p>
       </div>
 
@@ -63,7 +63,7 @@ export default async function DashboardPage() {
           href="/clients"
         />
         <StatTile
-          label="Living strategies"
+          label="Strategies"
           value={livingStrategies}
           hint="Active roadmaps"
           emphasis

@@ -11,8 +11,9 @@ You run diagnostics and planning, then execute content/tech work. Clients later 
 ```text
 Clients → create/edit profile (voice, SEO notes, billing day)
    → Client hub Overview (this month, next month, backlog)
-   → Audits: new audit → connect Google (optional) → run stages → export findings
-   → Strategy: create living plan → KPIs → generate recs → approve to Backlog
+   → Overview: connect this client's Google account (optional) → pick its property and site
+   → Audits: new audit → sync Google (optional) → run stages → export findings
+   → Strategy: create plan → KPIs → generate recs → approve to Backlog
    → This month / Next month (auto from billing day) → add backlog items
    → This month: start content or export tech package
    → Content project: pipeline approve/regenerate → Final export

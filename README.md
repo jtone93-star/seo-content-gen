@@ -1,6 +1,6 @@
 # SEO Turtle Tool
 
-SEO-grade content production with a **10-step pipeline**, **client profiles**, **site audits**, **living strategy**, **human review gates**, **Claude-first BYO Anthropic keys**, and **inline pipeline jobs** (Vercel-friendly — no separate worker host required).
+SEO-grade content production with a **10-step pipeline**, **client profiles**, **site audits**, **strategy**, **human review gates**, **Claude-first BYO Anthropic keys**, and **inline pipeline jobs** (Vercel-friendly — no separate worker host required).
 
 Built for local development first (Next.js + Prisma + PostgreSQL). Hosting: **Vercel** + **Supabase** + **`APP_PASSWORD`** login gate.
 
@@ -25,7 +25,7 @@ Built for local development first (Next.js + Prisma + PostgreSQL). Hosting: **Ve
 
 - **Client hubs** — Overview / Audits / Strategy / Content tabs per client
 - **Site audits** — diagnostic pipeline → findings pack (CSV/Excel export)
-- **Living strategy** — one active plan per client; KPIs, backlog, cycles, Excel tech work packages
+- **Strategy** — one active plan per client; KPIs, backlog, cycles, Excel tech work packages
 - **Content projects** — topic, keyword, URLs, pasted notes, target length, content type (from client Content tab or cycle Start)
 - **10-step pipeline** — Brief → SERP research → Outline → Draft → Edit → QA & compliance → SEO copy → Technical SEO → Ship check → Final
 - **Quality loops** — QA and ship check auto-rewind up to 3 passes each

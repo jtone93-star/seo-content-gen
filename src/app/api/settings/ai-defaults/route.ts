@@ -56,7 +56,7 @@ export async function GET() {
 }
 
 /**
- * Apply one Claude model (or Mock) across living strategy, every audit stage,
+ * Apply one Claude model (or Mock) across strategy, every audit stage,
  * and every content pipeline stage.
  */
 export async function PATCH(request: Request) {

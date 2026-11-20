@@ -1,6 +1,6 @@
 # How to use SEO Turtle Tool
 
-Operator guide for audits, living strategy, and the SEO content pipeline. Use this page in the app at **Documentation**, or read `docs/HOW_TO_USE.md` in the repo.
+Operator guide for audits, strategy, and the SEO content pipeline. Use this page in the app at **Documentation**, or read `docs/HOW_TO_USE.md` in the repo.
 
 ---
 
@@ -10,7 +10,7 @@ Operator guide for audits, living strategy, and the SEO content pipeline. Use th
 2. **Create a client** — Clients → add name, tone, audience, words to avoid, SEO notes, billing day.
 3. **(Optional) Connect Claude** — AI models → paste your Anthropic API key → Test → Save. Choose **Live Claude** + a model (Sonnet recommended; Opus for harder jobs) or **Mock**, then Apply everywhere.
 4. **Run a site audit** — Open a client → Audits tab → New audit.
-5. **Build a living strategy** — Strategy tab → create plan, pick KPIs, generate recommendations, approve to Backlog, create cycles, start work.
+5. **Build a strategy** — Strategy tab → create plan, pick KPIs, generate recommendations, approve to Backlog, create cycles, start work.
 6. **Start a project** — Client **Content** tab → New content (or cycle **Start** on a content play). Choose topic, optional keyword/URLs/notes/length, content type, and run mode.
 7. **Run the pipeline** — Open the project → Start pipeline. In step-by-step mode, review and Approve each stage. In full auto, wait for Final (QA/ship check may still rewind).
 8. **Export** — Open Final → copy export markdown / meta / schema as needed. Tech plays export as Excel from the cycle.
@@ -36,7 +36,7 @@ Home shows workspace **KPI tiles** (not a project list):
 
 - Clients
 - Audits
-- Living strategies
+- Strategies
 - Content projects (with failed / in-review hints when relevant)
 
 Tiles link into **Clients**. Start audits, strategy, and content from a client hub — there is no global “New content” nav item.
@@ -56,6 +56,16 @@ Clients hold brand voice for every piece:
 
 Create or edit from **Clients**. The client page is split into **Overview**, **Audits**, **Strategy**, **Content**, and **Performance** tabs.
 
+### Google data (per client)
+
+Each client has its own Google connection on **Overview → Google data**:
+
+1. **Connect Google** and choose the account that can see that client's Analytics and Search Console. The account chooser always appears, and the card shows which account is connected.
+2. Pick the client's **Analytics property** and **Search Console site**, then save.
+3. Audits for that client pull from this connection only. A property or site already linked to one client cannot be linked to another.
+
+**Change account** signs in again for that client; a different account clears the saved property and site. **Disconnect** removes the connection for that client only.
+
 ---
 
 ## Site audits
@@ -65,7 +75,7 @@ Open **Clients**, choose a client, then select **New audit**.
 Audits diagnose what’s wrong or underused with the data you have. They are **not** the growth plan — that lives on the **Strategy** tab.
 
 1. Name the audit, optionally add a seed URL and scope notes.
-2. Attach crawl CSV/XLSX uploads and notes; connect GA4 / Search Console and sync.
+2. Attach crawl CSV/XLSX uploads and notes. **Sync Google** pulls GA4 / Search Console from the client's own Google connection (set on the client **Overview**).
 3. Start the audit pipeline (prefer step-by-step).
 4. Review each stage:
    - Crawl & technical health
@@ -85,14 +95,14 @@ Google setup requires a Google Cloud Web OAuth client with the Analytics Data, A
 
 ---
 
-## Living strategy
+## Strategy
 
 Open a client → **Strategy** tab.
 
-Each client has **one living strategy**. Creating a new one automatically moves the previous plan to **Past Strategies**. Restore any past strategy to make it living again.
+Each client has **one strategy**. Creating a new one automatically moves the previous plan to **Past Strategies**. Restore any past strategy to make it current again.
 
 1. Set **billing day** on Overview (or Edit profile). Cycles run from that day of the month to the day before next month’s billing day.
-2. Create the living strategy: name, source audit, notes, and **catalog KPIs** (organic sessions, conversions, GSC clicks/impressions, average position, indexed pages, content shipped, tech items closed).
+2. Create the strategy: name, source audit, notes, and **catalog KPIs** (organic sessions, conversions, GSC clicks/impressions, average position, indexed pages, content shipped, tech items closed).
 3. **Generate recommendations** (Claude if live AI is enabled on AI models, otherwise Mock). Review, approve into **Backlog**, or reject.
 4. This month and next month are created from the billing day. Approved plays sit in the **Backlog**, most important first. **Add to this month** to execute, or **Add to next month** to line them up.
 5. On **This month**:

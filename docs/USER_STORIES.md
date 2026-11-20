@@ -1,6 +1,6 @@
 # User stories
 
-Product: **SEO Turtle Tool** — AI strategy and SEO-grade content execution with client profiles, site audits, living strategy, human review gates, Claude-first BYO Anthropic keys, and inline jobs designed for **Vercel-only** hosting.
+Product: **SEO Turtle Tool** — AI strategy and SEO-grade content execution with client profiles, site audits, strategy, human review gates, Claude-first BYO Anthropic keys, and inline jobs designed for **Vercel-only** hosting.
 
 **Status legend:** ✅ Implemented · 🚧 Partial · 📋 Planned
 
@@ -89,7 +89,7 @@ Product: **SEO Turtle Tool** — AI strategy and SEO-grade content execution wit
 
 **Acceptance criteria**
 
-- Dashboard shows KPI tiles for Clients, Audits, Living strategies, and Content projects (with failed / in-review hints when relevant).
+- Dashboard shows KPI tiles for Clients, Audits, Strategies, and Content projects (with failed / in-review hints when relevant).
 - Tiles link into Clients; there is no recent-projects list or global “New content” entry on the dashboard.
 - Content is started from a client’s **Content** tab (or from a strategy cycle).
 
@@ -591,25 +591,27 @@ Product: **SEO Turtle Tool** — AI strategy and SEO-grade content execution wit
 **Acceptance criteria**
 
 - Google OAuth tokens are encrypted at rest.
-- Sync stores compact GA4/GSC summaries on the audit.
+- Each client has its own Google connection, set on the client Overview; the connected account is shown.
+- A GA4 property or Search Console site linked to one client cannot be linked to another.
+- Sync stores compact GA4/GSC summaries on the audit, pulled from that client's connection only.
 
 ### US-12.4 Strategy consumes audit findings ✅
 
 **As a** strategist
-**I want** the living strategy to use audit findings packs plus GA4/GSC
+**I want** the strategy to use audit findings packs plus GA4/GSC
 **So that** recommendations are evidence-backed.
 
 **Acceptance criteria**
 
-- Living strategy links to a source audit (or the latest completed audit).
+- Strategy links to a source audit (or the latest completed audit).
 - Generate recommendations uses the findings roll-up and compact GA4/GSC summaries.
 - Audit remains diagnostic; strategy does prioritization against KPIs.
 
 ---
 
-## Epic 13: Living strategy, backlog, and cycles
+## Epic 13: Strategy, backlog, and cycles
 
-### US-13.1 One living strategy per client ✅
+### US-13.1 One strategy per client ✅
 
 **As a** strategist
 **I want** a single current strategy with Past Strategies history
@@ -617,8 +619,8 @@ Product: **SEO Turtle Tool** — AI strategy and SEO-grade content execution wit
 
 **Acceptance criteria**
 
-- Creating a new living strategy archives the previous one automatically.
-- Past Strategies can be restored as living (current living becomes past).
+- Creating a new strategy archives the previous one automatically.
+- Past Strategies can be restored as current (the current strategy becomes past).
 
 ### US-13.2 Catalog KPIs and dashboard ✅
 
@@ -674,7 +676,7 @@ Login (if APP_PASSWORD) ──► Clients (Overview / Audits / Strategy / Conten
                                            │
                                 Audit pipeline ──► findings pack
                                            │
-                                Living strategy ──► KPIs / recs ──► Backlog ──► Cycles
+                                Strategy ──► KPIs / recs ──► Backlog ──► Cycles
                                            │                              │
                                            │                    Start content ──► Content project
                                            │                    Start tech ──► Excel work package
@@ -691,4 +693,4 @@ Docs: /documentation (how-to) · /stories (acceptance criteria)
 
 ---
 
-*Last updated: SEO Turtle Tool naming, dashboard KPI tiles, 10-step pipeline + QA/ship-check loops, Claude-first AI defaults, living strategy / backlog / cycles.*
+*Last updated: SEO Turtle Tool naming, dashboard KPI tiles, 10-step pipeline + QA/ship-check loops, Claude-first AI defaults, strategy / backlog / cycles.*
